@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:opennutritracker/core/data/dbo/meal_nutriments_dbo.dart';
 import 'package:opennutritracker/core/utils/extensions.dart';
+import 'package:opennutritracker/features/add_meal/data/dto/bundled/bundled_food_dto.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/fdc/fdc_const.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/fdc/fdc_food_nutriment_dto.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/off/off_product_nutriments_dto.dart';
@@ -231,6 +232,39 @@ class MealNutrimentsEntity extends Equatable {
   /// pivots the canonical per-100g nutrient rows into flat columns in the
   /// app's units, so this is a straight field-for-field copy.
   factory MealNutrimentsEntity.fromSpFoodSummary(SpFoodDTO food) {
+    return MealNutrimentsEntity(
+      energyKcal100: food.energyKcal100,
+      carbohydrates100: food.carbohydrates100,
+      fat100: food.fat100,
+      proteins100: food.proteins100,
+      sugars100: food.sugars100,
+      saturatedFat100: food.saturatedFat100,
+      fiber100: food.fiber100,
+      monounsaturatedFat100: food.monounsaturatedFat100,
+      polyunsaturatedFat100: food.polyunsaturatedFat100,
+      transFat100: food.transFat100,
+      cholesterol100: food.cholesterol100,
+      sodium100: food.sodium100,
+      potassium100: food.potassium100,
+      magnesium100: food.magnesium100,
+      calcium100: food.calcium100,
+      iron100: food.iron100,
+      zinc100: food.zinc100,
+      phosphorus100: food.phosphorus100,
+      vitaminA100: food.vitaminA100,
+      vitaminC100: food.vitaminC100,
+      vitaminD100: food.vitaminD100,
+      vitaminB6100: food.vitaminB6100,
+      vitaminB12100: food.vitaminB12100,
+      niacin100: food.niacin100,
+    );
+  }
+
+  /// Nutrients from the bundled catalogue asset. Like the Supabase view,
+  /// the asset stores values per 100 g already in the app's units (the
+  /// generator converts INDB's mg lipid columns to grams at build time),
+  /// so this is a straight field-for-field copy too.
+  factory MealNutrimentsEntity.fromBundledFood(BundledFoodDTO food) {
     return MealNutrimentsEntity(
       energyKcal100: food.energyKcal100,
       carbohydrates100: food.carbohydrates100,

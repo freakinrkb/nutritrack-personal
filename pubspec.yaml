@@ -136,6 +136,11 @@ flutter:
     # in unsplash_attribution.dart). Shipping them means Try Demo never
     # contacts Unsplash's CDN, at seed time or at render time.
     - assets/demo/meals/
+    # Anuvaad Indian Nutrient Databank recipe catalogue, generated from
+    # Anuvaad_INDB_2024.11 (CC BY 4.0; attribution in the asset envelope
+    # and in Settings → Food databases). Powers offline Indian-recipe
+    # search — see BundledFoodDataSource.
+    - assets/food/indb_recipes.json
 
   fonts:
     - family: CustomIcons

@@ -6,6 +6,7 @@ import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/domain/entity/recipe_entity.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
+import 'package:opennutritracker/features/add_meal/data/data_sources/bundled_food_data_source.dart';
 import 'package:opennutritracker/features/add_meal/data/repository/products_repository.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 
@@ -41,14 +42,21 @@ class SearchProductsUseCase {
   final RecipeDataSource _recipeDataSource;
   final GetConfigUsecase _getConfigUsecase;
 
+  /// The INDB recipe catalogue bundled inside the app, or null in tests
+  /// that do not exercise it. Optional so the offline fixture fakes in the
+  /// existing test suite stay untouched; production wiring in `locator.dart`
+  /// always passes one.
+  final BundledFoodDataSource? _bundledFoodDataSource;
+
   SearchProductsUseCase(
     this._productsRepository,
     this._getIntakeUsecase,
     this._customMealDataSource,
     this._cachedOffMealDataSource,
     this._recipeDataSource,
-    this._getConfigUsecase,
-  );
+    this._getConfigUsecase, {
+    BundledFoodDataSource? bundledFoodDataSource,
+  }) : _bundledFoodDataSource = bundledFoodDataSource;
 
   /// [skipRemote] limits the search to local matches (custom meals, recipes,
   /// recent intake, cached results) and does not touch the network — used for
@@ -104,8 +112,34 @@ class SearchProductsUseCase {
       ),
     );
     await _cacheRemoteResults(remote.meals);
-    return _buildResult(searchString, remote.meals,
-        remoteFailed: remote.failed, cacheSource: MealSourceEntity.fdc);
+    // The bundled INDB catalogue is searched alongside the backend, not
+    // through it: a local substring scan that answers even when Supabase
+    // is down. Its failure is logged inside the data source and treated as
+    // "contributed nothing" — deliberately not as remoteFailed, which the
+    // UI reads as the Supabase source itself being unavailable.
+    final bundled = await _safeBundledCall(searchString);
+    return _buildResult(
+      searchString,
+      remote.meals,
+      remoteFailed: remote.failed,
+      cacheSource: MealSourceEntity.fdc,
+      bundledResults: bundled,
+    );
+  }
+
+  Future<List<MealEntity>> _safeBundledCall(String searchString) async {
+    final bundled = _bundledFoodDataSource;
+    if (bundled == null) return const <MealEntity>[];
+    try {
+      return await bundled.search(searchString);
+    } catch (exception, stack) {
+      _log.warning(
+        'Bundled food catalogue search failed; continuing without it',
+        exception,
+        stack,
+      );
+      return const <MealEntity>[];
+    }
   }
 
   Future<void> _cacheRemoteResults(List<MealEntity> remote) async {
@@ -145,12 +179,17 @@ class SearchProductsUseCase {
     List<MealEntity> remoteResults, {
     bool remoteSkipped = false,
     bool remoteFailed = false,
+    List<MealEntity> bundledResults = const [],
     required MealSourceEntity cacheSource,
   }) async {
     // When the remote source was deliberately skipped (short query), don't
     // claim it returned nothing — that would show a misleading "no results"
     // hint while the user is still typing.
-    final remoteSourceEmpty = !remoteSkipped && remoteResults.isEmpty;
+    //
+    // Bundled-catalogue matches also clear this below: the hint means "the
+    // big databases had nothing for you", and that is not what happened
+    // when an INDB recipe answered.
+    var remoteSourceEmpty = !remoteSkipped && remoteResults.isEmpty;
 
     final normalizedSearchString = searchString.trim().toLowerCase();
     if (normalizedSearchString.isEmpty) {
@@ -224,6 +263,19 @@ class SearchProductsUseCase {
     // from the page — so the fresh entity stands in the cached copy's slot:
     // the position is the cache's, the data the page's (see [_freshest]).
     final config = await _getConfigUsecase.getConfig();
+    // Bundled-catalogue rows respect Settings → Food databases the same way
+    // cached and fresh backend rows do — one 'indb' toggle switches the
+    // in-app catalogue and any backend INDB rows together. Rows without a
+    // backendSource (none today; defensive, matching the cache filter
+    // below) are kept.
+    final enabledBundled = bundledResults
+        .where(
+          (meal) =>
+              meal.backendSource == null ||
+              config.isFoodSourceEnabled(meal.backendSource!),
+        )
+        .toList();
+    if (enabledBundled.isNotEmpty) remoteSourceEmpty = false;
     final freshByKey = {
       for (final meal in remoteResults) _dedupKey(meal): meal,
     };
@@ -244,12 +296,18 @@ class SearchProductsUseCase {
     // keeps the search list stable from the user's perspective ("the
     // version I saw yesterday is still at the top"). Fresh remote data
     // still wins on the per-item refresh path triggered by intake-add.
+    //
+    // Bundled-catalogue rows sit between cache and fresh remote: they are
+    // local like the cache, but always current (the asset is the version
+    // that ships), and their `indb:` codes can never collide with a
+    // backend food_id in the dedup below.
     return SearchProductsResult(
       meals: _deduplicateMeals([
         ...fromCustomMealBox,
         ...fromRecipes,
         ...fromIntakeHistory,
         ...fromCache,
+        ...enabledBundled,
         ...remoteResults,
       ]),
       remoteSourceEmpty: remoteSourceEmpty,

@@ -11,6 +11,7 @@ import 'package:opennutritracker/core/domain/entity/app_theme_entity.dart';
 import 'package:opennutritracker/core/domain/entity/config_entity.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
+import 'package:opennutritracker/features/add_meal/data/data_sources/bundled_food_data_source.dart';
 import 'package:opennutritracker/features/add_meal/data/repository/products_repository.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
@@ -916,12 +917,175 @@ void main() {
       expect(result.meals.first.source, MealSourceEntity.recipe);
     });
   });
+
+  group('SearchProductsUseCase bundled INDB catalogue', () {
+    late _FakeProductsRepository productsRepository;
+    late _FakeGetIntakeUsecase getIntakeUsecase;
+    late _FakeCustomMealDataSource customMealDataSource;
+    late _FakeRemoteSearchCacheDataSource cachedOffMealDataSource;
+    late _FakeRecipeDataSource recipeDataSource;
+    late _FakeGetConfigUsecase getConfigUsecase;
+
+    setUp(() {
+      productsRepository = _FakeProductsRepository();
+      getIntakeUsecase = _FakeGetIntakeUsecase();
+      customMealDataSource = _FakeCustomMealDataSource();
+      cachedOffMealDataSource = _FakeRemoteSearchCacheDataSource();
+      recipeDataSource = _FakeRecipeDataSource();
+      getConfigUsecase = _FakeGetConfigUsecase();
+    });
+
+    SearchProductsUseCase buildUseCase() => SearchProductsUseCase(
+      productsRepository,
+      getIntakeUsecase,
+      customMealDataSource,
+      cachedOffMealDataSource,
+      recipeDataSource,
+      getConfigUsecase,
+      bundledFoodDataSource: BundledFoodDataSource(
+        loadAsset: () async => bundledCatalogueFixture,
+      ),
+    );
+
+    test('bundled match answers when the backend has nothing', () async {
+      productsRepository.fdcResults['khichdi'] = const [];
+
+      final result = await buildUseCase().searchFDCFoodByString('khichdi');
+
+      expect(result.meals, hasLength(1));
+      final meal = result.meals.single;
+      expect(meal.name, 'Plain khitchdi (Plain khichri/khichdi)');
+      expect(meal.code, 'indb:BFP144');
+      expect(meal.backendSource, 'indb');
+      expect(meal.source, MealSourceEntity.fdc);
+      expect(meal.servingQuantity, 100);
+      expect(meal.servingUnit, 'g');
+      expect(meal.detailed, isTrue);
+      expect(meal.nutriments.energyKcal100, 57.0);
+      // A bundled answer means the databases were not silent — no
+      // "no results" hint.
+      expect(result.remoteSourceEmpty, isFalse);
+    });
+    test('bundled rows sort after cached entries', () async {
+      cachedOffMealDataSource.meals.add(
+        _fdcCacheDbo(code: 'cached-1', name: 'Khichdi old cache'),
+      );
+      productsRepository.fdcResults['khichdi'] = const [];
+
+      final result = await buildUseCase().searchFDCFoodByString('khichdi');
+
+      // Cache-first stays cache-first: the user's own recently-touched
+      // rows lead, the bundled catalogue answers behind them.
+      expect(result.meals.map((m) => m.code), ['cached-1', 'indb:BFP144']);
+      expect(result.remoteSourceEmpty, isFalse);
+    });
+
+    test('bundled rows appear alongside fresh remote matches', () async {
+      productsRepository.fdcResults['khichdi'] = [
+        _meal(
+          code: 'remote-1',
+          name: 'Khichdi remote',
+          source: MealSourceEntity.fdc,
+        ),
+      ];
+
+      final result = await buildUseCase().searchFDCFoodByString('khichdi');
+
+      // Fresh remote rows take their (timestamp-ordered) position inside
+      // the cache block — `_cacheRemoteResults` runs first by design — so
+      // exact interleaving is not asserted here; both sources answering
+      // is.
+      expect(
+        result.meals.map((m) => m.code),
+        containsAll(<String>['remote-1', 'indb:BFP144']),
+      );
+      expect(result.remoteSourceEmpty, isFalse);
+    });
+
+    test("INDB toggle off hides the bundled catalogue", () async {
+      getConfigUsecase.foodSourceToggles = {'indb': false};
+      productsRepository.fdcResults['khichdi'] = const [];
+
+      final result = await buildUseCase().searchFDCFoodByString('khichdi');
+
+      expect(result.meals, isEmpty);
+      expect(result.remoteSourceEmpty, isTrue);
+    });
+
+    test(
+      'remote failure with a bundled match is failed but not empty',
+      () async {
+        productsRepository.fdcThrowOn.add('chai');
+
+        final result = await buildUseCase().searchFDCFoodByString('chai');
+
+        expect(result.meals.single.backendSource, 'indb');
+        expect(result.remoteSourceFailed, isTrue);
+        expect(result.remoteSourceEmpty, isFalse);
+      },
+    );
+
+    test('OFF product search never mixes in bundled rows', () async {
+      productsRepository.offResults['chai'] = const [];
+
+      final result = await buildUseCase().searchOFFProductsByString('chai');
+
+      expect(result.meals, isEmpty);
+    });
+  });
 }
 
-RecipeDBO _recipeDbo({
-  required String id,
-  required String name,
-}) {
+/// Minimal stand-in for the bundled asset envelope, same schema as
+/// `assets/food/indb_recipes.json`.
+const bundledCatalogueFixture = '''
+{
+  "schemaVersion": 1,
+  "source": "indb",
+  "sourceVersion": "2024.11",
+  "license": "CC BY 4.0",
+  "items": [
+    {
+      "code": "indb:BFP144",
+      "name": "Plain khitchdi (Plain khichri/khichdi)",
+      "energyKcal100": 57.0,
+      "carbohydrates100": 10.0,
+      "fat100": 1.0,
+      "proteins100": 1.7,
+      "sugars100": 0.1,
+      "fiber100": 0.8,
+      "saturatedFat100": 0.5,
+      "cholesterol100": 2.1,
+      "sodium100": 37.1,
+      "iron100": 0.3,
+      "vitaminB12100": null,
+      "niacin100": 0.34
+    },
+    {
+      "code": "indb:ASC001",
+      "name": "Hot tea (Garam Chai)",
+      "energyKcal100": 16.1,
+      "carbohydrates100": 2.6,
+      "fat100": 0.5,
+      "proteins100": 0.4,
+      "sugars100": 2.6,
+      "fiber100": 0.0,
+      "saturatedFat100": 0.3
+    },
+    {
+      "code": "indb:BB029",
+      "name": "Masala dosa",
+      "energyKcal100": 168.0,
+      "carbohydrates100": 27.0,
+      "fat100": 4.5,
+      "proteins100": 3.8,
+      "sugars100": 1.2,
+      "fiber100": 1.9
+    }
+  ]
+}
+''';
+
+RecipeDBO _recipeDbo({required String id, required String name}) {
   return RecipeDBO(
     id: id,
     name: name,

@@ -93,6 +93,14 @@ class SPConst {
   /// food_source.code of the Bundeslebensmittelschlüssel.
   static const blsSourceCode = 'bls';
 
+  /// food_source.code of the Anuvaad Indian Nutrient Databank.
+  ///
+  /// Also the `backendSource` of the recipe catalogue bundled inside the app
+  /// (`assets/food/indb_recipes.json`, see `BundledFoodDataSource`) — one
+  /// code for both the bundled rows and any the backend later imports, so a
+  /// single Settings toggle and one display name cover them together.
+  static const indbSourceCode = 'indb';
+
   /// BLS food-group letters (first character of the BLS code) that denote
   /// beverages: N = alkoholfreie Getränke, P = alkoholische Getränke.
   /// Used to default drinks to millilitre entry in the app.
@@ -122,15 +130,18 @@ class SPConst {
     'tbca': 'TBCA',
   };
 
-  /// Sources offered in Settings → Food databases. INDB and TBCA exist in
-  /// the schema but carry no data yet, so they are not selectable until
-  /// their imports land — add them here once they do.
+  /// Sources offered in Settings → Food databases. INDB ships a recipe
+  /// catalogue bundled inside the app (`assets/food/indb_recipes.json`) and
+  /// this toggle switches that off as well as any backend INDB rows; TBCA
+  /// exists in the schema but carries no data yet, so it is not selectable
+  /// until its import lands.
   static const settingsSelectableFoodSources = [
     'fdc_foundation',
     'fdc_sr_legacy',
     'fdc_survey',
     'fdc_branded',
     'bls',
+    indbSourceCode,
   ];
 
   /// Public website per backend source: the "learn more" link in Settings →

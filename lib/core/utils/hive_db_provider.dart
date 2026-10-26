@@ -46,6 +46,13 @@ class HiveDBProvider extends ChangeNotifier {
   static const trackedDayBoxName = 'TrackedDayBox';
   static const customMealBoxName = 'CustomMealBox';
   static const recipeBoxName = 'RecipeBox';
+  // User-imported food catalogue files (Settings → Food databases), keyed
+  // by `food_source.code` with the file's envelope JSON as the value —
+  // e.g. a newer Anuvaad INDB drop replacing the bundled one. Global
+  // shared content like CustomMealBox, not personal data: it survives
+  // profile switches and profile deletion, and the export zip deliberately
+  // omits it (the source file stays on the user's disk).
+  static const importedFoodCatalogueBoxName = 'ImportedFoodCatalogueBox';
   static const cachedOffMealBoxName = 'CachedOffMealBox';
   // Sidecar to cachedOffMealBox: maps meal `code` -> millisSinceEpoch of
   // last "touch" (creation or user re-select). Used by the TTL sweep so
@@ -105,6 +112,7 @@ class HiveDBProvider extends ChangeNotifier {
   late final Box<MealDBO> customMealBox;
   late final Box<RecipeDBO> recipeBox;
   late final Box<CustomActivityTemplateDBO> customActivityTemplateBox;
+  late final Box<String> importedFoodCatalogueBox;
 
   // Per-profile boxes. Nullable rather than `late` so that a read during
   // the brief close/open window of a profile switch throws a descriptive
@@ -189,6 +197,9 @@ class HiveDBProvider extends ChangeNotifier {
     recipeBox = await _openEncryptedBox(recipeBoxName);
     customActivityTemplateBox = await _openEncryptedBox(
       customActivityTemplateBoxName,
+    );
+    importedFoodCatalogueBox = await _openEncryptedBox(
+      importedFoodCatalogueBoxName,
     );
   }
 

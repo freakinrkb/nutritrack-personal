@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:opennutritracker/core/data/data_source/config_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/custom_activity_template_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/favourite_meal_data_source.dart';
+import 'package:opennutritracker/core/data/data_source/imported_food_catalogue_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/health/health_service.dart';
 import 'package:opennutritracker/core/data/data_source/health/health_service_factory.dart';
 import 'package:opennutritracker/core/data/data_source/remote_search_cache_data_source.dart';
@@ -98,6 +99,7 @@ import 'package:opennutritracker/features/activity_detail/presentation/bloc/acti
 import 'package:opennutritracker/features/trends/presentation/bloc/trends_bloc.dart';
 import 'package:opennutritracker/features/add_activity/presentation/bloc/activities_bloc.dart';
 import 'package:opennutritracker/features/add_activity/presentation/bloc/recent_activities_bloc.dart';
+import 'package:opennutritracker/features/add_meal/data/data_sources/bundled_food_data_source.dart';
 import 'package:opennutritracker/features/add_meal/data/data_sources/off_data_source.dart';
 import 'package:opennutritracker/features/add_meal/data/data_sources/sp_food_data_source.dart';
 import 'package:opennutritracker/features/add_meal/data/repository/products_repository.dart';
@@ -137,6 +139,7 @@ import 'package:opennutritracker/features/settings/domain/usecase/import_recipes
 import 'package:opennutritracker/features/settings/domain/usecase/export_data_usecase.dart';
 import 'package:opennutritracker/features/settings/domain/usecase/import_data_usecase.dart';
 import 'package:opennutritracker/features/settings/domain/usecase/import_meals_csv_usecase.dart';
+import 'package:opennutritracker/features/settings/domain/usecase/import_food_catalogue_usecase.dart';
 import 'package:opennutritracker/features/settings/domain/usecase/import_meals_json_usecase.dart';
 import 'package:opennutritracker/features/settings/domain/usecase/import_recipes_csv_usecase.dart';
 import 'package:opennutritracker/features/settings/presentation/bloc/custom_meals_bloc.dart';
@@ -450,6 +453,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      bundledFoodDataSource: locator<BundledFoodDataSource>(),
     ),
   );
   // Per-navigation, matching how the AddMeal / Products / Food blocs that
@@ -606,6 +610,10 @@ Future<void> initLocator() async {
     ),
   );
   locator.registerLazySingleton(() => ImportRecipesJsonUsecase(locator()));
+  locator.registerLazySingleton(
+    () => ImportFoodCatalogueUsecase(locator(), locator()),
+  );
+
 
   // Fasting use cases (#84)
   locator.registerFactory(() => StartFastingUseCase(locator()));
@@ -690,6 +698,21 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<OFFDataSource>(() => OFFDataSource());
   locator.registerLazySingleton<SpFoodDataSource>(() => SpFoodDataSource());
+  // The user's imported catalogue file(s), keyed by source code — shared
+  // content, so one box for every profile (see HiveDBProvider).
+  locator.registerLazySingleton<ImportedFoodCatalogueDataSource>(
+    () => ImportedFoodCatalogueDataSource(
+      hiveDBProvider.importedFoodCatalogueBox,
+    ),
+  );
+  // Lazy singleton: the INDB catalogue (bundled asset + any imported
+  // replacement) is parsed once and reused by every search for the app's
+  // lifetime, until an import invalidates it.
+  locator.registerLazySingleton<BundledFoodDataSource>(
+    () => BundledFoodDataSource(
+      importedCatalogue: locator<ImportedFoodCatalogueDataSource>(),
+    ),
+  );
   locator.registerLazySingleton(() => TrackedDayDataSource(hiveDBProvider));
   locator.registerLazySingleton<WeightLogDataSource>(
     () => WeightLogDataSource(hiveDBProvider),

@@ -1,10 +1,10 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_entity.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/utils/id_generator.dart';
 import 'package:opennutritracker/core/utils/app_locale.dart';
 import 'package:opennutritracker/core/utils/supported_language.dart';
+import 'package:opennutritracker/features/add_meal/data/dto/bundled/bundled_food_dto.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/fdc/fdc_const.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/fdc/fdc_food_dto.dart';
 import 'package:opennutritracker/features/add_meal/data/dto/sp/sp_const.dart';
@@ -454,6 +454,35 @@ class MealEntity extends Equatable {
       source: MealSourceEntity.fdc,
       backendSource: foodItem.source,
       machineTranslatedName: foodItem.displayNameIsMachineTranslated,
+    );
+  }
+
+  /// A food from the catalogue bundled inside the app (the Anuvaad INDB
+  /// recipe list). Follows the same conventions as a Supabase backend food:
+  /// [MealSourceEntity.fdc] as the persisted "reference food database" tag
+  /// (a per-source enum would need a Hive migration), the true origin in
+  /// [backendSource] so Settings → Food databases can switch it off, and a
+  /// fixed 100 g basis — the workbook publishes per-100 g nutrients and no
+  /// gram weights for its kitchen-measure servings ("1 bowl"), which are
+  /// not scalable. [MealEntity.detailed] is true: unlike a thin search row,
+  /// every nutrient the source publishes is already here.
+  factory MealEntity.fromBundledFood(BundledFoodDTO food) {
+    return MealEntity(
+      code: food.code,
+      name: food.name,
+      brands: null,
+      // No per-item public page: the info button falls back to the
+      // source's website (SPConst.foodSourceWebsites).
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: 100,
+      servingUnit: 'g',
+      servingSize: '100 g',
+      nutriments: MealNutrimentsEntity.fromBundledFood(food),
+      source: MealSourceEntity.fdc,
+      backendSource: SPConst.indbSourceCode,
+      detailed: true,
     );
   }
 
