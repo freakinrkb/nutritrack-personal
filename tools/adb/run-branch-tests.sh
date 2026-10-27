@@ -28,8 +28,8 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$__DIR/walk-onboarding.sh"   # also pulls in adb-driver.sh
 
 DEVICE="${DEVICE:-$(adb devices | awk '/device$/{print $1; exit}')}"
-PACKAGE="com.opennutritracker.ont.opennutritracker"
-ACTIVITY="com.opennutritracker.ont.opennutritracker.MainActivity"
+PACKAGE="com.freakinrkb.nutritrack"
+ACTIVITY="com.freakinrkb.nutritrack.MainActivity"
 REPO="$(cd "$__DIR/../.." && pwd)"
 FVM="${FVM:-$(command -v fvm 2>/dev/null || echo "$HOME/fvm/bin/fvm")}"
 # Gradle's outputFileName rename for the full flavor keeps the historic

@@ -95,8 +95,8 @@ walk_onboarding() {
 # Run standalone for end-to-end verification.
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   set -uo pipefail
-  PACKAGE="${PACKAGE:-com.opennutritracker.ont.opennutritracker}"
-  ACTIVITY="${ACTIVITY:-com.opennutritracker.ont.opennutritracker.MainActivity}"
+  PACKAGE="${PACKAGE:-com.freakinrkb.nutritrack}"
+  ACTIVITY="${ACTIVITY:-com.freakinrkb.nutritrack.MainActivity}"
   echo "=== Standalone onboarding walk — device: $DEVICE ==="
   adb -s "$DEVICE" shell pm clear "$PACKAGE" > /dev/null 2>&1 || true
   adb -s "$DEVICE" shell am start -n "$PACKAGE/$ACTIVITY" > /dev/null
