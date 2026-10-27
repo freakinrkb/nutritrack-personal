@@ -74,7 +74,8 @@ void main() {
     });
 
     test('defaults: mealType snack, amount 100, unit g, date today', () {
-      const json = '{"name":"Apple","kcal":52,"protein":0.3,"carbs":14,"fat":0.2}';
+      const json =
+          '{"name":"Apple","kcal":52,"protein":0.3,"carbs":14,"fat":0.2}';
 
       final result = JsonMealImporter.parse(json, now: fixedNow);
 

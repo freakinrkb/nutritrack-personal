@@ -30,6 +30,8 @@ next to its CSV counterpart will not find one.
 | `custom_activity_templates.json` | Saved custom activities — name and typical kcal.         |
 | `goal_settings.json`             | The profile's goal settings. See [below](#goal_settingsjson). |
 | `user_favourites.json`           | The starred foods and meals, each with a meal snapshot. See [below](#user_favouritesjson). |
+| `user_custom_meals.json`         | The shared custom-meal library, each a `MealDBO` with its photo path. See [below](#user_custom_mealsjson). |
+| `user_water.json`                | The active profile's water log, one row per entry. See [below](#user_waterjson). |
 | `tracked_day_boundary.json`      | The day boundary the tracked days are keyed by. See [below](#tracked_day_boundaryjson--tracked_day_boundarycsv). |
 
 **CSV bundle**
@@ -41,13 +43,18 @@ next to its CSV counterpart will not find one.
 | `user_tracked_day.csv`  | Flat tracked days — **lossy, see [Round-trip guarantee](#round-trip-guarantee)**. |
 | `tracked_day_boundary.csv` | The day boundary the tracked days are keyed by. See [below](#tracked_day_boundaryjson--tracked_day_boundarycsv). |
 
+Custom meals, water, recipes, favourites, the weight log, Custom activity
+templates and goal settings are JSON-only: their shapes do not flatten to CSV
+without loss, so a CSV bundle does not carry them.
+
 **Photos travel with the JSON bundle only.** User-attached photos are added under
 `recipe_images/` and `meal_images/` when you export as JSON, gathered from recipes, saved custom
 meals, favourites, and **the diary entries themselves**. The diary entries are not redundant — a
 custom meal logged with *Save for next time* off keeps its photo on the entry without leaving a
 saved meal behind, so gathering only from recipes and saved meals put the filename in the JSON and
 left the bytes out of the zip ([#1061](https://github.com/simonoppowa/OpenNutriTracker/issues/1061)). A
-photo reachable from any of them is in the bundle exactly once.
+photo reachable from any of them is in the bundle exactly once. Import restores the images for the
+custom meals in `user_custom_meals.json` as well as for diary entries and recipes.
 
 A CSV export carries none, and the CSV importer does not restore them — another reason to use
 JSON for anything you intend to restore from.
@@ -57,13 +64,16 @@ included; see `lib/core/data/data_source/user_data_source.dart`. Note this is th
 profile only: your logged **weight history** *is* exported, as `weight_log.json`,
 and so are the **goal settings** you set under Settings → Calculations, as
 `goal_settings.json` ([#1363](https://github.com/simonoppowa/OpenNutriTracker/issues/1363)).
+The shared custom-meal library and the active profile's water log travel in
+`user_custom_meals.json` and `user_water.json`.
 
 The user can re-import the same zip via **Settings → Import**, in either format.
 Import merges into what is on the device: an intake, activity or recipe whose
 `id` is already stored is replaced by the imported row, as is a Custom activity
 template with the same name, a favourite for the same food (see
-[`user_favourites.json`](#user_favouritesjson)), and tracked days and
-weight-log points replace by day. Entries the zip does not carry are kept, and importing the same zip twice
+[`user_favourites.json`](#user_favouritesjson)), a custom meal with the same
+identity — its barcode, or its name when it has none — and a water entry with
+the same `id`. Tracked days and weight-log points replace by day. Entries the zip does not carry are kept, and importing the same zip twice
 changes nothing. Where the zip holds one `id` (or template name) more than
 once — an install hit by #1357 exports two copies — the copy edited before
 the fix wins: the first row for intakes, the last row for activities and
@@ -172,10 +182,10 @@ from every other source are never scaled. Tooling that writes `off` rows in
 app units should set the version to `1`, or the importer will scale them a
 second time. The same repair runs once over the on-device data on the first
 launch after the upgrade — the diary, the Open Food Facts cache, the saved
-custom meals and the recipe library. Saved custom meals are not part of the
-bundle, so they are repaired on the device only (the app itself never saves
-an `off` product for reuse, so that box is covered for completeness rather
-than for a known row).
+custom meals and the recipe library. Saved custom meals now travel in
+`user_custom_meals.json`, but are not scaled on import: the app itself never
+saves an Open Food Facts product as a custom meal, so the box is covered for
+completeness rather than for a known row.
 
 ### `user_activity.json`
 
@@ -235,7 +245,7 @@ keeps its own goals. Those older builds ignore the file when they meet it.
 
 ```jsonc
 {
-  "version": 1,                     // format version, see below
+  "version": 2,                     // format version, see below
   "kcalAdjustment": -300.0,         // kcal added to the daily goal, -1000..1000
   "carbGoalPct": 0.4,               // macro split as fractions of the kcal goal:
   "proteinGoalPct": 0.3,            //   all three set and adding up to 1
@@ -246,7 +256,11 @@ keeps its own goals. Those older builds ignore the file when they meet it.
     "dinner": 30,
     "snack": 10
   },
-  "dailyWaterGoalMl": 2600          // 100..10000
+  "dailyWaterGoalMl": 2600,         // 100..10000
+  "nutrientGoals": {                // optional, version 2+
+    "fiber": 32.0,                  // durable per-nutrient targets, any
+    "iron": 12.0                    // non-negative finite amount
+  }
 }
 ```
 
@@ -260,12 +274,19 @@ allow for rounding in older builds. `version` goes up only for a change an
 older build would misread; a build that meets a newer version skips this file
 and imports the rest. Unknown keys are ignored.
 
+`nutrientGoals` is optional and was added in `version: 2`. It holds the
+profile's durable per-nutrient targets, keyed by the panel identifier used in
+`user_tracked_day.json` (`fiber`, `iron`, `vitaminB12`, …). Values must be
+finite and non-negative; unknown keys are rejected so a typo cannot silently
+restore nothing. A version-1 file leaves the device's durable goals untouched.
+A version-2 file with `nutrientGoals: null` clears them, matching a profile
+whose goals were reset to the DRI defaults. Today's tracked-day row still wins
+when its per-day columns hold a value.
+
 Only goals that belong to a profile are in the file:
 
-- **Per-nutrient goals** (fibre, sodium, the vitamins …) are not settings
-  today but columns of each day in `user_tracked_day.json`, and travel there.
-  They belong in this file once they apply beyond the day they were set on
-  ([#1316](https://github.com/simonoppowa/OpenNutriTracker/issues/1316)).
+- **Per-nutrient goals** live here as durable targets and, for a specific day,
+  in `user_tracked_day.json`. The daily row wins over the durable target.
 - **Device-wide preferences** — theme, accent colour, language, units, kJ /
   kcal, reminders, the diary day boundary, view toggles, food sources — are
   shared by every profile on the device, so a restore into one profile should
@@ -348,6 +369,37 @@ importing the same zip twice leaves one entry per food; favourites the zip
 does not carry stay on the list. Where the file lists one food more than once
 (only a hand-edited file can), the last entry wins. Like every other file, it
 is parsed in full before anything on the device changes.
+
+### `user_custom_meals.json`
+
+Array of saved custom meals, each the same `MealDBO` shape as an intake's
+`meal` (see `user_intake.json`), including `localImagePath` when the meal has
+a user photo. The library is shared by every profile on the device, so an
+import merges into it rather than replacing the active profile's copy.
+
+A meal's identity is its `code` (barcode), or its `name` when it has no code.
+An imported meal with the same identity replaces the one on the device;
+meals the file does not carry are kept, so importing the same zip twice
+changes nothing. The file is optional, so bundles from builds before it still
+restore. A malformed entry rejects the whole zip before any write.
+
+### `user_water.json`
+
+Array of water entries for the active profile, one row per logged amount:
+
+```jsonc
+[
+  {
+    "id": "uuid-string",
+    "dateTime": "2026-05-13T08:15:00.000",
+    "amountMl": 250
+  }
+]
+```
+
+Entries are merged by `id`, so a re-import does not double the day's total;
+entries the file does not carry stay on the device. The file is optional.
+Water is profile-scoped and goes into the profile active at import time.
 
 ## CSV schema
 

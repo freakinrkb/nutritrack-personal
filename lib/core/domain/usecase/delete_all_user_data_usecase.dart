@@ -34,8 +34,7 @@ class DeleteAllUserDataUsecase {
     this._reminders,
     this._aiCredentials, {
     CalorieWidgetStore? calorieWidgetStore,
-  }) : _calorieWidgetStore =
-           calorieWidgetStore ?? HomeWidgetCalorieStore();
+  }) : _calorieWidgetStore = calorieWidgetStore ?? HomeWidgetCalorieStore();
 
   Future<void> deleteAll() async {
     _log.info('Clearing the active profile\'s Hive boxes on user request');
@@ -70,6 +69,8 @@ class DeleteAllUserDataUsecase {
         _hiveDBProvider.waterIntakeBox.clear(),
         _hiveDBProvider.fastingBox.clear(),
         _hiveDBProvider.favouriteMealBox.clear(),
+        _hiveDBProvider.habitBox.clear(),
+        _hiveDBProvider.habitCheckinBox.clear(),
       ]);
       await recordTrackedDayBoundary(ConfigDataSource(_hiveDBProvider));
     });
