@@ -131,6 +131,14 @@ import 'package:opennutritracker/features/profile/presentation/utils/profile_swi
 import 'package:opennutritracker/features/recipes/presentation/bloc/recipe_builder_bloc.dart';
 import 'package:opennutritracker/features/recipes/presentation/bloc/recipe_detail_bloc.dart';
 import 'package:opennutritracker/features/recipes/presentation/bloc/recipes_bloc.dart';
+import 'package:opennutritracker/features/routines/data/data_source/habit_data_source.dart';
+import 'package:opennutritracker/features/routines/data/repository/habit_repository.dart';
+import 'package:opennutritracker/features/routines/domain/usecase/add_habit_usecase.dart';
+import 'package:opennutritracker/features/routines/domain/usecase/delete_habit_usecase.dart';
+import 'package:opennutritracker/features/routines/domain/usecase/get_routine_day_usecase.dart';
+import 'package:opennutritracker/features/routines/domain/usecase/set_habit_status_usecase.dart';
+import 'package:opennutritracker/features/routines/domain/usecase/update_habit_usecase.dart';
+import 'package:opennutritracker/features/routines/presentation/bloc/routines_bloc.dart';
 import 'package:opennutritracker/features/scanner/domain/usecase/search_product_by_barcode_usecase.dart';
 import 'package:opennutritracker/features/scanner/presentation/scanner_bloc.dart';
 import 'package:opennutritracker/features/settings/domain/usecase/download_sample_csv_usecase.dart';
@@ -266,10 +274,17 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      locator(),
       calorieWidgetStore: locator<CalorieWidgetStore>(),
     ),
   );
   locator.registerLazySingleton(() => DiaryBloc(locator(), locator()));
+  // Shared by the Home summary card and the routines screen. The user can
+  // check a habit from either surface, so one instance is the source of
+  // truth; the screen does not close it.
+  locator.registerLazySingleton<RoutinesBloc>(
+    () => RoutinesBloc(locator(), locator(), locator(), locator(), locator()),
+  );
   locator.registerLazySingleton(
     () => CalendarDayBloc(
       locator(),
@@ -614,6 +629,16 @@ Future<void> initLocator() async {
     () => ImportFoodCatalogueUsecase(locator(), locator()),
   );
 
+  // Routine use cases
+  locator.registerLazySingleton(
+    () => GetRoutineDayUsecase(locator(), locator()),
+  );
+  locator.registerLazySingleton(() => AddHabitUsecase(locator()));
+  locator.registerLazySingleton(() => UpdateHabitUsecase(locator()));
+  locator.registerLazySingleton(() => DeleteHabitUsecase(locator()));
+  locator.registerLazySingleton(
+    () => SetHabitStatusUsecase(locator(), locator()),
+  );
 
   // Fasting use cases (#84)
   locator.registerFactory(() => StartFastingUseCase(locator()));
@@ -671,6 +696,9 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<FastingRepository>(
     () => FastingRepository(locator()),
+  );
+  locator.registerLazySingleton<HabitRepository>(
+    () => HabitRepository(locator()),
   );
   locator.registerLazySingleton<ProfileRepository>(
     () => ProfileRepository(locator()),
@@ -736,6 +764,9 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<FastingDataSource>(
     () => FastingDataSource(hiveDBProvider),
+  );
+  locator.registerLazySingleton<HabitDataSource>(
+    () => HabitDataSource(hiveDBProvider),
   );
   locator.registerLazySingleton<ProfileDataSource>(
     () => ProfileDataSource(hiveDBProvider),

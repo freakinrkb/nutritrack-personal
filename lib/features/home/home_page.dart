@@ -28,6 +28,8 @@ import 'package:opennutritracker/features/home/presentation/widgets/dashboard_wi
 import 'package:opennutritracker/features/home/presentation/widgets/intake_vertical_list.dart';
 import 'package:opennutritracker/features/home/presentation/widgets/fasting_home_chip.dart';
 import 'package:opennutritracker/features/home/presentation/widgets/quick_water_widget.dart';
+import 'package:opennutritracker/features/home/presentation/widgets/routine_home_card.dart';
+import 'package:opennutritracker/features/routines/presentation/bloc/routines_bloc.dart';
 import 'package:opennutritracker/core/domain/entity/body_weight_unit_entity.dart';
 import 'package:opennutritracker/features/home/presentation/widgets/quick_weight_widget.dart';
 import 'package:opennutritracker/generated/l10n.dart';
@@ -212,7 +214,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               totalCarbsGoal: totalCarbsGoal,
               totalFatsGoal: totalFatsGoal,
               totalProteinsGoal: totalProteinsGoal,
+              totalFiberIntake: totalFiberIntake,
+              totalFiberGoal: totalFiberGoal,
             ),
+            const RoutineHomeCard(),
             // Day-one / empty-day guidance: when nothing is logged yet, point
             // the way to the centre + rather than leaving a silent dashboard.
             if (breakfastIntakeList.isEmpty &&
@@ -548,6 +553,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   /// and it is correct under any boundary setting.
   void _refreshPageOnDayChange() {
     _homeBloc.add(const LoadItemsEvent());
+    locator<RoutinesBloc>().add(const LoadRoutinesEvent());
   }
 
   /// Picks up workouts that landed in the platform health store while the app

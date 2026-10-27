@@ -7,6 +7,8 @@ import 'package:opennutritracker/core/data/data_source/user_activity_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/config_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/favourite_meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/fasting_session_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_checkin_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/intake_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/profile_dbo.dart';
@@ -73,6 +75,10 @@ class HiveDBProvider extends ChangeNotifier {
   // list of what *this* person usually eats, unlike the shared custom-meal
   // and recipe libraries it may point into.
   static const favouriteMealBoxName = 'FavouriteMealBox';
+  // Daily routines and their check-in history. Per-profile: a habit belongs
+  // to the person keeping it, not to the device.
+  static const habitBoxName = 'HabitBox';
+  static const habitCheckinBoxName = 'HabitCheckinBox';
   // #471: registry of profiles. Global — shared across every profile so
   // the app can enumerate and switch profiles before any one of them is
   // active.
@@ -97,6 +103,8 @@ class HiveDBProvider extends ChangeNotifier {
     waterIntakeBoxName,
     fastingBoxName,
     favouriteMealBoxName,
+    habitBoxName,
+    habitCheckinBoxName,
   ];
 
   // Global boxes — opened once, never closed on a profile switch.
@@ -126,6 +134,8 @@ class HiveDBProvider extends ChangeNotifier {
   Box<WaterIntakeDBO>? _waterIntakeBox;
   Box<FastingSessionDBO>? _fastingBox;
   Box<FavouriteMealDBO>? _favouriteMealBox;
+  Box<HabitDBO>? _habitBox;
+  Box<HabitCheckinDBO>? _habitCheckinBox;
 
   late final HiveAesCipher _cipher;
   String _activeProfileId = '';
@@ -149,6 +159,9 @@ class HiveDBProvider extends ChangeNotifier {
       _requireBox(_fastingBox, fastingBoxName);
   Box<FavouriteMealDBO> get favouriteMealBox =>
       _requireBox(_favouriteMealBox, favouriteMealBoxName);
+  Box<HabitDBO> get habitBox => _requireBox(_habitBox, habitBoxName);
+  Box<HabitCheckinDBO> get habitCheckinBox =>
+      _requireBox(_habitCheckinBox, habitCheckinBoxName);
 
   Box<T> _requireBox<T>(Box<T>? box, String name) {
     if (_switching) {
@@ -252,6 +265,10 @@ class HiveDBProvider extends ChangeNotifier {
     _favouriteMealBox = await _openEncryptedBox(
       boxNameFor(favouriteMealBoxName, suffix),
     );
+    _habitBox = await _openEncryptedBox(boxNameFor(habitBoxName, suffix));
+    _habitCheckinBox = await _openEncryptedBox(
+      boxNameFor(habitCheckinBoxName, suffix),
+    );
   }
 
   Future<void> _closeActiveProfileBoxes() async {
@@ -265,6 +282,8 @@ class HiveDBProvider extends ChangeNotifier {
       if (_waterIntakeBox != null) _waterIntakeBox!.close(),
       if (_fastingBox != null) _fastingBox!.close(),
       if (_favouriteMealBox != null) _favouriteMealBox!.close(),
+      if (_habitBox != null) _habitBox!.close(),
+      if (_habitCheckinBox != null) _habitCheckinBox!.close(),
     ]);
     _configBox = null;
     _intakeBox = null;
@@ -275,6 +294,8 @@ class HiveDBProvider extends ChangeNotifier {
     _waterIntakeBox = null;
     _fastingBox = null;
     _favouriteMealBox = null;
+    _habitBox = null;
+    _habitCheckinBox = null;
   }
 
   /// Opens (or returns the already-open) box for an arbitrary profile
