@@ -34,7 +34,7 @@ List<QuickServingOption> quickServingOptionsFor(
   final gramUnit = UnitDropdownItem.g.toString();
   final options = <QuickServingOption>[];
 
-  if (product.scalableServingQuantity != null) {
+  if (product.portions.isNotEmpty || product.scalableServingQuantity != null) {
     options.addAll([
       QuickServingOption(
         id: 'half-serving',

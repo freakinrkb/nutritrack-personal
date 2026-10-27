@@ -20,6 +20,7 @@ import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/features/add_meal/data/repository/products_repository.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
+import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_entity.dart';
 import 'package:opennutritracker/features/add_meal/presentation/bloc/favourite_toggle_bloc.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_bloc.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/diary_bloc.dart';
@@ -62,16 +63,35 @@ MealEntity _solidThirtyGramServing() => MealEntity(
       source: MealSourceEntity.custom,
     );
 
+MealEntity _solidWithPortions() => MealEntity(
+      code: 'portion-screen-test',
+      name: 'Test bread',
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: 'g',
+      servingSize: '1 cup',
+      nutriments: _nutriments,
+      source: MealSourceEntity.fdc,
+      portions: const [
+        MealPortionEntity(label: '1 cup', gramWeight: 244, localized: false),
+        MealPortionEntity(label: '1 slice', gramWeight: 38, localized: false),
+      ],
+    );
+
 void main() {
   final getIt = GetIt.instance;
   MealDetailBloc? bloc;
   late FakeFavourites favourites;
+  late _FakeAddIntakeUsecase addIntakeUsecase;
 
   setUp(() {
     bloc = null;
+    addIntakeUsecase = _FakeAddIntakeUsecase();
     getIt.registerLazySingleton<MealDetailBloc>(
       () => bloc = MealDetailBloc(
-        _FakeAddIntakeUsecase(),
+        addIntakeUsecase,
         _FakeAddTrackedDayUsecase(),
         _FakeGetKcalGoalUsecase(),
         _FakeGetMacroGoalUsecase(),
@@ -139,7 +159,8 @@ void main() {
   }
 
   Finder chip(String id) => find.byWidgetPredicate(
-        (w) => w is Semantics && w.properties.identifier == 'meal-detail-chip-$id',
+        (w) =>
+            w is Semantics && w.properties.identifier == 'meal-detail-chip-$id',
       );
 
   testWidgets(
@@ -197,6 +218,46 @@ void main() {
     },
   );
 
+  testWidgets(
+    'a portion list selects the first portion and picking another scales by '
+    'its own weight',
+    (tester) async {
+      await pumpMealDetail(tester, _solidWithPortions());
+
+      // No servingQuantity, so this default can only come from the portion
+      // list: 1 x the first portion's 244 g.
+      expect(bloc!.state.selectedUnit, 'serving');
+      expect(bloc!.state.totalQuantityConverted, '244.0');
+
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('1 slice').last);
+      await tester.pumpAndSettle();
+
+      expect(bloc!.state.selectedUnit, 'serving#1');
+      expect(bloc!.state.totalQuantityConverted, '38.0');
+      expect(find.text(' / 38 g'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'logging a chosen portion writes a plain serving and its gram amount',
+    (tester) async {
+      await pumpMealDetail(tester, _solidWithPortions());
+
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('1 slice').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.add_rounded));
+      await tester.pumpAndSettle();
+
+      final intake = addIntakeUsecase.intakes.single;
+      expect(intake.unit, UnitDropdownItem.serving.toString());
+      expect(intake.amount, 38.0);
+    },
+  );
+
   testWidgets('the app bar star favourites the food and unstars it', (
     tester,
   ) async {
@@ -205,8 +266,7 @@ void main() {
     await pumpMealDetail(tester, meal);
     final star = find.byWidgetPredicate(
       (w) =>
-          w is Semantics &&
-          w.properties.identifier == 'meal-detail-favourite',
+          w is Semantics && w.properties.identifier == 'meal-detail-favourite',
     );
     expect(find.byTooltip(l10nEn.favouriteAddTooltip), findsOneWidget);
 
@@ -236,8 +296,12 @@ class _FakeGetConfigUsecase implements GetConfigUsecase {
 }
 
 class _FakeAddIntakeUsecase implements AddIntakeUsecase {
+  final intakes = <IntakeEntity>[];
+
   @override
-  Future<void> addIntake(IntakeEntity intakeEntity) async {}
+  Future<void> addIntake(IntakeEntity intakeEntity) async {
+    intakes.add(intakeEntity);
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

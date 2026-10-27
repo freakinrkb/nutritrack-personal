@@ -36,14 +36,14 @@ class _FakeRemoteSearchCacheDataSource extends Fake
     implements RemoteSearchCacheDataSource {}
 
 MealDetailBloc _buildBloc() => MealDetailBloc(
-  _FakeAddIntakeUsecase(),
-  _FakeAddTrackedDayUsecase(),
-  _FakeGetKcalGoalUsecase(),
-  _FakeGetMacroGoalUsecase(),
-  _FakeGetTrackedDayUsecase(),
-  _FakeProductsRepository(),
-  _FakeRemoteSearchCacheDataSource(),
-);
+      _FakeAddIntakeUsecase(),
+      _FakeAddTrackedDayUsecase(),
+      _FakeGetKcalGoalUsecase(),
+      _FakeGetMacroGoalUsecase(),
+      _FakeGetTrackedDayUsecase(),
+      _FakeProductsRepository(),
+      _FakeRemoteSearchCacheDataSource(),
+    );
 
 const _nutriments = MealNutrimentsEntity(
   energyKcal100: 100,
@@ -56,17 +56,17 @@ const _nutriments = MealNutrimentsEntity(
 );
 
 MealEntity _solidWithServing() => MealEntity(
-  code: 'chip-widget-test',
-  name: 'Test product',
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: 30,
-  servingUnit: 'g',
-  servingSize: '30 g',
-  nutriments: _nutriments,
-  source: MealSourceEntity.off,
-);
+      code: 'chip-widget-test',
+      name: 'Test product',
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: 30,
+      servingUnit: 'g',
+      servingSize: '30 g',
+      nutriments: _nutriments,
+      source: MealSourceEntity.off,
+    );
 
 Future<void> _pumpSheet(
   WidgetTester tester, {
@@ -142,7 +142,9 @@ void main() {
       );
 
       final chip = find.byWidgetPredicate(
-        (w) => w is Semantics && w.properties.identifier == 'meal-detail-chip-100g',
+        (w) =>
+            w is Semantics &&
+            w.properties.identifier == 'meal-detail-chip-100g',
       );
       await tester.tap(chip);
       await tester.pumpAndSettle();
@@ -216,7 +218,8 @@ void main() {
       expect(cbUnit, 'serving');
     },
   );
-  testWidgets('with imperial food units the serving entry reads in oz '
+  testWidgets(
+      'with imperial food units the serving entry reads in oz '
       '(#1368)', (tester) async {
     await _pumpSheet(
       tester,

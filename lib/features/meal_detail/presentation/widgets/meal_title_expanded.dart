@@ -68,10 +68,9 @@ class MealTitleExpanded extends StatelessWidget {
                     Flexible(
                       child: Text(
                         S.of(context).machineTranslatedNameHint,
-                        style:
-                            Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: palette.textMuted,
-                                ),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: palette.textMuted,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

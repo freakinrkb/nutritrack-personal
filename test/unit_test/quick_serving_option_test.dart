@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
+import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_entity.dart';
 import 'package:opennutritracker/features/meal_detail/util/quick_serving_option.dart';
 
 // Locks in what the meal-detail sheet's quick-serving chip row is meant
@@ -25,6 +26,7 @@ MealEntity _meal({
   String? servingUnit,
   String? servingSize,
   String? mealUnit,
+  List<MealPortionEntity> portions = const [],
 }) {
   return MealEntity(
     code: 'quick-serving-test',
@@ -37,6 +39,7 @@ MealEntity _meal({
     servingSize: servingSize,
     nutriments: _nutriments,
     source: MealSourceEntity.off,
+    portions: portions,
   );
 }
 
@@ -132,7 +135,8 @@ void main() {
       expect(gramChip.id, '100g');
     });
 
-    test('scalableServingQuantity recovers from servingSize when quantity is '
+    test(
+        'scalableServingQuantity recovers from servingSize when quantity is '
         'missing', () {
       final options = quickServingOptionsFor(
         _meal(servingSize: '1 slice (30 g)', mealUnit: 'g'),
@@ -145,6 +149,38 @@ void main() {
         'double-serving',
         '100g',
       ]);
+    });
+
+    test(
+        'a portion list offers the multipliers even when servingQuantity is '
+        'missing', () {
+      final options = quickServingOptionsFor(
+        _meal(
+          mealUnit: 'g',
+          portions: const [
+            MealPortionEntity(
+              label: '1 slice',
+              gramWeight: 38,
+              localized: false,
+            ),
+            MealPortionEntity(
+              label: '1 cup',
+              gramWeight: 244,
+              localized: false,
+            ),
+          ],
+        ),
+        'g',
+      );
+
+      expect(options.map((o) => o.id).toList(), [
+        'half-serving',
+        'one-serving',
+        'double-serving',
+        '100g',
+      ]);
+      expect(options.take(3).every((o) => o.unit == 'serving'), isTrue);
+      expect(options.last.unit, 'g');
     });
   });
 }

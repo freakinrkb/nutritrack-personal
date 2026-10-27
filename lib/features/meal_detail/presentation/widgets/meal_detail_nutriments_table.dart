@@ -27,9 +27,11 @@ class MealDetailNutrimentsTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = isDark ? AppPalette.dark : AppPalette.light;
-    final textStyleNormal =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(color: palette.textStrong) ??
-            const TextStyle();
+    final textStyleNormal = Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: palette.textStrong) ??
+        const TextStyle();
     final textStyleBold = Theme.of(context)
             .textTheme
             .bodyMedium
@@ -48,7 +50,10 @@ class MealDetailNutrimentsTable extends StatelessWidget {
       children: [
         Text(
           S.of(context).nutritionInfoLabel,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: Dimens.spacing16),
         AppCard(
@@ -60,46 +65,47 @@ class MealDetailNutrimentsTable extends StatelessWidget {
           child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             border: TableBorder(
-              horizontalInside: BorderSide(color: palette.border, width: Dimens.hairline),
+              horizontalInside:
+                  BorderSide(color: palette.border, width: Dimens.hairline),
             ),
             children: <TableRow>[
-            _getNutrimentsTableRow("", headerText, textStyleBold),
-            _getNutrimentsTableRow(
-              S.of(context).energyLabel,
-              EnergyDisplay.formatWithUnit(context,
-                  _adjustValueForServing(n.energyKcal100?.toDouble() ?? 0)),
-              textStyleNormal,
-            ),
-            _getNutrimentsTableRow(
-              S.of(context).fatLabel,
-              "${_adjustValueForServing(n.fat100 ?? 0).roundToPrecision(2)}g",
-              textStyleNormal,
-            ),
-            _getNutrimentsTableRow(
-              '   ${S.of(context).saturatedFatLabel}',
-              "${_adjustValueForServing(n.saturatedFat100 ?? 0).roundToPrecision(2)}g",
-              textStyleNormal,
-            ),
-            _getNutrimentsTableRow(
-              S.of(context).carbohydrateLabel,
-              "${_adjustValueForServing(n.carbohydrates100 ?? 0).roundToPrecision(2)}g",
-              textStyleNormal,
-            ),
-            _getNutrimentsTableRow(
-              '    ${S.of(context).sugarLabel}',
-              "${_adjustValueForServing(n.sugars100 ?? 0).roundToPrecision(2)}g",
-              textStyleNormal,
-            ),
-            _getNutrimentsTableRow(
-              S.of(context).fiberLabel,
-              "${_adjustValueForServing(n.fiber100 ?? 0).roundToPrecision(2)}g",
-              textStyleNormal,
-            ),
-            _getNutrimentsTableRow(
-              S.of(context).proteinLabel,
-              "${_adjustValueForServing(n.proteins100 ?? 0).roundToPrecision(2)}g",
-              textStyleNormal,
-            ),
+              _getNutrimentsTableRow("", headerText, textStyleBold),
+              _getNutrimentsTableRow(
+                S.of(context).energyLabel,
+                EnergyDisplay.formatWithUnit(context,
+                    _adjustValueForServing(n.energyKcal100?.toDouble() ?? 0)),
+                textStyleNormal,
+              ),
+              _getNutrimentsTableRow(
+                S.of(context).fatLabel,
+                "${_adjustValueForServing(n.fat100 ?? 0).roundToPrecision(2)}g",
+                textStyleNormal,
+              ),
+              _getNutrimentsTableRow(
+                '   ${S.of(context).saturatedFatLabel}',
+                "${_adjustValueForServing(n.saturatedFat100 ?? 0).roundToPrecision(2)}g",
+                textStyleNormal,
+              ),
+              _getNutrimentsTableRow(
+                S.of(context).carbohydrateLabel,
+                "${_adjustValueForServing(n.carbohydrates100 ?? 0).roundToPrecision(2)}g",
+                textStyleNormal,
+              ),
+              _getNutrimentsTableRow(
+                '    ${S.of(context).sugarLabel}',
+                "${_adjustValueForServing(n.sugars100 ?? 0).roundToPrecision(2)}g",
+                textStyleNormal,
+              ),
+              _getNutrimentsTableRow(
+                S.of(context).fiberLabel,
+                "${_adjustValueForServing(n.fiber100 ?? 0).roundToPrecision(2)}g",
+                textStyleNormal,
+              ),
+              _getNutrimentsTableRow(
+                S.of(context).proteinLabel,
+                "${_adjustValueForServing(n.proteins100 ?? 0).roundToPrecision(2)}g",
+                textStyleNormal,
+              ),
             ],
           ),
         ),
@@ -129,115 +135,115 @@ class MealDetailNutrimentsTable extends StatelessWidget {
                   child: Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     border: TableBorder(
-                      horizontalInside:
-                          BorderSide(color: palette.border, width: Dimens.hairline),
+                      horizontalInside: BorderSide(
+                          color: palette.border, width: Dimens.hairline),
                     ),
                     children: [
-                    // Extended lipid profile
-                    _microRow(
-                      '   ${S.of(context).monounsaturatedFatLabel}',
-                      n.monounsaturatedFat100,
-                      'g',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      '   ${S.of(context).polyunsaturatedFatLabel}',
-                      n.polyunsaturatedFat100,
-                      'g',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      '   ${S.of(context).transFatLabel}',
-                      n.transFat100,
-                      'g',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).cholesterolLabel,
-                      n.cholesterol100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    // Minerals
-                    _microRow(
-                      S.of(context).sodiumLabel,
-                      n.sodium100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).potassiumLabel,
-                      n.potassium100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).magnesiumLabel,
-                      n.magnesium100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).calciumLabel,
-                      n.calcium100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).ironLabel,
-                      n.iron100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).zincLabel,
-                      n.zinc100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).phosphorusLabel,
-                      n.phosphorus100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    // Vitamins
-                    _microRow(
-                      S.of(context).vitaminALabel,
-                      n.vitaminA100,
-                      'µg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).vitaminCLabel,
-                      n.vitaminC100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).vitaminDLabel,
-                      n.vitaminD100,
-                      'µg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).vitaminB6Label,
-                      n.vitaminB6100,
-                      'mg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).vitaminB12Label,
-                      n.vitaminB12100,
-                      'µg',
-                      textStyleNormal,
-                    ),
-                    _microRow(
-                      S.of(context).niacinLabel,
-                      n.niacin100,
-                      'mg',
-                      textStyleNormal,
-                    ),
+                      // Extended lipid profile
+                      _microRow(
+                        '   ${S.of(context).monounsaturatedFatLabel}',
+                        n.monounsaturatedFat100,
+                        'g',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        '   ${S.of(context).polyunsaturatedFatLabel}',
+                        n.polyunsaturatedFat100,
+                        'g',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        '   ${S.of(context).transFatLabel}',
+                        n.transFat100,
+                        'g',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).cholesterolLabel,
+                        n.cholesterol100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      // Minerals
+                      _microRow(
+                        S.of(context).sodiumLabel,
+                        n.sodium100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).potassiumLabel,
+                        n.potassium100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).magnesiumLabel,
+                        n.magnesium100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).calciumLabel,
+                        n.calcium100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).ironLabel,
+                        n.iron100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).zincLabel,
+                        n.zinc100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).phosphorusLabel,
+                        n.phosphorus100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      // Vitamins
+                      _microRow(
+                        S.of(context).vitaminALabel,
+                        n.vitaminA100,
+                        'µg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).vitaminCLabel,
+                        n.vitaminC100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).vitaminDLabel,
+                        n.vitaminD100,
+                        'µg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).vitaminB6Label,
+                        n.vitaminB6100,
+                        'mg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).vitaminB12Label,
+                        n.vitaminB12100,
+                        'µg',
+                        textStyleNormal,
+                      ),
+                      _microRow(
+                        S.of(context).niacinLabel,
+                        n.niacin100,
+                        'mg',
+                        textStyleNormal,
+                      ),
                     ],
                   ),
                 ),

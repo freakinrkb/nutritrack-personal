@@ -10,6 +10,9 @@ import 'package:opennutritracker/core/utils/serving_label_localizer.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/core/utils/navigation_predicates.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
+import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_entity.dart';
+import 'package:opennutritracker/features/add_meal/util/portion_label.dart';
+import 'package:opennutritracker/features/add_meal/util/portion_unit.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_bloc.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/diary_bloc.dart';
 import 'package:opennutritracker/features/home/presentation/bloc/home_bloc.dart';
@@ -195,7 +198,10 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                               items: <DropdownMenuItem<String>>[
                                 // #629: a serving the app cannot scale
                                 // is a no-op dressed as a unit.
-                                if (widget.product.scalableServingQuantity !=
+                                if (widget.product.portions.isNotEmpty)
+                                  ..._getPortionDropdownItems(context)
+                                else if (widget
+                                        .product.scalableServingQuantity !=
                                     null)
                                   _getServingDropdownItem(context),
                                 if (widget.product.isSolid ||
@@ -230,8 +236,7 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                               children: [
                                 for (final option in quickOptions)
                                   Semantics(
-                                    identifier:
-                                        'meal-detail-chip-${option.id}',
+                                    identifier: 'meal-detail-chip-${option.id}',
                                     child: ActionChip(
                                       label: Text(option.label),
                                       onPressed: () =>
@@ -250,10 +255,10 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                           child: FilledButton.icon(
                             onPressed:
                                 !productMissingRequiredInfo && !_submitting
-                                ? () {
-                                    onAddButtonPressed(context);
-                                  }
-                                : null,
+                                    ? () {
+                                        onAddButtonPressed(context);
+                                      }
+                                    : null,
                             style: FilledButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 vertical: Dimens.spacing16,
@@ -270,7 +275,9 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
                       productMissingRequiredInfo
                           ? Text(
                               S.of(context).missingProductInfo,
-                              style: Theme.of(context).textTheme.bodyMedium
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
                                   ?.copyWith(
                                     color: Theme.of(context).colorScheme.error,
                                   ),
@@ -355,9 +362,12 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
 
     // The refreshes below only see the intake once it is stored, which
     // can wait for the tracked-day lock (#1317).
+    // The dropdown's `serving#n` names the chosen portion; the stored
+    // vocabulary stays the closed set the export format and QR payload
+    // were written against (#864 decision 3).
     await widget.mealDetailBloc.addIntake(
       context,
-      widget.mealDetailBloc.state.selectedUnit,
+      storedUnit(widget.mealDetailBloc.state.selectedUnit),
       widget.mealDetailBloc.state.totalQuantityConverted,
       widget.intakeTypeEntity,
       widget.product,
@@ -434,6 +444,51 @@ class _MealDetailBottomSheetState extends State<MealDetailBottomSheet> {
         );
       },
     );
+  }
+
+  List<DropdownMenuItem<String>> _getPortionDropdownItems(
+    BuildContext context,
+  ) {
+    return [
+      for (var index = 0; index < widget.product.portions.length; index++)
+        DropdownMenuItem(
+          value: portionUnit(index),
+          child: Text(
+            _getPortionDropdownLabel(
+              context,
+              widget.product.portions[index],
+              index,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+    ];
+  }
+
+  String _getPortionDropdownLabel(
+    BuildContext context,
+    MealPortionEntity portion,
+    int index,
+  ) {
+    final s = S.of(context);
+    final householdLabel = householdPortionLabel(
+      portion.label,
+      languageCode: Localizations.localeOf(context).languageCode,
+      textIsLocalized: portion.localized,
+    );
+
+    final String label;
+    if (householdLabel != null) {
+      label = localizeServingLabel(s, portion.label);
+    } else {
+      final weight = '${_formatQuantity(portion.gramWeight)} ${s.gramUnit}';
+      label = widget.product.portions.length == 1
+          ? '${s.servingLabel} ($weight)'
+          : '${s.servingLabel} ${index + 1} ($weight)';
+    }
+
+    return widget.usesImperialUnits ? imperialServingLabel(s, label) : label;
   }
 
   DropdownMenuItem<String> _getServingDropdownItem(BuildContext context) {
