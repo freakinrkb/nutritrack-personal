@@ -161,9 +161,9 @@ class _WaterGoalDialogState extends State<WaterGoalDialog> {
                     max: _maxGoalMl.toDouble(),
                     divisions: (_maxGoalMl - _minGoalMl) ~/ _stepMl,
                     value: _goalMl.toDouble().clamp(
-                      _minGoalMl.toDouble(),
-                      _maxGoalMl.toDouble(),
-                    ),
+                          _minGoalMl.toDouble(),
+                          _maxGoalMl.toDouble(),
+                        ),
                     label: '$_goalMl ${s.mlLabel}',
                     onChanged: (value) {
                       setState(() => _goalMl = value.round());

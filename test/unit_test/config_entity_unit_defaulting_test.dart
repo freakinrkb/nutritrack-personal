@@ -30,7 +30,8 @@ void main() {
       expect(entity.usesImperialHeightUnits, isTrue,
           reason: 'height units should fall back to legacy imperial flag');
       expect(entity.bodyWeightUnit, equals(BodyWeightUnit.lb),
-          reason: 'body weight should fall back to lb when legacy flag is true');
+          reason:
+              'body weight should fall back to lb when legacy flag is true');
     });
 
     test('legacy usesImperialUnits=false, new fields null -> all metric', () {
@@ -65,7 +66,8 @@ void main() {
       expect(entity.bodyWeightUnit, equals(BodyWeightUnit.kg));
     });
 
-    test('explicit usesImperialFoodUnits=false overrides legacy imperial flag', () {
+    test('explicit usesImperialFoodUnits=false overrides legacy imperial flag',
+        () {
       final dbo = ConfigDBO(
         false,
         false,
@@ -77,14 +79,17 @@ void main() {
       final entity = ConfigEntity.fromConfigDBO(dbo);
 
       expect(entity.usesImperialFoodUnits, isFalse,
-          reason: 'explicit false should override the legacy imperial flag for food');
+          reason:
+              'explicit false should override the legacy imperial flag for food');
       // Height and body weight still inherit the legacy flag because only
       // food was explicitly set.
       expect(entity.usesImperialHeightUnits, isTrue);
       expect(entity.bodyWeightUnit, equals(BodyWeightUnit.lb));
     });
 
-    test('explicit usesImperialHeightUnits=false overrides legacy imperial flag', () {
+    test(
+        'explicit usesImperialHeightUnits=false overrides legacy imperial flag',
+        () {
       final dbo = ConfigDBO(
         false,
         false,
@@ -125,7 +130,8 @@ void main() {
       final entity = ConfigEntity.fromConfigDBO(dbo);
 
       expect(entity.bodyWeightUnit, equals(BodyWeightUnit.kg),
-          reason: 'an out-of-range index should be clamped to kg by BodyWeightUnit.fromIndex');
+          reason:
+              'an out-of-range index should be clamped to kg by BodyWeightUnit.fromIndex');
     });
 
     test('bodyWeightUnitIndex negative falls back to kg', () {

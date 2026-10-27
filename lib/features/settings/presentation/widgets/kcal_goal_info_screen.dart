@@ -48,7 +48,7 @@ class _KcalGoalInfoScreenState extends State<KcalGoalInfoScreen> {
     _breakdown = provided != null
         ? Future.value(provided)
         : (widget.usecase ?? locator<GetKcalGoalBreakdownUsecase>())
-              .getBreakdown();
+            .getBreakdown();
   }
 
   @override
@@ -266,8 +266,7 @@ class _TdeeCard extends StatelessWidget {
   // The brackets are not decoration: IOM 2005 p. 204 multiplies PA into the
   // weight *and* the height term, and this string has to show the same shape
   // the calculation uses (#987).
-  String _maleFormulaText(KcalGoalBreakdownEntity b) =>
-      '864 − 9.72 × ${b.age} '
+  String _maleFormulaText(KcalGoalBreakdownEntity b) => '864 − 9.72 × ${b.age} '
       '+ ${b.paMaleFormula!.toStringAsFixed(2)} × '
       '(14.2 × ${b.weightKG.toStringAsFixed(1)} '
       '+ 503 × ${(b.heightCM / 100).toStringAsFixed(2)})';

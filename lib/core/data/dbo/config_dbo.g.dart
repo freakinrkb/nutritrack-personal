@@ -17,46 +17,47 @@ class ConfigDBOAdapter extends TypeAdapter<ConfigDBO> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ConfigDBO(
-        fields[0] as bool,
-        fields[1] as bool,
-        fields[2] as bool,
-        fields[3] as AppThemeDBO,
-        usesImperialUnits: fields[4] == null ? false : fields[4] as bool?,
-        userKcalAdjustment: (fields[5] as num?)?.toDouble(),
-        showActivityTracking: fields[9] as bool?,
-        showMealMacros: fields[14] as bool?,
-        notificationsEnabled: fields[10] as bool?,
-        notificationHour: (fields[11] as num?)?.toInt(),
-        notificationMinute: (fields[12] as num?)?.toInt(),
-        selectedLocale: fields[13] as String?,
-        showMicronutrients: fields[15] as bool?,
-        usesKilojoules: fields[16] as bool?,
-        mealKcalSharesPct: (fields[17] as Map?)?.cast<String, int>(),
-        customMealFormMode: fields[18] as String?,
-        dayStartOffsetHours: (fields[19] as num?)?.toInt(),
-        diarySortPreferences: (fields[21] as Map?)?.cast<String, int>(),
-        nutrientPanelVisibility: (fields[22] as Map?)?.cast<String, bool>(),
-        dayStartOffsetMinutes: (fields[23] as num?)?.toInt(),
-        dailyWaterGoalMl: (fields[24] as num?)?.toInt(),
-        fastingWarningAcknowledged: fields[25] as bool?,
-        useMaterialYou: fields[20] as bool?,
-        accentColor: (fields[26] as num?)?.toInt(),
-        scannerPortraitLock: fields[27] as bool?,
-        usesImperialFoodUnits: fields[28] as bool?,
-        usesImperialHeightUnits: fields[29] as bool?,
-        bodyWeightUnitIndex: (fields[30] as num?)?.toInt(),
-        foodSourceToggles: (fields[31] as Map?)?.cast<String, bool>(),
-        isDemoData: fields[32] as bool?,
-        healthImportEnabled: fields[33] as bool?,
-        healthWorkoutKcalMultiplier: (fields[34] as num?)?.toDouble(),
-        healthLastImportAt: fields[35] as DateTime?,
-        healthDeletedExternalIds: (fields[36] as List?)?.cast<String>(),
-        policyNoticeRevisionSeen: (fields[37] as num?)?.toInt(),
-        healthDeletedWorkouts: (fields[38] as Map?)?.cast<String, DateTime>(),
-        defaultToRawFoodUnits: fields[39] as bool?,
-        trackedDaysOffsetMinutes: (fields[40] as num?)?.toInt(),
-        localeSyncSeeded: fields[41] as bool?,
-      )
+      fields[0] as bool,
+      fields[1] as bool,
+      fields[2] as bool,
+      fields[3] as AppThemeDBO,
+      usesImperialUnits: fields[4] == null ? false : fields[4] as bool?,
+      userKcalAdjustment: (fields[5] as num?)?.toDouble(),
+      showActivityTracking: fields[9] as bool?,
+      showMealMacros: fields[14] as bool?,
+      notificationsEnabled: fields[10] as bool?,
+      notificationHour: (fields[11] as num?)?.toInt(),
+      notificationMinute: (fields[12] as num?)?.toInt(),
+      selectedLocale: fields[13] as String?,
+      showMicronutrients: fields[15] as bool?,
+      usesKilojoules: fields[16] as bool?,
+      mealKcalSharesPct: (fields[17] as Map?)?.cast<String, int>(),
+      customMealFormMode: fields[18] as String?,
+      dayStartOffsetHours: (fields[19] as num?)?.toInt(),
+      diarySortPreferences: (fields[21] as Map?)?.cast<String, int>(),
+      nutrientPanelVisibility: (fields[22] as Map?)?.cast<String, bool>(),
+      dayStartOffsetMinutes: (fields[23] as num?)?.toInt(),
+      dailyWaterGoalMl: (fields[24] as num?)?.toInt(),
+      fastingWarningAcknowledged: fields[25] as bool?,
+      useMaterialYou: fields[20] as bool?,
+      accentColor: (fields[26] as num?)?.toInt(),
+      scannerPortraitLock: fields[27] as bool?,
+      usesImperialFoodUnits: fields[28] as bool?,
+      usesImperialHeightUnits: fields[29] as bool?,
+      bodyWeightUnitIndex: (fields[30] as num?)?.toInt(),
+      foodSourceToggles: (fields[31] as Map?)?.cast<String, bool>(),
+      isDemoData: fields[32] as bool?,
+      healthImportEnabled: fields[33] as bool?,
+      healthWorkoutKcalMultiplier: (fields[34] as num?)?.toDouble(),
+      healthLastImportAt: fields[35] as DateTime?,
+      healthDeletedExternalIds: (fields[36] as List?)?.cast<String>(),
+      policyNoticeRevisionSeen: (fields[37] as num?)?.toInt(),
+      healthDeletedWorkouts: (fields[38] as Map?)?.cast<String, DateTime>(),
+      defaultToRawFoodUnits: fields[39] as bool?,
+      trackedDaysOffsetMinutes: (fields[40] as num?)?.toInt(),
+      localeSyncSeeded: fields[41] as bool?,
+      nutrientGoals: (fields[42] as Map?)?.cast<String, double>(),
+    )
       ..userCarbGoalPct = (fields[6] as num?)?.toDouble()
       ..userProteinGoalPct = (fields[7] as num?)?.toDouble()
       ..userFatGoalPct = (fields[8] as num?)?.toDouble();
@@ -65,7 +66,7 @@ class ConfigDBOAdapter extends TypeAdapter<ConfigDBO> {
   @override
   void write(BinaryWriter writer, ConfigDBO obj) {
     writer
-      ..writeByte(42)
+      ..writeByte(43)
       ..writeByte(0)
       ..write(obj.hasAcceptedDisclaimer)
       ..writeByte(1)
@@ -149,7 +150,9 @@ class ConfigDBOAdapter extends TypeAdapter<ConfigDBO> {
       ..writeByte(40)
       ..write(obj.trackedDaysOffsetMinutes)
       ..writeByte(41)
-      ..write(obj.localeSyncSeeded);
+      ..write(obj.localeSyncSeeded)
+      ..writeByte(42)
+      ..write(obj.nutrientGoals);
   }
 
   @override
@@ -167,117 +170,120 @@ class ConfigDBOAdapter extends TypeAdapter<ConfigDBO> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-ConfigDBO _$ConfigDBOFromJson(Map<String, dynamic> json) =>
-    ConfigDBO(
-        json['hasAcceptedDisclaimer'] as bool,
-        json['hasAcceptedPolicy'] as bool,
-        json['hasAcceptedSendAnonymousData'] as bool,
-        $enumDecode(_$AppThemeDBOEnumMap, json['selectedAppTheme']),
-        usesImperialUnits: json['usesImperialUnits'] as bool? ?? false,
-        userKcalAdjustment: (json['userKcalAdjustment'] as num?)?.toDouble(),
-        showActivityTracking: json['showActivityTracking'] as bool?,
-        showMealMacros: json['showMealMacros'] as bool?,
-        notificationsEnabled: json['notificationsEnabled'] as bool?,
-        notificationHour: (json['notificationHour'] as num?)?.toInt(),
-        notificationMinute: (json['notificationMinute'] as num?)?.toInt(),
-        selectedLocale: json['selectedLocale'] as String?,
-        showMicronutrients: json['showMicronutrients'] as bool?,
-        usesKilojoules: json['usesKilojoules'] as bool?,
-        mealKcalSharesPct: (json['mealKcalSharesPct'] as Map<String, dynamic>?)
-            ?.map((k, e) => MapEntry(k, (e as num).toInt())),
-        customMealFormMode: json['customMealFormMode'] as String?,
-        dayStartOffsetHours: (json['dayStartOffsetHours'] as num?)?.toInt(),
-        diarySortPreferences:
-            (json['diarySortPreferences'] as Map<String, dynamic>?)?.map(
-              (k, e) => MapEntry(k, (e as num).toInt()),
-            ),
-        nutrientPanelVisibility:
-            (json['nutrientPanelVisibility'] as Map<String, dynamic>?)?.map(
-              (k, e) => MapEntry(k, e as bool),
-            ),
-        dayStartOffsetMinutes: (json['dayStartOffsetMinutes'] as num?)?.toInt(),
-        dailyWaterGoalMl: (json['dailyWaterGoalMl'] as num?)?.toInt(),
-        fastingWarningAcknowledged: json['fastingWarningAcknowledged'] as bool?,
-        useMaterialYou: json['useMaterialYou'] as bool?,
-        accentColor: (json['accentColor'] as num?)?.toInt(),
-        scannerPortraitLock: json['scannerPortraitLock'] as bool?,
-        usesImperialFoodUnits: json['usesImperialFoodUnits'] as bool?,
-        usesImperialHeightUnits: json['usesImperialHeightUnits'] as bool?,
-        bodyWeightUnitIndex: (json['bodyWeightUnitIndex'] as num?)?.toInt(),
-        foodSourceToggles: (json['foodSourceToggles'] as Map<String, dynamic>?)
-            ?.map((k, e) => MapEntry(k, e as bool)),
-        isDemoData: json['isDemoData'] as bool?,
-        healthImportEnabled: json['healthImportEnabled'] as bool?,
-        healthWorkoutKcalMultiplier:
-            (json['healthWorkoutKcalMultiplier'] as num?)?.toDouble(),
-        healthLastImportAt: json['healthLastImportAt'] == null
-            ? null
-            : DateTime.parse(json['healthLastImportAt'] as String),
-        healthDeletedExternalIds:
-            (json['healthDeletedExternalIds'] as List<dynamic>?)
-                ?.map((e) => e as String)
-                .toList(),
-        policyNoticeRevisionSeen: (json['policyNoticeRevisionSeen'] as num?)
-            ?.toInt(),
-        healthDeletedWorkouts:
-            (json['healthDeletedWorkouts'] as Map<String, dynamic>?)?.map(
-              (k, e) => MapEntry(k, DateTime.parse(e as String)),
-            ),
-        defaultToRawFoodUnits: json['defaultToRawFoodUnits'] as bool?,
-        trackedDaysOffsetMinutes: (json['trackedDaysOffsetMinutes'] as num?)
-            ?.toInt(),
-        localeSyncSeeded: json['localeSyncSeeded'] as bool?,
-      )
+ConfigDBO _$ConfigDBOFromJson(Map<String, dynamic> json) => ConfigDBO(
+      json['hasAcceptedDisclaimer'] as bool,
+      json['hasAcceptedPolicy'] as bool,
+      json['hasAcceptedSendAnonymousData'] as bool,
+      $enumDecode(_$AppThemeDBOEnumMap, json['selectedAppTheme']),
+      usesImperialUnits: json['usesImperialUnits'] as bool? ?? false,
+      userKcalAdjustment: (json['userKcalAdjustment'] as num?)?.toDouble(),
+      showActivityTracking: json['showActivityTracking'] as bool?,
+      showMealMacros: json['showMealMacros'] as bool?,
+      notificationsEnabled: json['notificationsEnabled'] as bool?,
+      notificationHour: (json['notificationHour'] as num?)?.toInt(),
+      notificationMinute: (json['notificationMinute'] as num?)?.toInt(),
+      selectedLocale: json['selectedLocale'] as String?,
+      showMicronutrients: json['showMicronutrients'] as bool?,
+      usesKilojoules: json['usesKilojoules'] as bool?,
+      mealKcalSharesPct: (json['mealKcalSharesPct'] as Map<String, dynamic>?)
+          ?.map((k, e) => MapEntry(k, (e as num).toInt())),
+      customMealFormMode: json['customMealFormMode'] as String?,
+      dayStartOffsetHours: (json['dayStartOffsetHours'] as num?)?.toInt(),
+      diarySortPreferences:
+          (json['diarySortPreferences'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, (e as num).toInt()),
+      ),
+      nutrientPanelVisibility:
+          (json['nutrientPanelVisibility'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as bool),
+      ),
+      dayStartOffsetMinutes: (json['dayStartOffsetMinutes'] as num?)?.toInt(),
+      dailyWaterGoalMl: (json['dailyWaterGoalMl'] as num?)?.toInt(),
+      fastingWarningAcknowledged: json['fastingWarningAcknowledged'] as bool?,
+      useMaterialYou: json['useMaterialYou'] as bool?,
+      accentColor: (json['accentColor'] as num?)?.toInt(),
+      scannerPortraitLock: json['scannerPortraitLock'] as bool?,
+      usesImperialFoodUnits: json['usesImperialFoodUnits'] as bool?,
+      usesImperialHeightUnits: json['usesImperialHeightUnits'] as bool?,
+      bodyWeightUnitIndex: (json['bodyWeightUnitIndex'] as num?)?.toInt(),
+      foodSourceToggles: (json['foodSourceToggles'] as Map<String, dynamic>?)
+          ?.map((k, e) => MapEntry(k, e as bool)),
+      isDemoData: json['isDemoData'] as bool?,
+      healthImportEnabled: json['healthImportEnabled'] as bool?,
+      healthWorkoutKcalMultiplier:
+          (json['healthWorkoutKcalMultiplier'] as num?)?.toDouble(),
+      healthLastImportAt: json['healthLastImportAt'] == null
+          ? null
+          : DateTime.parse(json['healthLastImportAt'] as String),
+      healthDeletedExternalIds:
+          (json['healthDeletedExternalIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+      policyNoticeRevisionSeen:
+          (json['policyNoticeRevisionSeen'] as num?)?.toInt(),
+      healthDeletedWorkouts:
+          (json['healthDeletedWorkouts'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, DateTime.parse(e as String)),
+      ),
+      defaultToRawFoodUnits: json['defaultToRawFoodUnits'] as bool?,
+      trackedDaysOffsetMinutes:
+          (json['trackedDaysOffsetMinutes'] as num?)?.toInt(),
+      localeSyncSeeded: json['localeSyncSeeded'] as bool?,
+      nutrientGoals: (json['nutrientGoals'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, (e as num).toDouble()),
+      ),
+    )
       ..userCarbGoalPct = (json['userCarbGoalPct'] as num?)?.toDouble()
       ..userProteinGoalPct = (json['userProteinGoalPct'] as num?)?.toDouble()
       ..userFatGoalPct = (json['userFatGoalPct'] as num?)?.toDouble();
 
 Map<String, dynamic> _$ConfigDBOToJson(ConfigDBO instance) => <String, dynamic>{
-  'hasAcceptedDisclaimer': instance.hasAcceptedDisclaimer,
-  'hasAcceptedPolicy': instance.hasAcceptedPolicy,
-  'hasAcceptedSendAnonymousData': instance.hasAcceptedSendAnonymousData,
-  'selectedAppTheme': _$AppThemeDBOEnumMap[instance.selectedAppTheme]!,
-  'usesImperialUnits': instance.usesImperialUnits,
-  'userKcalAdjustment': instance.userKcalAdjustment,
-  'userCarbGoalPct': instance.userCarbGoalPct,
-  'userProteinGoalPct': instance.userProteinGoalPct,
-  'userFatGoalPct': instance.userFatGoalPct,
-  'showActivityTracking': instance.showActivityTracking,
-  'notificationsEnabled': instance.notificationsEnabled,
-  'notificationHour': instance.notificationHour,
-  'notificationMinute': instance.notificationMinute,
-  'selectedLocale': instance.selectedLocale,
-  'showMealMacros': instance.showMealMacros,
-  'showMicronutrients': instance.showMicronutrients,
-  'usesKilojoules': instance.usesKilojoules,
-  'mealKcalSharesPct': instance.mealKcalSharesPct,
-  'customMealFormMode': instance.customMealFormMode,
-  'dayStartOffsetHours': instance.dayStartOffsetHours,
-  'nutrientPanelVisibility': instance.nutrientPanelVisibility,
-  'diarySortPreferences': instance.diarySortPreferences,
-  'dayStartOffsetMinutes': instance.dayStartOffsetMinutes,
-  'dailyWaterGoalMl': instance.dailyWaterGoalMl,
-  'fastingWarningAcknowledged': instance.fastingWarningAcknowledged,
-  'useMaterialYou': instance.useMaterialYou,
-  'accentColor': instance.accentColor,
-  'scannerPortraitLock': instance.scannerPortraitLock,
-  'usesImperialFoodUnits': instance.usesImperialFoodUnits,
-  'usesImperialHeightUnits': instance.usesImperialHeightUnits,
-  'bodyWeightUnitIndex': instance.bodyWeightUnitIndex,
-  'foodSourceToggles': instance.foodSourceToggles,
-  'isDemoData': instance.isDemoData,
-  'healthImportEnabled': instance.healthImportEnabled,
-  'healthWorkoutKcalMultiplier': instance.healthWorkoutKcalMultiplier,
-  'healthLastImportAt': instance.healthLastImportAt?.toIso8601String(),
-  'healthDeletedExternalIds': instance.healthDeletedExternalIds,
-  'healthDeletedWorkouts': instance.healthDeletedWorkouts?.map(
-    (k, e) => MapEntry(k, e.toIso8601String()),
-  ),
-  'policyNoticeRevisionSeen': instance.policyNoticeRevisionSeen,
-  'defaultToRawFoodUnits': instance.defaultToRawFoodUnits,
-  'trackedDaysOffsetMinutes': instance.trackedDaysOffsetMinutes,
-  'localeSyncSeeded': instance.localeSyncSeeded,
-};
+      'hasAcceptedDisclaimer': instance.hasAcceptedDisclaimer,
+      'hasAcceptedPolicy': instance.hasAcceptedPolicy,
+      'hasAcceptedSendAnonymousData': instance.hasAcceptedSendAnonymousData,
+      'selectedAppTheme': _$AppThemeDBOEnumMap[instance.selectedAppTheme]!,
+      'usesImperialUnits': instance.usesImperialUnits,
+      'userKcalAdjustment': instance.userKcalAdjustment,
+      'userCarbGoalPct': instance.userCarbGoalPct,
+      'userProteinGoalPct': instance.userProteinGoalPct,
+      'userFatGoalPct': instance.userFatGoalPct,
+      'showActivityTracking': instance.showActivityTracking,
+      'notificationsEnabled': instance.notificationsEnabled,
+      'notificationHour': instance.notificationHour,
+      'notificationMinute': instance.notificationMinute,
+      'selectedLocale': instance.selectedLocale,
+      'showMealMacros': instance.showMealMacros,
+      'showMicronutrients': instance.showMicronutrients,
+      'usesKilojoules': instance.usesKilojoules,
+      'mealKcalSharesPct': instance.mealKcalSharesPct,
+      'customMealFormMode': instance.customMealFormMode,
+      'dayStartOffsetHours': instance.dayStartOffsetHours,
+      'nutrientPanelVisibility': instance.nutrientPanelVisibility,
+      'diarySortPreferences': instance.diarySortPreferences,
+      'dayStartOffsetMinutes': instance.dayStartOffsetMinutes,
+      'dailyWaterGoalMl': instance.dailyWaterGoalMl,
+      'fastingWarningAcknowledged': instance.fastingWarningAcknowledged,
+      'useMaterialYou': instance.useMaterialYou,
+      'accentColor': instance.accentColor,
+      'scannerPortraitLock': instance.scannerPortraitLock,
+      'usesImperialFoodUnits': instance.usesImperialFoodUnits,
+      'usesImperialHeightUnits': instance.usesImperialHeightUnits,
+      'bodyWeightUnitIndex': instance.bodyWeightUnitIndex,
+      'foodSourceToggles': instance.foodSourceToggles,
+      'isDemoData': instance.isDemoData,
+      'healthImportEnabled': instance.healthImportEnabled,
+      'healthWorkoutKcalMultiplier': instance.healthWorkoutKcalMultiplier,
+      'healthLastImportAt': instance.healthLastImportAt?.toIso8601String(),
+      'healthDeletedExternalIds': instance.healthDeletedExternalIds,
+      'healthDeletedWorkouts': instance.healthDeletedWorkouts?.map(
+        (k, e) => MapEntry(k, e.toIso8601String()),
+      ),
+      'policyNoticeRevisionSeen': instance.policyNoticeRevisionSeen,
+      'defaultToRawFoodUnits': instance.defaultToRawFoodUnits,
+      'trackedDaysOffsetMinutes': instance.trackedDaysOffsetMinutes,
+      'localeSyncSeeded': instance.localeSyncSeeded,
+      'nutrientGoals': instance.nutrientGoals,
+    };
 
 const _$AppThemeDBOEnumMap = {
   AppThemeDBO.light: 'light',

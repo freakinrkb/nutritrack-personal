@@ -21,6 +21,8 @@ class DashboardWidget extends StatefulWidget {
   final double totalCarbsGoal;
   final double totalFatsGoal;
   final double totalProteinsGoal;
+  final double totalFiberIntake;
+  final double totalFiberGoal;
 
   const DashboardWidget({
     super.key,
@@ -34,6 +36,8 @@ class DashboardWidget extends StatefulWidget {
     required this.totalCarbsGoal,
     required this.totalFatsGoal,
     required this.totalProteinsGoal,
+    required this.totalFiberIntake,
+    required this.totalFiberGoal,
   });
 
   @override
@@ -42,11 +46,9 @@ class DashboardWidget extends StatefulWidget {
 
 class _DashboardWidgetState extends State<DashboardWidget> {
   void _openKcalGoalInfoScreen() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const KcalGoalInfoScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const KcalGoalInfoScreen()));
   }
 
   @override
@@ -69,10 +71,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           : S.of(context).kcalTooMuchLabel;
     } else {
       kcalValue = widget.totalKcalLeft;
-      gaugeValue =
-          (widget.totalKcalDaily - widget.totalKcalLeft) / widget.totalKcalDaily;
+      gaugeValue = (widget.totalKcalDaily - widget.totalKcalLeft) /
+          widget.totalKcalDaily;
     }
-    final displayValue = usesKilojoules ? UnitCalc.kcalToKj(kcalValue) : kcalValue;
+    final displayValue =
+        usesKilojoules ? UnitCalc.kcalToKj(kcalValue) : kcalValue;
     final displaySupplied = usesKilojoules
         ? UnitCalc.kcalToKj(widget.totalKcalSupplied)
         : widget.totalKcalSupplied;
@@ -88,11 +91,21 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         : Theme.of(context).colorScheme.primary;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(Dimens.spacing16, Dimens.spacing8, Dimens.spacing16, Dimens.spacing4),
+      padding: const EdgeInsets.fromLTRB(
+        Dimens.spacing16,
+        Dimens.spacing8,
+        Dimens.spacing16,
+        Dimens.spacing4,
+      ),
       child: Column(
         children: [
           AppCard(
-            padding: const EdgeInsets.fromLTRB(Dimens.spacing24, Dimens.spacing20, Dimens.spacing24, Dimens.spacing24),
+            padding: const EdgeInsets.fromLTRB(
+              Dimens.spacing24,
+              Dimens.spacing20,
+              Dimens.spacing24,
+              Dimens.spacing24,
+            ),
             child: Column(
               children: [
                 Row(
@@ -166,10 +179,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               duration: const Duration(milliseconds: 800),
                               curve: AppMotion.emphasized,
                               value: displayValue.toInt(),
-                              textStyle: textTheme.displaySmall?.copyWith(height: 1),
+                              textStyle: textTheme.displaySmall?.copyWith(
+                                height: 1,
+                              ),
                             ),
                             const SizedBox(height: 2),
-                            Text(kcalLabelText, style: textTheme.bodyMedium?.copyWith(color: palette.textMuted)),
+                            Text(
+                              kcalLabelText,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: palette.textMuted,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -213,7 +233,95 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               ),
             ],
           ),
+          const SizedBox(height: Dimens.spacing12),
+          _FiberTile(
+            intake: widget.totalFiberIntake,
+            goal: widget.totalFiberGoal,
+            color: Theme.of(context).colorScheme.tertiary,
+            palette: palette,
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _FiberTile extends StatelessWidget {
+  final double intake;
+  final double goal;
+  final Color color;
+  final AppPalette palette;
+
+  const _FiberTile({
+    required this.intake,
+    required this.goal,
+    required this.color,
+    required this.palette,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final pct = (goal <= 0) ? 0.0 : (intake / goal).clamp(0.0, 1.0);
+    return Semantics(
+      identifier: 'home-fiber',
+      label: '${S.of(context).fiberLabel} '
+          '${intake.toInt()}/${goal.toInt()} g',
+      child: AppCard(
+        borderRadius: Dimens.radiusM,
+        padding: const EdgeInsets.fromLTRB(
+          Dimens.spacing16,
+          Dimens.spacing12,
+          Dimens.spacing16,
+          Dimens.spacing12,
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.16),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.spa_rounded, color: color, size: 20),
+            ),
+            const SizedBox(width: Dimens.spacing12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          S.of(context).fiberLabel,
+                          style: textTheme.labelMedium,
+                        ),
+                      ),
+                      Text(
+                        '${intake.toInt()}/${goal.toInt()} g',
+                        style: textTheme.bodySmall?.copyWith(
+                          color: palette.textStrong,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: pct,
+                      minHeight: 8,
+                      backgroundColor: palette.surfaceMuted,
+                      valueColor: AlwaysStoppedAnimation(color),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -238,18 +346,30 @@ class _MiniStat extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Column(
-      crossAxisAlignment: trailing ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          trailing ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.16), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.16),
+            shape: BoxShape.circle,
+          ),
           child: Icon(icon, color: color, size: 20),
         ),
         const SizedBox(height: 6),
-        Text(value,
-            maxLines: 1, overflow: TextOverflow.ellipsis, style: textTheme.titleMedium),
-        Text(label,
-            maxLines: 1, overflow: TextOverflow.ellipsis, style: textTheme.labelSmall),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: textTheme.titleMedium,
+        ),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: textTheme.labelSmall,
+        ),
       ],
     );
   }
@@ -276,13 +396,22 @@ class _MacroTile extends StatelessWidget {
     final pct = (goal <= 0) ? 0.0 : (intake / goal).clamp(0.0, 1.0);
     return AppCard(
       borderRadius: Dimens.radiusM,
-      padding: const EdgeInsets.fromLTRB(Dimens.spacing16, Dimens.spacing16, Dimens.spacing16, Dimens.spacing16),
+      padding: const EdgeInsets.fromLTRB(
+        Dimens.spacing16,
+        Dimens.spacing16,
+        Dimens.spacing16,
+        Dimens.spacing16,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(width: 9, height: 9, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+              Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
               const SizedBox(width: 6),
               Flexible(child: Text(label, style: textTheme.labelMedium)),
             ],
@@ -300,7 +429,10 @@ class _MacroTile extends StatelessWidget {
           const SizedBox(height: Dimens.spacing12),
           Text(
             '${intake.toInt()}/${goal.toInt()} g',
-            style: textTheme.bodySmall?.copyWith(color: palette.textStrong, fontWeight: FontWeight.w700),
+            style: textTheme.bodySmall?.copyWith(
+              color: palette.textStrong,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),

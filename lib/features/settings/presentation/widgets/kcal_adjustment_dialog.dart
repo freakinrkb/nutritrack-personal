@@ -120,8 +120,7 @@ class _KcalAdjustmentDialogState extends State<KcalAdjustmentDialog> {
     final selected = await showDialog<CaloriesProfileEntity>(
       context: context,
       builder: (ctx) => CaloriesProfileInfoDialog(
-        initialProfile:
-            user.caloriesProfile ?? CaloriesProfileEntity.averaged,
+        initialProfile: user.caloriesProfile ?? CaloriesProfileEntity.averaged,
       ),
     );
     if (selected == null) return;
@@ -237,8 +236,7 @@ class _KcalAdjustmentDialogState extends State<KcalAdjustmentDialog> {
                   Builder(builder: (context) {
                     final usesKj =
                         context.watch<EnergyUnitProvider>().usesKilojoules;
-                    final unitLabel =
-                        usesKj ? s.kjLabel : s.kcalLabel;
+                    final unitLabel = usesKj ? s.kjLabel : s.kcalLabel;
                     final headingLabel = usesKj
                         ? s.dailyKjAdjustmentLabel
                         : s.dailyKcalAdjustmentLabel;
@@ -308,9 +306,8 @@ class _KcalAdjustmentDialogState extends State<KcalAdjustmentDialog> {
                             value: display.clamp(displayMin, displayMax),
                             label: '${display.round()} $unitLabel',
                             onChanged: (value) {
-                              final asKcal = usesKj
-                                  ? UnitCalc.kjToKcal(value)
-                                  : value;
+                              final asKcal =
+                                  usesKj ? UnitCalc.kjToKcal(value) : value;
                               setState(() => _kcalAdjustment = asKcal);
                               _kcalController.text = value.round().toString();
                               _kcalTextEdited = false;

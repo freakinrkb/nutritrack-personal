@@ -346,10 +346,10 @@ void main() {
 
     test('uses the IOM fibre row for the user', () {
       double fibre(UserEntity u) => DailyNutrientPanel.defaultReferenceFor(
-        NutrientPanelKeys.fiber,
-        u,
-        DailyNutrientPanel.defaultFibreRefG,
-      );
+            NutrientPanelKeys.fiber,
+            u,
+            DailyNutrientPanel.defaultFibreRefG,
+          );
 
       expect(fibre(user(30, UserGenderEntity.female)), 25);
       expect(fibre(user(40, UserGenderEntity.male)), 38);

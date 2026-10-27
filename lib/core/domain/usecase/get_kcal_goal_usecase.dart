@@ -24,8 +24,7 @@ class GetKcalGoalUsecase {
   }) async {
     final user = userEntity ?? await _userRepository.getUserData();
     final config = await _configRepository.getConfig();
-    final totalKcalActivities =
-        totalKcalActivitiesParam ??
+    final totalKcalActivities = totalKcalActivitiesParam ??
         (await _userActivityRepository.getAllUserActivityByDate(
           // #586: the query takes a day label, so "today" has to be
           // resolved through the boundary first. A raw DateTime.now()
@@ -39,7 +38,10 @@ class GetKcalGoalUsecase {
           ),
           dayStartOffsetHours: config.dayStartOffsetHours,
           dayStartOffsetMinutes: config.dayStartOffsetMinutes,
-        )).map((activity) => activity.burnedKcal).toList().sum;
+        ))
+            .map((activity) => activity.burnedKcal)
+            .toList()
+            .sum;
     return CalorieGoalCalc.getTotalKcalGoal(
       user,
       totalKcalActivities,

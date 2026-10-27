@@ -154,9 +154,8 @@ class KcalGoalBreakdownEntity extends Equatable {
     final paFemale = usesFemaleSide
         ? PalCalc.getPAValueForFormula(palValue: palValue, isMaleFormula: false)
         : null;
-    final tdeeMale = usesMaleSide
-        ? TDEECalc.iom2005MaleReferenceKcal(user, palValue)
-        : null;
+    final tdeeMale =
+        usesMaleSide ? TDEECalc.iom2005MaleReferenceKcal(user, palValue) : null;
     final tdeeFemale = usesFemaleSide
         ? TDEECalc.iom2005FemaleReferenceKcal(user, palValue)
         : null;
@@ -216,7 +215,8 @@ class KcalGoalBreakdownEntity extends Equatable {
       manualKcalAdjustment: userKcalAdjustment ?? 0,
       activityKcal: totalKcalActivities,
       totalKcalGoal: totalGoal,
-      carbsFractionGoal: userCarbsGoalPct ?? MacroCalc.defaultCarbsPercentageGoal,
+      carbsFractionGoal:
+          userCarbsGoalPct ?? MacroCalc.defaultCarbsPercentageGoal,
       fatsFractionGoal: userFatsGoalPct ?? MacroCalc.defaultFatsPercentageGoal,
       proteinsFractionGoal:
           userProteinsGoalPct ?? MacroCalc.defaultProteinsPercentageGoal,
@@ -228,32 +228,32 @@ class KcalGoalBreakdownEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-    age,
-    heightCM,
-    weightKG,
-    gender,
-    caloriesProfile,
-    palCategory,
-    goal,
-    weeklyWeightGoalKg,
-    targetWeightKg,
-    taperEnabled,
-    palValue,
-    paMaleFormula,
-    paFemaleFormula,
-    tdeeMaleReferenceKcal,
-    tdeeFemaleReferenceKcal,
-    tdeeKcal,
-    baseAdjustmentKcal,
-    effectiveAdjustmentKcal,
-    manualKcalAdjustment,
-    activityKcal,
-    totalKcalGoal,
-    carbsFractionGoal,
-    fatsFractionGoal,
-    proteinsFractionGoal,
-    carbsGoalGrams,
-    fatsGoalGrams,
-    proteinsGoalGrams,
-  ];
+        age,
+        heightCM,
+        weightKG,
+        gender,
+        caloriesProfile,
+        palCategory,
+        goal,
+        weeklyWeightGoalKg,
+        targetWeightKg,
+        taperEnabled,
+        palValue,
+        paMaleFormula,
+        paFemaleFormula,
+        tdeeMaleReferenceKcal,
+        tdeeFemaleReferenceKcal,
+        tdeeKcal,
+        baseAdjustmentKcal,
+        effectiveAdjustmentKcal,
+        manualKcalAdjustment,
+        activityKcal,
+        totalKcalGoal,
+        carbsFractionGoal,
+        fatsFractionGoal,
+        proteinsFractionGoal,
+        carbsGoalGrams,
+        fatsGoalGrams,
+        proteinsGoalGrams,
+      ];
 }

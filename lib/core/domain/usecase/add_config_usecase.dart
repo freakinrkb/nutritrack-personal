@@ -106,6 +106,10 @@ class AddConfigUsecase {
     await _configRepository.setConfigNutrientPanelVisibility(visibility);
   }
 
+  Future<void> setNutrientGoals(Map<String, double> goals) async {
+    await _configRepository.setNutrientGoals(goals);
+  }
+
   Future<void> setConfigDailyWaterGoalMl(int goalMl) async {
     await _configRepository.setConfigDailyWaterGoalMl(goalMl);
   }

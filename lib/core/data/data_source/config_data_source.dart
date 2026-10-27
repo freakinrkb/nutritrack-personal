@@ -48,9 +48,8 @@ class ConfigDataSource {
   ConfigDBO _readMerged() {
     final app = _appBox.get(_configKey);
     final profile = _profileBox.get(_configKey);
-    final merged = app != null
-        ? ConfigDBO.fromJson(app.toJson())
-        : ConfigDBO.empty();
+    final merged =
+        app != null ? ConfigDBO.fromJson(app.toJson()) : ConfigDBO.empty();
     if (profile != null) {
       merged.userKcalAdjustment = profile.userKcalAdjustment;
       merged.userCarbGoalPct = profile.userCarbGoalPct;
@@ -64,6 +63,7 @@ class ConfigDataSource {
       merged.healthDeletedExternalIds = profile.healthDeletedExternalIds;
       merged.healthDeletedWorkouts = profile.healthDeletedWorkouts;
       merged.trackedDaysOffsetMinutes = profile.trackedDaysOffsetMinutes;
+      merged.nutrientGoals = profile.nutrientGoals;
     } else {
       // Explicitly clear personal fields so they don't leak from the
       // app box after a profile reset. A fresh profile therefore reads as
@@ -81,6 +81,7 @@ class ConfigDataSource {
       merged.healthDeletedExternalIds = null;
       merged.healthDeletedWorkouts = null;
       merged.trackedDaysOffsetMinutes = null;
+      merged.nutrientGoals = null;
     }
     return merged;
   }
@@ -309,6 +310,23 @@ class ConfigDataSource {
     );
   }
 
+  /// Durable per-nutrient targets for this profile, keyed by the nutrient
+  /// panel's identifiers. Returned as a defensive copy; an empty map means
+  /// the profile has not set any.
+  Future<Map<String, double>> getNutrientGoals() async {
+    final stored = _readMerged().nutrientGoals;
+    if (stored == null || stored.isEmpty) return const <String, double>{};
+    return Map<String, double>.from(stored);
+  }
+
+  /// Replaces this profile's durable nutrient targets in one write. An empty
+  /// map clears them, restoring the published-reference defaults.
+  Future<void> setNutrientGoals(Map<String, double> goals) async {
+    await _update((c) {
+      c.nutrientGoals = goals.isEmpty ? null : Map<String, double>.from(goals);
+    });
+  }
+
   Future<void> setConfigDayStartOffsetHours(int hours) async {
     await _update((c) => c.dayStartOffsetHours = hours);
   }
@@ -353,6 +371,8 @@ class ConfigDataSource {
     required double? fatGoalPct,
     required Map<String, int>? mealKcalSharesPct,
     required int? dailyWaterGoalMl,
+    Map<String, double>? nutrientGoals,
+    bool replaceNutrientGoals = false,
   }) async {
     await _update((c) {
       c.userKcalAdjustment = kcalAdjustment;
@@ -363,6 +383,11 @@ class ConfigDataSource {
           ? null
           : Map<String, int>.from(mealKcalSharesPct);
       c.dailyWaterGoalMl = dailyWaterGoalMl;
+      if (replaceNutrientGoals) {
+        c.nutrientGoals = nutrientGoals == null || nutrientGoals.isEmpty
+            ? null
+            : Map<String, double>.from(nutrientGoals);
+      }
     });
   }
 

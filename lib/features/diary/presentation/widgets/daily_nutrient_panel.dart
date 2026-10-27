@@ -13,10 +13,13 @@ import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/utils/calc/dri_reference.dart';
+import 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+export 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 
 /// Daily micronutrient summary that aggregates the nutrients reporters keep
 /// asking for — fibre, sodium, saturated fat, sugar, calcium, iron, potassium,
@@ -184,11 +187,14 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
     }
 
     Map<String, bool> visibility = const <String, bool>{};
+    Map<String, double> nutrientGoals = const <String, double>{};
     try {
       final config = await locator<GetConfigUsecase>().getConfig();
       visibility = config.nutrientPanelVisibility;
+      nutrientGoals = config.nutrientGoals;
     } catch (_) {
-      // Tests without the locator wired up — default to "all visible".
+      // Tests without the locator wired up — default to "all visible" and
+      // no durable goals.
     }
 
     List<IntakeEntity> weekIntakes = widget.intakes;
@@ -204,6 +210,7 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
     return _PanelData(
       user: user,
       visibility: visibility,
+      nutrientGoals: nutrientGoals,
       weekIntakes: weekIntakes,
     );
   }
@@ -212,8 +219,11 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
     final getIntakeUsecase = locator<GetIntakeUsecase>();
     final all = <IntakeEntity>[];
     for (int dayOffset = 0; dayOffset < 7; dayOffset++) {
-      final day = DateTime(anchor.year, anchor.month, anchor.day)
-          .subtract(Duration(days: dayOffset));
+      final day = DateTime(
+        anchor.year,
+        anchor.month,
+        anchor.day,
+      ).subtract(Duration(days: dayOffset));
       all
         ..addAll(await getIntakeUsecase.getBreakfastIntakeByDay(day))
         ..addAll(await getIntakeUsecase.getLunchIntakeByDay(day))
@@ -226,11 +236,13 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
   Widget _buildPanel(BuildContext context, _PanelData? data) {
     final user = data?.user;
     final visibility = data?.visibility ?? const <String, bool>{};
+    final durableGoals = data?.nutrientGoals ?? const <String, double>{};
     // Pick the right source for totals. Daily view sums today's intakes;
     // weekly view sums the seven-day window and then divides each total by
     // seven to get an average daily intake.
     final isWeekly = _view == _NutrientView.week;
-    final source = isWeekly ? (data?.weekIntakes ?? widget.intakes) : widget.intakes;
+    final source =
+        isWeekly ? (data?.weekIntakes ?? widget.intakes) : widget.intakes;
     final totals = NutrientPanelTotals.fromIntakes(source, weekly: isWeekly);
     final fiberG = totals.fiberG;
     final sodiumMg = totals.sodiumMg;
@@ -251,9 +263,10 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
     // Per-nutrient targets — route through the public resolver helpers so
     // the unit tests and the build method share a single source of truth.
     final td = widget.trackedDay;
-    // Helper: prefer the per-day tracked override, then the IOM age-banded
-    // DRI when a user record is available, then the gender-agnostic default
-    // the panel has always used as a last resort. This keeps the existing
+    // Helper: prefer the per-day tracked override, then the profile's
+    // durable goal, then the IOM age-banded DRI when a user record is
+    // available, then the gender-agnostic default the panel has always used
+    // as a last resort. This keeps the existing
     // resolver helpers as the single source of truth for tests, but layers
     // the age-aware IOM lookup (#245) on top for users we know enough about.
     double resolveWithDri(
@@ -266,46 +279,54 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
     }
 
     final fiberRefG = resolveWithDri(
-      () => td?.fibreGoal,
+      () => td?.fibreGoal ?? durableGoals[NutrientPanelKeys.fiber],
       NutrientPanelKeys.fiber,
       DailyNutrientPanel.defaultFibreRefG,
     );
     final sodiumRefMg = resolveWithDri(
-      () => td?.sodiumGoal,
+      () => td?.sodiumGoal ?? durableGoals[NutrientPanelKeys.sodium],
       NutrientPanelKeys.sodium,
       DailyNutrientPanel.defaultSodiumRefMg,
     );
-    // Saturated fat and sugars have no IOM RDA — the resolver helper still
-    // returns the published FDA Daily Value as the fallback for both.
-    final saturatedFatRefG = DailyNutrientPanel.resolveSatFatReference(td);
-    final sugarRefG = DailyNutrientPanel.resolveSugarsReference(td);
+    // Saturated fat and sugars have no IOM RDA — the resolver falls back to
+    // the published FDA Daily Value for both.
+    final saturatedFatRefG = resolveWithDri(
+      () => td?.satFatGoal ?? durableGoals[NutrientPanelKeys.saturatedFat],
+      NutrientPanelKeys.saturatedFat,
+      DailyNutrientPanel.defaultSaturatedFatRefG,
+    );
+    final sugarRefG = resolveWithDri(
+      () => td?.sugarsGoal ?? durableGoals[NutrientPanelKeys.sugar],
+      NutrientPanelKeys.sugar,
+      DailyNutrientPanel.defaultSugarRefG,
+    );
     final calciumRefMg = resolveWithDri(
-      () => td?.calciumGoal,
+      () => td?.calciumGoal ?? durableGoals[NutrientPanelKeys.calcium],
       NutrientPanelKeys.calcium,
       DailyNutrientPanel.defaultCalciumRefMg,
     );
     final ironRefMg = resolveWithDri(
-      () => td?.ironGoal,
+      () => td?.ironGoal ?? durableGoals[NutrientPanelKeys.iron],
       NutrientPanelKeys.iron,
       _ironRefForUser(user),
     );
     final potassiumRefMg = resolveWithDri(
-      () => td?.potassiumGoal,
+      () => td?.potassiumGoal ?? durableGoals[NutrientPanelKeys.potassium],
       NutrientPanelKeys.potassium,
       DailyNutrientPanel.defaultPotassiumRefMg,
     );
     final vitaminDRefMcg = resolveWithDri(
-      () => td?.vitaminDGoal,
+      () => td?.vitaminDGoal ?? durableGoals[NutrientPanelKeys.vitaminD],
       NutrientPanelKeys.vitaminD,
       DailyNutrientPanel.defaultVitaminDRefUg,
     );
     final vitaminB12RefMcg = resolveWithDri(
-      () => td?.vitaminB12Goal,
+      () => td?.vitaminB12Goal ?? durableGoals[NutrientPanelKeys.vitaminB12],
       NutrientPanelKeys.vitaminB12,
       DailyNutrientPanel.defaultVitaminB12RefUg,
     );
     final magnesiumRefMg = resolveWithDri(
-      () => td?.magnesiumGoal,
+      () => td?.magnesiumGoal ?? durableGoals[NutrientPanelKeys.magnesium],
       NutrientPanelKeys.magnesium,
       _magnesiumRefForUser(user),
     );
@@ -432,9 +453,15 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
           // now sits inside.
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
-            shape: const RoundedRectangleBorder(borderRadius: Dimens.borderRadiusL),
-            collapsedShape: const RoundedRectangleBorder(borderRadius: Dimens.borderRadiusL),
-            tilePadding: const EdgeInsets.symmetric(horizontal: Dimens.spacing12),
+            shape: const RoundedRectangleBorder(
+              borderRadius: Dimens.borderRadiusL,
+            ),
+            collapsedShape: const RoundedRectangleBorder(
+              borderRadius: Dimens.borderRadiusL,
+            ),
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: Dimens.spacing12,
+            ),
             childrenPadding: const EdgeInsets.fromLTRB(
               Dimens.spacing12,
               0.0,
@@ -449,7 +476,9 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
                     maxLines: 1,
                     minFontSize: 12,
                     overflow: TextOverflow.ellipsis,
-                    style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 // Inline info icon. Tapping it pops the data-disclaimer
@@ -467,7 +496,9 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
                     ),
                     visualDensity: VisualDensity.compact,
                     constraints: const BoxConstraints(),
-                    padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.spacing8,
+                    ),
                     onPressed: () => _showDataDisclaimer(context, s),
                   ),
                 ),
@@ -503,10 +534,14 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
               const SizedBox(height: Dimens.spacing8),
               if (visibleRows.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Dimens.spacing4),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: Dimens.spacing4,
+                  ),
                   child: Text(
                     s.nutrientPanelAllHiddenLabel,
-                    style: textTheme.bodySmall?.copyWith(color: palette.textMuted),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: palette.textMuted,
+                    ),
                   ),
                 )
               else
@@ -543,21 +578,25 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
                       // platform reports it cannot handle the URL, which is
                       // friendlier than throwing in front of the user.
                       if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri,
-                            mode: LaunchMode.externalApplication);
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
                       }
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Text(
                         s.driPanelInfoLinkLabel,
-                        style:
-                            Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(dialogContext)
-                                      .colorScheme
-                                      .primary,
-                                  decoration: TextDecoration.underline,
-                                ),
+                        style: Theme.of(dialogContext)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                              color: Theme.of(
+                                dialogContext,
+                              ).colorScheme.primary,
+                              decoration: TextDecoration.underline,
+                            ),
                       ),
                     ),
                   ),
@@ -693,46 +732,16 @@ class NutrientPanelTotals {
   }
 }
 
-/// Stable identifiers for the panel's nutrient rows. These are the keys the
-/// per-nutrient visibility map uses on [ConfigEntity], so renaming any of
-/// them is a backward-incompatible change: existing visibility overrides
-/// would silently lose their associations.
-class NutrientPanelKeys {
-  NutrientPanelKeys._();
-
-  static const String fiber = 'fiber';
-  static const String sodium = 'sodium';
-  static const String saturatedFat = 'saturated_fat';
-  static const String sugar = 'sugar';
-  static const String calcium = 'calcium';
-  static const String iron = 'iron';
-  static const String potassium = 'potassium';
-  static const String vitaminD = 'vitamin_d';
-  static const String vitaminB12 = 'vitamin_b12';
-  static const String magnesium = 'magnesium';
-
-  static const List<String> all = <String>[
-    fiber,
-    sodium,
-    saturatedFat,
-    sugar,
-    calcium,
-    iron,
-    potassium,
-    vitaminD,
-    vitaminB12,
-    magnesium,
-  ];
-}
-
 class _PanelData {
   final UserEntity? user;
   final Map<String, bool> visibility;
+  final Map<String, double> nutrientGoals;
   final List<IntakeEntity> weekIntakes;
 
   _PanelData({
     required this.user,
     required this.visibility,
+    required this.nutrientGoals,
     required this.weekIntakes,
   });
 }
@@ -798,7 +807,9 @@ class _NutrientRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: textTheme.bodyMedium?.copyWith(color: palette.textStrong),
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: palette.textStrong,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

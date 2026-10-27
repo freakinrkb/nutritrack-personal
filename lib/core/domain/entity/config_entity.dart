@@ -4,6 +4,7 @@ import 'package:opennutritracker/core/domain/entity/app_theme_entity.dart';
 import 'package:opennutritracker/core/domain/entity/body_weight_unit_entity.dart';
 import 'package:opennutritracker/core/domain/entity/calories_profile_entity.dart';
 import 'package:opennutritracker/core/domain/entity/user_gender_entity.dart';
+import 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 
 class ConfigEntity extends Equatable {
   // #150: keys for the per-meal kcal share map. Kept as plain strings rather
@@ -56,9 +57,12 @@ class ConfigEntity extends Equatable {
   // falls back to the default, which is currently "visible" for every
   // nutrient — see [isNutrientVisible].
   final Map<String, bool> nutrientPanelVisibility;
+  // Durable per-nutrient targets, keyed by [NutrientPanelKeys]. An absent key
+  // means "no override"; a day's TrackedDayEntity value still takes priority.
+  final Map<String, double> nutrientGoals;
   final int dayStartOffsetHours; // #139: 0-23, default 0 (wall-clock midnight)
   final int
-  dayStartOffsetMinutes; // #139 follow-up: 0-59, composes additively with hours
+      dayStartOffsetMinutes; // #139 follow-up: 0-59, composes additively with hours
   // #32: nullable so "I haven't picked yet" can fall back to a
   // gendered default at read time. Once the user has touched the
   // setting, their override is persisted and survives a profile edit.
@@ -131,9 +135,9 @@ class ConfigEntity extends Equatable {
 
   /// Every id the importer must skip, dated or not. All its dedupe set needs.
   Set<String> get healthDeletedExternalIds => {
-    ...healthDeletedWorkouts.keys,
-    ...legacyHealthDeletedExternalIds,
-  };
+        ...healthDeletedWorkouts.keys,
+        ...legacyHealthDeletedExternalIds,
+      };
 
   /// The earliest instant any future import could ask the platform about, and
   /// therefore the point before which a tombstone is dead weight rather than
@@ -254,6 +258,7 @@ class ConfigEntity extends Equatable {
     this.mealKcalSharesPct = defaultMealKcalSharesPct,
     this.diarySortPreferences,
     this.nutrientPanelVisibility = const <String, bool>{},
+    this.nutrientGoals = const <String, double>{},
     this.dayStartOffsetHours = 0,
     this.dayStartOffsetMinutes = 0,
     this.dailyWaterGoalMl,
@@ -322,6 +327,9 @@ class ConfigEntity extends Equatable {
   /// from Settings → Nutrients.
   bool isNutrientVisible(String key) => nutrientPanelVisibility[key] ?? true;
 
+  /// The profile's durable target for [key], or null when it has none.
+  double? nutrientGoal(String key) => nutrientGoals[key];
+
   /// Whether a backend food source should contribute to search results.
   /// Sources default to enabled; the user can disable individual ones from
   /// Settings → Food databases. Open Food Facts is not covered by this map
@@ -337,62 +345,64 @@ class ConfigEntity extends Equatable {
       dayStartOffsetHours * 60 + dayStartOffsetMinutes;
 
   factory ConfigEntity.fromConfigDBO(ConfigDBO dbo) => ConfigEntity(
-    dbo.hasAcceptedDisclaimer,
-    dbo.hasAcceptedPolicy,
-    dbo.hasAcceptedSendAnonymousData,
-    AppThemeEntity.fromAppThemeDBO(dbo.selectedAppTheme),
-    usesImperialUnits: dbo.usesImperialUnits ?? false,
-    usesImperialFoodUnits:
-        dbo.usesImperialFoodUnits ?? (dbo.usesImperialUnits ?? false),
-    usesImperialHeightUnits:
-        dbo.usesImperialHeightUnits ?? (dbo.usesImperialUnits ?? false),
-    bodyWeightUnit: dbo.bodyWeightUnitIndex != null
-        ? BodyWeightUnit.fromIndex(dbo.bodyWeightUnitIndex!)
-        : ((dbo.usesImperialUnits ?? false)
-              ? BodyWeightUnit.lb
-              : BodyWeightUnit.kg),
-    userKcalAdjustment: dbo.userKcalAdjustment,
-    userCarbGoalPct: dbo.userCarbGoalPct,
-    userProteinGoalPct: dbo.userProteinGoalPct,
-    userFatGoalPct: dbo.userFatGoalPct,
-    showActivityTracking: dbo.showActivityTracking ?? true,
-    showMealMacros: dbo.showMealMacros ?? true,
-    notificationsEnabled: dbo.notificationsEnabled ?? false,
-    notificationHour: dbo.notificationHour ?? 8,
-    notificationMinute: dbo.notificationMinute ?? 0,
-    selectedLocale: dbo.selectedLocale,
-    showMicronutrients: dbo.showMicronutrients ?? false,
-    usesKilojoules: dbo.usesKilojoules ?? false,
-    mealKcalSharesPct:
-        _sanitiseShares(dbo.mealKcalSharesPct) ?? defaultMealKcalSharesPct,
-    diarySortPreferences: dbo.diarySortPreferences,
-    nutrientPanelVisibility:
-        dbo.nutrientPanelVisibility ?? const <String, bool>{},
-    dayStartOffsetHours: _normaliseOffsetHours(dbo.dayStartOffsetHours),
-    dayStartOffsetMinutes: _normaliseOffsetMinutes(dbo.dayStartOffsetMinutes),
-    dailyWaterGoalMl: _normaliseWaterGoal(dbo.dailyWaterGoalMl),
-    fastingWarningAcknowledged: dbo.fastingWarningAcknowledged ?? false,
-    useMaterialYou: dbo.useMaterialYou ?? true,
-    accentColor: _normaliseAccentColor(dbo.accentColor),
-    scannerPortraitLock: dbo.scannerPortraitLock,
-    foodSourceToggles: dbo.foodSourceToggles != null
-        ? Map<String, bool>.from(dbo.foodSourceToggles!)
-        : const <String, bool>{},
-    isDemoData: dbo.isDemoData ?? false,
-    healthImportEnabled: dbo.healthImportEnabled ?? false,
-    healthWorkoutKcalMultiplier: _normaliseHealthMultiplier(
-      dbo.healthWorkoutKcalMultiplier,
-    ),
-    healthLastImportAt: dbo.healthLastImportAt,
-    policyNoticeRevisionSeen: dbo.policyNoticeRevisionSeen ?? 0,
-    healthDeletedWorkouts: dbo.healthDeletedWorkouts != null
-        ? Map<String, DateTime>.from(dbo.healthDeletedWorkouts!)
-        : const <String, DateTime>{},
-    legacyHealthDeletedExternalIds: dbo.healthDeletedExternalIds != null
-        ? Set<String>.from(dbo.healthDeletedExternalIds!)
-        : const <String>{},
-    defaultToRawFoodUnits: dbo.defaultToRawFoodUnits ?? false,
-  );
+        dbo.hasAcceptedDisclaimer,
+        dbo.hasAcceptedPolicy,
+        dbo.hasAcceptedSendAnonymousData,
+        AppThemeEntity.fromAppThemeDBO(dbo.selectedAppTheme),
+        usesImperialUnits: dbo.usesImperialUnits ?? false,
+        usesImperialFoodUnits:
+            dbo.usesImperialFoodUnits ?? (dbo.usesImperialUnits ?? false),
+        usesImperialHeightUnits:
+            dbo.usesImperialHeightUnits ?? (dbo.usesImperialUnits ?? false),
+        bodyWeightUnit: dbo.bodyWeightUnitIndex != null
+            ? BodyWeightUnit.fromIndex(dbo.bodyWeightUnitIndex!)
+            : ((dbo.usesImperialUnits ?? false)
+                ? BodyWeightUnit.lb
+                : BodyWeightUnit.kg),
+        userKcalAdjustment: dbo.userKcalAdjustment,
+        userCarbGoalPct: dbo.userCarbGoalPct,
+        userProteinGoalPct: dbo.userProteinGoalPct,
+        userFatGoalPct: dbo.userFatGoalPct,
+        showActivityTracking: dbo.showActivityTracking ?? true,
+        showMealMacros: dbo.showMealMacros ?? true,
+        notificationsEnabled: dbo.notificationsEnabled ?? false,
+        notificationHour: dbo.notificationHour ?? 8,
+        notificationMinute: dbo.notificationMinute ?? 0,
+        selectedLocale: dbo.selectedLocale,
+        showMicronutrients: dbo.showMicronutrients ?? false,
+        usesKilojoules: dbo.usesKilojoules ?? false,
+        mealKcalSharesPct:
+            _sanitiseShares(dbo.mealKcalSharesPct) ?? defaultMealKcalSharesPct,
+        diarySortPreferences: dbo.diarySortPreferences,
+        nutrientPanelVisibility:
+            dbo.nutrientPanelVisibility ?? const <String, bool>{},
+        nutrientGoals: _sanitiseNutrientGoals(dbo.nutrientGoals),
+        dayStartOffsetHours: _normaliseOffsetHours(dbo.dayStartOffsetHours),
+        dayStartOffsetMinutes:
+            _normaliseOffsetMinutes(dbo.dayStartOffsetMinutes),
+        dailyWaterGoalMl: _normaliseWaterGoal(dbo.dailyWaterGoalMl),
+        fastingWarningAcknowledged: dbo.fastingWarningAcknowledged ?? false,
+        useMaterialYou: dbo.useMaterialYou ?? true,
+        accentColor: _normaliseAccentColor(dbo.accentColor),
+        scannerPortraitLock: dbo.scannerPortraitLock,
+        foodSourceToggles: dbo.foodSourceToggles != null
+            ? Map<String, bool>.from(dbo.foodSourceToggles!)
+            : const <String, bool>{},
+        isDemoData: dbo.isDemoData ?? false,
+        healthImportEnabled: dbo.healthImportEnabled ?? false,
+        healthWorkoutKcalMultiplier: _normaliseHealthMultiplier(
+          dbo.healthWorkoutKcalMultiplier,
+        ),
+        healthLastImportAt: dbo.healthLastImportAt,
+        policyNoticeRevisionSeen: dbo.policyNoticeRevisionSeen ?? 0,
+        healthDeletedWorkouts: dbo.healthDeletedWorkouts != null
+            ? Map<String, DateTime>.from(dbo.healthDeletedWorkouts!)
+            : const <String, DateTime>{},
+        legacyHealthDeletedExternalIds: dbo.healthDeletedExternalIds != null
+            ? Set<String>.from(dbo.healthDeletedExternalIds!)
+            : const <String>{},
+        defaultToRawFoodUnits: dbo.defaultToRawFoodUnits ?? false,
+      );
 
   /// Returns the recommended kcal target for [mealKey] given a daily goal.
   double targetKcalForMeal(String mealKey, double dailyKcalGoal) {
@@ -408,6 +418,21 @@ class ConfigEntity extends Equatable {
     final keys = [mealKeyBreakfast, mealKeyLunch, mealKeyDinner, mealKeySnack];
     if (!keys.every(raw.containsKey)) return null;
     return {for (final k in keys) k: raw[k] ?? 0};
+  }
+
+  // Drops unknown keys and any value that would break arithmetic or a JSON
+  // backup: only finite, non-negative targets for the ten panel nutrients are
+  // carried forward. A missing or wholly corrupt map reads as "no goals".
+  static Map<String, double> _sanitiseNutrientGoals(Map<String, double>? raw) {
+    if (raw == null || raw.isEmpty) return const <String, double>{};
+    final goals = <String, double>{};
+    for (final key in NutrientPanelKeys.all) {
+      final value = raw[key];
+      if (value != null && value.isFinite && value >= 0) {
+        goals[key] = value;
+      }
+    }
+    return goals;
   }
 
   static int _normaliseOffsetHours(int? raw) {
@@ -459,43 +484,44 @@ class ConfigEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-    hasAcceptedDisclaimer,
-    hasAcceptedPolicy,
-    hasAcceptedSendAnonymousData,
-    usesImperialUnits,
-    usesImperialFoodUnits,
-    usesImperialHeightUnits,
-    bodyWeightUnit,
-    userKcalAdjustment,
-    userCarbGoalPct,
-    userProteinGoalPct,
-    userFatGoalPct,
-    showActivityTracking,
-    showMealMacros,
-    notificationsEnabled,
-    notificationHour,
-    notificationMinute,
-    selectedLocale,
-    showMicronutrients,
-    usesKilojoules,
-    mealKcalSharesPct,
-    diarySortPreferences,
-    nutrientPanelVisibility,
-    dayStartOffsetHours,
-    dayStartOffsetMinutes,
-    dailyWaterGoalMl,
-    fastingWarningAcknowledged,
-    useMaterialYou,
-    accentColor,
-    scannerPortraitLock,
-    foodSourceToggles,
-    isDemoData,
-    healthImportEnabled,
-    healthWorkoutKcalMultiplier,
-    healthLastImportAt,
-    healthDeletedWorkouts,
-    legacyHealthDeletedExternalIds,
-    policyNoticeRevisionSeen,
-    defaultToRawFoodUnits,
-  ];
+        hasAcceptedDisclaimer,
+        hasAcceptedPolicy,
+        hasAcceptedSendAnonymousData,
+        usesImperialUnits,
+        usesImperialFoodUnits,
+        usesImperialHeightUnits,
+        bodyWeightUnit,
+        userKcalAdjustment,
+        userCarbGoalPct,
+        userProteinGoalPct,
+        userFatGoalPct,
+        showActivityTracking,
+        showMealMacros,
+        notificationsEnabled,
+        notificationHour,
+        notificationMinute,
+        selectedLocale,
+        showMicronutrients,
+        usesKilojoules,
+        mealKcalSharesPct,
+        diarySortPreferences,
+        nutrientPanelVisibility,
+        nutrientGoals,
+        dayStartOffsetHours,
+        dayStartOffsetMinutes,
+        dailyWaterGoalMl,
+        fastingWarningAcknowledged,
+        useMaterialYou,
+        accentColor,
+        scannerPortraitLock,
+        foodSourceToggles,
+        isDemoData,
+        healthImportEnabled,
+        healthWorkoutKcalMultiplier,
+        healthLastImportAt,
+        healthDeletedWorkouts,
+        legacyHealthDeletedExternalIds,
+        policyNoticeRevisionSeen,
+        defaultToRawFoodUnits,
+      ];
 }

@@ -462,8 +462,7 @@ class _MacroRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final macroRange =
-        _MacroSplitDialogState._maxMacroPct -
+    final macroRange = _MacroSplitDialogState._maxMacroPct -
         _MacroSplitDialogState._minMacroPct;
 
     return Column(

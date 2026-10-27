@@ -47,9 +47,11 @@ class ConfigDBO extends HiveObject {
   @HiveField(17)
   Map<String, int>? mealKcalSharesPct;
   @HiveField(18)
-  String? customMealFormMode; // #232: 'simple' or 'advanced'; null means default (simple)
+  String?
+      customMealFormMode; // #232: 'simple' or 'advanced'; null means default (simple)
   @HiveField(19)
-  int? dayStartOffsetHours; // #139: 0-23, null means default (0 = wall-clock midnight)
+  int?
+      dayStartOffsetHours; // #139: 0-23, null means default (0 = wall-clock midnight)
   // #160 follow-up: per-nutrient show/hide map for the daily nutrient panel.
   // Keys are nutrient identifiers from [DailyNutrientPanel]; values are
   // explicit user overrides. A nutrient not present in the map (or a null
@@ -212,6 +214,12 @@ class ConfigDBO extends HiveObject {
   // about the device.
   @HiveField(41)
   bool? localeSyncSeeded;
+  // Durable per-nutrient targets for this profile, keyed by the panel's
+  // nutrient identifiers. These are the defaults a new day starts from;
+  // a TrackedDayDBO override still wins for that specific day. Null or an
+  // absent key means "use the published reference for this user".
+  @HiveField(42)
+  Map<String, double>? nutrientGoals;
 
   ConfigDBO(
     this.hasAcceptedDisclaimer,
@@ -253,21 +261,23 @@ class ConfigDBO extends HiveObject {
     this.defaultToRawFoodUnits,
     this.trackedDaysOffsetMinutes,
     this.localeSyncSeeded,
+    this.nutrientGoals,
   });
 
   factory ConfigDBO.empty() =>
       ConfigDBO(false, false, false, AppThemeDBO.system);
 
   factory ConfigDBO.fromConfigEntity(ConfigEntity entity) => ConfigDBO(
-    entity.hasAcceptedDisclaimer,
-    entity.hasAcceptedPolicy,
-    entity.hasAcceptedSendAnonymousData,
-    AppThemeDBO.fromAppThemeEntity(entity.appTheme),
-    usesImperialUnits: entity.usesImperialUnits,
-    usesImperialFoodUnits: entity.usesImperialFoodUnits,
-    usesImperialHeightUnits: entity.usesImperialHeightUnits,
-    bodyWeightUnitIndex: entity.bodyWeightUnit.index,
-  );
+        entity.hasAcceptedDisclaimer,
+        entity.hasAcceptedPolicy,
+        entity.hasAcceptedSendAnonymousData,
+        AppThemeDBO.fromAppThemeEntity(entity.appTheme),
+        usesImperialUnits: entity.usesImperialUnits,
+        usesImperialFoodUnits: entity.usesImperialFoodUnits,
+        usesImperialHeightUnits: entity.usesImperialHeightUnits,
+        bodyWeightUnitIndex: entity.bodyWeightUnit.index,
+        nutrientGoals: entity.nutrientGoals,
+      );
 
   factory ConfigDBO.fromJson(Map<String, dynamic> json) =>
       _$ConfigDBOFromJson(json);

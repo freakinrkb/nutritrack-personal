@@ -197,8 +197,8 @@ void main() {
     });
 
     test('empty week window yields zeros, not NaN', () {
-      final totals = NutrientPanelTotals.fromIntakes(<IntakeEntity>[],
-          weekly: true);
+      final totals =
+          NutrientPanelTotals.fromIntakes(<IntakeEntity>[], weekly: true);
       expect(totals.fiberG, 0.0);
       expect(totals.ironMg, 0.0);
       expect(totals.vitaminB12Mcg, 0.0);
