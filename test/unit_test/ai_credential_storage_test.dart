@@ -57,7 +57,8 @@ class _MemoryStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => store.remove(key);
+  }) async =>
+      store.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -609,8 +610,7 @@ void main() {
         // grows per value, which is what this guards.
         backing.reads.length,
         lessThanOrEqualTo(6),
-        reason:
-            'five distinct keys exist; asking the three getters '
+        reason: 'five distinct keys exist; asking the three getters '
             'separately took 6-8 round trips. The model joined them when it '
             'became part of what "configured" means for a server the user '
             'runs, and `readSelection` stopped reading it a second time in '
@@ -693,8 +693,7 @@ void main() {
             equals(['http://192.168.1.5:11434/v1/chat/completions', 'model-a']),
             equals(['http://192.168.1.9:11434/v1/chat/completions', 'model-b']),
           ),
-          reason:
-              'a torn read is not only a crossed pair: writing an address '
+          reason: 'a torn read is not only a crossed pair: writing an address '
               'clears the model, so the half-read state can also come back as '
               'not configured at all and the feature go quietly unavailable',
         );
@@ -791,8 +790,7 @@ void main() {
       expect(
         summary.configured,
         isTrue,
-        reason:
-            'an address and a model are what make this one usable, '
+        reason: 'an address and a model are what make this one usable, '
             'not a key',
       );
       expect(summary.enabled, isTrue);
@@ -822,8 +820,7 @@ void main() {
       expect(
         await storage.isEnabled(),
         isFalse,
-        reason:
-            'writing an address is what turns the feature on, so a '
+        reason: 'writing an address is what turns the feature on, so a '
             'refused one must not',
       );
     });
@@ -1739,8 +1736,7 @@ void main() {
       expect(
         await storage.hasAcceptedTerms(),
         isFalse,
-        reason:
-            'a recorded yes outlived every credential it authorised, and '
+        reason: 'a recorded yes outlived every credential it authorised, and '
             'the next key would be stored without anyone being asked',
       );
     });

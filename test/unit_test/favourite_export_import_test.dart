@@ -144,7 +144,7 @@ class _EmptyWeightLogRepository extends WeightLogRepository {
 
 class _EmptyTemplateRepository extends CustomActivityTemplateRepository {
   _EmptyTemplateRepository()
-    : super(CustomActivityTemplateDataSource(_boxless));
+      : super(CustomActivityTemplateDataSource(_boxless));
 
   @override
   Future<List<CustomActivityTemplateDBO>> allTemplateDBOs() async => [];
@@ -169,6 +169,8 @@ class _EmptyConfigRepository extends ConfigRepository {
     required double? fatGoalPct,
     required Map<String, int>? mealKcalSharesPct,
     required int? dailyWaterGoalMl,
+    Map<String, double>? nutrientGoals,
+    bool replaceNutrientGoals = false,
   }) async {}
 }
 
@@ -177,26 +179,27 @@ MealEntity _meal(
   String name,
   MealSourceEntity source, {
   double kcal = 0,
-}) => MealEntity(
-  code: code,
-  name: name,
-  url: null,
-  mealQuantity: '100',
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: null,
-  servingSize: null,
-  nutriments: MealNutrimentsEntity(
-    energyKcal100: kcal,
-    carbohydrates100: null,
-    fat100: null,
-    proteins100: null,
-    sugars100: null,
-    saturatedFat100: null,
-    fiber100: null,
-  ),
-  source: source,
-);
+}) =>
+    MealEntity(
+      code: code,
+      name: name,
+      url: null,
+      mealQuantity: '100',
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: null,
+      servingSize: null,
+      nutriments: MealNutrimentsEntity(
+        energyKcal100: kcal,
+        carbohydrates100: null,
+        fat100: null,
+        proteins100: null,
+        sugars100: null,
+        saturatedFat100: null,
+        fiber100: null,
+      ),
+      source: source,
+    );
 
 /// #1307: favourites ride along in the JSON bundle and come back on import.
 void main() {
@@ -263,28 +266,27 @@ void main() {
         _meal('c1', 'Lunchbox', MealSourceEntity.custom),
       );
 
-      final archive =
-          await ExportDataUsecase(
-            _EmptyUserActivityRepository(),
-            _EmptyIntakeRepository(),
-            _EmptyTrackedDayRepository(),
-            _EmptyRecipeRepository(),
-            _EmptyCustomMealDataSource(),
-            _EmptyWeightLogRepository(),
-            _EmptyTemplateRepository(),
-            _EmptyConfigRepository(),
-            exporting,
-          ).assembleArchive(
-            format: ExportFormat.json,
-            userActivityJsonFileName: ExportImportBloc.userActivityJsonFileName,
-            userIntakeJsonFileName: ExportImportBloc.userIntakeJsonFileName,
-            trackedDayJsonFileName: ExportImportBloc.trackedDayJsonFileName,
-            recipeJsonFileName: ExportImportBloc.recipeJsonFileName,
-            weightLogJsonFileName: ExportImportBloc.weightLogJsonFileName,
-            customActivityTemplateJsonFileName:
-                ExportImportBloc.customActivityTemplateJsonFileName,
-            favouriteJsonFileName: ExportImportBloc.favouriteJsonFileName,
-          );
+      final archive = await ExportDataUsecase(
+        _EmptyUserActivityRepository(),
+        _EmptyIntakeRepository(),
+        _EmptyTrackedDayRepository(),
+        _EmptyRecipeRepository(),
+        _EmptyCustomMealDataSource(),
+        _EmptyWeightLogRepository(),
+        _EmptyTemplateRepository(),
+        _EmptyConfigRepository(),
+        exporting,
+      ).assembleArchive(
+        format: ExportFormat.json,
+        userActivityJsonFileName: ExportImportBloc.userActivityJsonFileName,
+        userIntakeJsonFileName: ExportImportBloc.userIntakeJsonFileName,
+        trackedDayJsonFileName: ExportImportBloc.trackedDayJsonFileName,
+        recipeJsonFileName: ExportImportBloc.recipeJsonFileName,
+        weightLogJsonFileName: ExportImportBloc.weightLogJsonFileName,
+        customActivityTemplateJsonFileName:
+            ExportImportBloc.customActivityTemplateJsonFileName,
+        favouriteJsonFileName: ExportImportBloc.favouriteJsonFileName,
+      );
 
       final entry = archive.findFile(ExportImportBloc.favouriteJsonFileName);
       expect(entry, isNotNull);
@@ -294,26 +296,25 @@ void main() {
       final zip = File('${tempRoot.path}/backup.zip')
         ..writeAsBytesSync(ZipEncoder().encode(archive));
       final importing = repositoryOver(targetBox);
-      final imported =
-          await ImportDataUsecase(
-            _EmptyUserActivityRepository(),
-            _EmptyIntakeRepository(),
-            _EmptyTrackedDayRepository(),
-            _EmptyRecipeRepository(),
-            _EmptyWeightLogRepository(),
-            _EmptyTemplateRepository(),
-            _EmptyConfigRepository(),
-            importing,
-            pickFile: () async => _PickedFile('backup.zip', zip.uri),
-          ).importData(
-            ExportImportBloc.userActivityJsonFileName,
-            ExportImportBloc.userIntakeJsonFileName,
-            ExportImportBloc.trackedDayJsonFileName,
-            ExportImportBloc.recipeJsonFileName,
-            ExportImportBloc.weightLogJsonFileName,
-            ExportImportBloc.customActivityTemplateJsonFileName,
-            favouriteJsonFileName: ExportImportBloc.favouriteJsonFileName,
-          );
+      final imported = await ImportDataUsecase(
+        _EmptyUserActivityRepository(),
+        _EmptyIntakeRepository(),
+        _EmptyTrackedDayRepository(),
+        _EmptyRecipeRepository(),
+        _EmptyWeightLogRepository(),
+        _EmptyTemplateRepository(),
+        _EmptyConfigRepository(),
+        importing,
+        pickFile: () async => _PickedFile('backup.zip', zip.uri),
+      ).importData(
+        ExportImportBloc.userActivityJsonFileName,
+        ExportImportBloc.userIntakeJsonFileName,
+        ExportImportBloc.trackedDayJsonFileName,
+        ExportImportBloc.recipeJsonFileName,
+        ExportImportBloc.weightLogJsonFileName,
+        ExportImportBloc.customActivityTemplateJsonFileName,
+        favouriteJsonFileName: ExportImportBloc.favouriteJsonFileName,
+      );
 
       expect(imported, isTrue);
       final restored = await importing.getAllFavourites();
@@ -330,27 +331,26 @@ void main() {
       sourceBox,
     ).addFavourite(_meal('1', 'Apple', MealSourceEntity.fdc));
 
-    final archive =
-        await ExportDataUsecase(
-          _EmptyUserActivityRepository(),
-          _EmptyIntakeRepository(),
-          _EmptyTrackedDayRepository(),
-          _EmptyRecipeRepository(),
-          _EmptyCustomMealDataSource(),
-          _EmptyWeightLogRepository(),
-          _EmptyTemplateRepository(),
-          _EmptyConfigRepository(),
-          repositoryOver(sourceBox),
-        ).assembleArchive(
-          format: ExportFormat.csv,
-          userActivityJsonFileName: ExportImportBloc.userActivityJsonFileName,
-          userIntakeJsonFileName: ExportImportBloc.userIntakeJsonFileName,
-          trackedDayJsonFileName: ExportImportBloc.trackedDayJsonFileName,
-          recipeJsonFileName: ExportImportBloc.recipeJsonFileName,
-          weightLogJsonFileName: ExportImportBloc.weightLogJsonFileName,
-          customActivityTemplateJsonFileName:
-              ExportImportBloc.customActivityTemplateJsonFileName,
-        );
+    final archive = await ExportDataUsecase(
+      _EmptyUserActivityRepository(),
+      _EmptyIntakeRepository(),
+      _EmptyTrackedDayRepository(),
+      _EmptyRecipeRepository(),
+      _EmptyCustomMealDataSource(),
+      _EmptyWeightLogRepository(),
+      _EmptyTemplateRepository(),
+      _EmptyConfigRepository(),
+      repositoryOver(sourceBox),
+    ).assembleArchive(
+      format: ExportFormat.csv,
+      userActivityJsonFileName: ExportImportBloc.userActivityJsonFileName,
+      userIntakeJsonFileName: ExportImportBloc.userIntakeJsonFileName,
+      trackedDayJsonFileName: ExportImportBloc.trackedDayJsonFileName,
+      recipeJsonFileName: ExportImportBloc.recipeJsonFileName,
+      weightLogJsonFileName: ExportImportBloc.weightLogJsonFileName,
+      customActivityTemplateJsonFileName:
+          ExportImportBloc.customActivityTemplateJsonFileName,
+    );
 
     expect(archive.findFile(ExportImportBloc.favouriteJsonFileName), isNull);
   });

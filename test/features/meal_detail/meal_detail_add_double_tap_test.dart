@@ -44,7 +44,8 @@ class _NothingLoggedGetIntakeUsecase extends Fake implements GetIntakeUsecase {
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 }
 
 class _FakeHomeBloc extends Fake implements HomeBloc {
@@ -66,15 +67,15 @@ class _FakeCalendarDayBloc extends Fake implements CalendarDayBloc {
 /// until [save] completes, as a write waiting for the tracked-day lock.
 class _GatedMealDetailBloc extends MealDetailBloc {
   _GatedMealDetailBloc()
-    : super(
-        _FakeAddIntakeUsecase(),
-        _FakeAddTrackedDayUsecase(),
-        _FakeGetKcalGoalUsecase(),
-        _FakeGetMacroGoalUsecase(),
-        _FakeGetTrackedDayUsecase(),
-        _FakeProductsRepository(),
-        _FakeRemoteSearchCacheDataSource(),
-      );
+      : super(
+          _FakeAddIntakeUsecase(),
+          _FakeAddTrackedDayUsecase(),
+          _FakeGetKcalGoalUsecase(),
+          _FakeGetMacroGoalUsecase(),
+          _FakeGetTrackedDayUsecase(),
+          _FakeProductsRepository(),
+          _FakeRemoteSearchCacheDataSource(),
+        );
 
   final save = Completer<void>();
   var saves = 0;

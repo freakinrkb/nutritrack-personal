@@ -79,23 +79,23 @@ final class _PickedFile extends PlatformFile {
 /// under test.
 class _ThrowingExportDataUsecase extends ExportDataUsecase {
   _ThrowingExportDataUsecase(this.error)
-    : super(
-        UserActivityRepository(UserActivityDataSource(_provider)),
-        IntakeRepository(IntakeDataSource(_provider)),
-        TrackedDayRepository(TrackedDayDataSource(_provider)),
-        RecipeRepository(RecipeDataSource(_provider)),
-        CustomMealDataSource(_provider),
-        WeightLogRepository(WeightLogDataSource(_provider)),
-        CustomActivityTemplateRepository(
-          CustomActivityTemplateDataSource(_provider),
-        ),
-        ConfigRepository(ConfigDataSource(_provider)),
-        FavouriteMealRepository(
-          FavouriteMealDataSource(_provider),
+      : super(
+          UserActivityRepository(UserActivityDataSource(_provider)),
+          IntakeRepository(IntakeDataSource(_provider)),
+          TrackedDayRepository(TrackedDayDataSource(_provider)),
+          RecipeRepository(RecipeDataSource(_provider)),
           CustomMealDataSource(_provider),
-          RecipeDataSource(_provider),
-        ),
-      );
+          WeightLogRepository(WeightLogDataSource(_provider)),
+          CustomActivityTemplateRepository(
+            CustomActivityTemplateDataSource(_provider),
+          ),
+          ConfigRepository(ConfigDataSource(_provider)),
+          FavouriteMealRepository(
+            FavouriteMealDataSource(_provider),
+            CustomMealDataSource(_provider),
+            RecipeDataSource(_provider),
+          ),
+        );
 
   final Object error;
 
@@ -110,6 +110,8 @@ class _ThrowingExportDataUsecase extends ExportDataUsecase {
     String customActivityTemplateJsonFileName, {
     ExportFormat format = ExportFormat.json,
     String favouriteJsonFileName = 'user_favourites.json',
+    String customMealJsonFileName = 'user_custom_meals.json',
+    String waterIntakeJsonFileName = 'user_water.json',
     String userActivityCsvFileName = 'user_activity.csv',
     String userIntakeCsvFileName = 'user_intake.csv',
     String trackedDayCsvFileName = 'user_tracked_day.csv',

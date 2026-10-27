@@ -113,8 +113,7 @@ final class QuantityTooLargeError extends MealTextParseError {
   const QuantityTooLargeError(super.itemNumber, this.bound);
 
   @override
-  String toString() =>
-      'QuantityTooLargeError(item: $itemNumber, '
+  String toString() => 'QuantityTooLargeError(item: $itemNumber, '
       'bound: $bound)';
 
   @override
@@ -181,8 +180,8 @@ class MealTextParseResult {
 /// catch. [_leadingQuantity] and [_trailingQuantity] only see a unit when a
 /// number is against it.
 bool textStatesAUnit(String input) => _segment(
-  input,
-).any((segment) => _extractQuantityAndUnit(segment).unit != null);
+      input,
+    ).any((segment) => _extractQuantityAndUnit(segment).unit != null);
 
 MealTextParseResult validateParsedMealItems(
   List<ParsedMealItem> candidates, {
@@ -232,9 +231,8 @@ MealTextParseResult validateParsedMealItems(
     // unrecognized unit is handled: the food is still usable and the row's
     // own default is a better answer than refusing to log it.
     final rawQuantity = candidate.quantity;
-    var quantity = (rawQuantity != null && rawQuantity.isFinite)
-        ? rawQuantity
-        : null;
+    var quantity =
+        (rawQuantity != null && rawQuantity.isFinite) ? rawQuantity : null;
     // Normalized before the bounds are applied, matching parseMealText, so
     // `15 kg` is rejected as 15000 g rather than passing as a harmless 15.
     //
@@ -274,9 +272,8 @@ MealTextParseResult validateParsedMealItems(
     // the raw value here would have kept the `g` beside it — reintroducing
     // exactly the unit-without-quantity state the paragraph above exists to
     // prevent.
-    final keptUnit = quantity != null && _validUnits.contains(unit)
-        ? unit
-        : null;
+    final keptUnit =
+        quantity != null && _validUnits.contains(unit) ? unit : null;
 
     // `portion` is carried through untouched. Every model reply passes here,
     // so dropping it would leave the key set and never used — the feature
@@ -320,11 +317,19 @@ MealTextParseResult validateParsedMealItems(
 /// per-locale word lists this parser was designed to avoid: the set is
 /// fixed, tiny, and does not grow when a language is added. None of them
 /// carries a decimal meaning, so unlike `,` they need no lookaround.
-final _separator = RegExp(r'[;+\n、，；]|(?<!\d),|,(?!\d)');
+///
+/// `and` and `&` only separate when the next item starts with a number
+/// (`100g toast and 2 eggs`). Foods whose names contain them — `macaroni
+/// and cheese`, `fish & chips` — stay whole because the next word is not a
+/// quantity.
+final _separator = RegExp(
+  r'\s+(?:and|&)\s+(?=-?\d)|[;+\n、，；]|(?<!\d),|,(?!\d)',
+  caseSensitive: false,
+);
 
 /// Splits [input] into trimmed, non-empty pieces on `,` / `;` / newline /
-/// `+` and their CJK equivalents, subject to the comma rule on
-/// [_separator].
+/// `+` / number-led `and` or `&`, and their CJK equivalents, subject to the
+/// rules on [_separator].
 List<String> _segment(String input) => input
     .split(_separator)
     .map((s) => s.trim())
@@ -347,8 +352,7 @@ const _unitSymbol = r'(?:kg|lb|ml|oz|g|l|毫升|千克|克|升)';
 /// a language is added, which is the objection that ruled out number-words
 /// in #600. `2个鸡蛋` splits here for the same reason `2 eggs` splits on a
 /// space.
-const _unspacedScript =
-    r'[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}'
+const _unspacedScript = r'[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}'
     r'\p{Script=Hangul}]';
 
 /// A number, accepting either decimal separator. `JsonMealImporter` takes

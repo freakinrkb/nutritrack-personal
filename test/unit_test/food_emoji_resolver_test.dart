@@ -37,7 +37,8 @@ void main() {
 
     test('USDA comma-separated description: first token is the head', () {
       expect(
-        resolveFoodEmoji('Milk, fluid, nonfat, calcium fortified (fat free or skim)'),
+        resolveFoodEmoji(
+            'Milk, fluid, nonfat, calcium fortified (fat free or skim)'),
         '🥛',
       );
       expect(

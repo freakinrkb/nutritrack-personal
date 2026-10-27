@@ -13,31 +13,32 @@ MealEntity meal(
   int portions = 0,
   bool portionsUnavailable = false,
   bool detailed = false,
-}) => MealEntity(
-  code: code ?? name,
-  name: name,
-  brands: brands,
-  thumbnailImageUrl: null,
-  mainImageUrl: null,
-  url: null,
-  mealQuantity: null,
-  mealUnit: null,
-  servingQuantity: null,
-  servingUnit: null,
-  servingSize: null,
-  source: source,
-  detailed: detailed,
-  nutriments: MealNutrimentsEntity.empty(),
-  portionsUnavailable: portionsUnavailable,
-  portions: [
-    for (var i = 0; i < portions; i++)
-      MealPortionEntity(
-        label: '1 portion $i',
-        gramWeight: 100,
-        localized: false,
-      ),
-  ],
-);
+}) =>
+    MealEntity(
+      code: code ?? name,
+      name: name,
+      brands: brands,
+      thumbnailImageUrl: null,
+      mainImageUrl: null,
+      url: null,
+      mealQuantity: null,
+      mealUnit: null,
+      servingQuantity: null,
+      servingUnit: null,
+      servingSize: null,
+      source: source,
+      detailed: detailed,
+      nutriments: MealNutrimentsEntity.empty(),
+      portionsUnavailable: portionsUnavailable,
+      portions: [
+        for (var i = 0; i < portions; i++)
+          MealPortionEntity(
+            label: '1 portion $i',
+            gramWeight: 100,
+            localized: false,
+          ),
+      ],
+    );
 
 List<String> names(List<MealEntity> meals) => [for (final m in meals) m.name!];
 
@@ -241,8 +242,8 @@ void main() {
       ];
 
       List<String?> codes(List<MealEntity> meals) => [
-        for (final m in meals) m.code,
-      ];
+            for (final m in meals) m.code,
+          ];
 
       expect(codes(rankForResolution(rows, 'rice')), ['a', 'b']);
       expect(
@@ -275,18 +276,18 @@ void main() {
 
     test('records without a name compare as zero-length names, stably', () {
       MealEntity nameless(String code) => MealEntity(
-        code: code,
-        name: null,
-        brands: 'Milk',
-        url: null,
-        mealQuantity: null,
-        mealUnit: null,
-        servingQuantity: null,
-        servingUnit: null,
-        servingSize: null,
-        source: MealSourceEntity.fdc,
-        nutriments: MealNutrimentsEntity.empty(),
-      );
+            code: code,
+            name: null,
+            brands: 'Milk',
+            url: null,
+            mealQuantity: null,
+            mealUnit: null,
+            servingQuantity: null,
+            servingUnit: null,
+            servingSize: null,
+            source: MealSourceEntity.fdc,
+            nutriments: MealNutrimentsEntity.empty(),
+          );
 
       // Both match on the brand alone, so they tie on score and reach the
       // name-length key with nothing to measure, and tie on portions too.
@@ -581,7 +582,8 @@ void main() {
         source: MealSourceEntity.fdc,
         portionsUnavailable: true,
       );
-      final bare = meal('Orange juice, 100%, NFS', source: MealSourceEntity.fdc);
+      final bare =
+          meal('Orange juice, 100%, NFS', source: MealSourceEntity.fdc);
 
       expect(scoreMealForResolution(unavailable, 'orange juice'), 1.0);
       expect(
@@ -619,7 +621,8 @@ void main() {
         source: MealSourceEntity.fdc,
         portionsUnavailable: true,
       );
-      final bare = meal('Orange juice, 100%, NFS', source: MealSourceEntity.fdc);
+      final bare =
+          meal('Orange juice, 100%, NFS', source: MealSourceEntity.fdc);
 
       expect(scoreMealForResolution(off, 'orange juice'), closeTo(0.917, 1e-3));
       expect(

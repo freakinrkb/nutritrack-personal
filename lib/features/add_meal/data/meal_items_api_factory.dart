@@ -77,30 +77,30 @@ MealItemsApi mealItemsApiFor(
 
   return switch (selection.provider) {
     AiProvider.anthropic => AnthropicMealItemsApi(
-      client,
-      key,
-      model: modelId,
-      timeout: timeout ?? AnthropicMealItemsApi.defaultTimeout,
-    ),
+        client,
+        key,
+        model: modelId,
+        timeout: timeout ?? AnthropicMealItemsApi.defaultTimeout,
+      ),
     AiProvider.openrouter => OpenAiCompatibleMealItemsApi.openRouter(
-      client,
-      key,
-      model: modelId,
-      // Pinned with fallbacks off, so the vendor named in settings is the
-      // vendor that served the request rather than the one the slug happens
-      // to mention. Unpinned, `anthropic/claude-haiku-4.5` was answered by
-      // Amazon Bedrock on every attempt of a three-run probe.
-      providers: model?.providers,
-      timeout: timeout ?? OpenAiCompatibleMealItemsApi.defaultTimeout,
-    ),
+        client,
+        key,
+        model: modelId,
+        // Pinned with fallbacks off, so the vendor named in settings is the
+        // vendor that served the request rather than the one the slug happens
+        // to mention. Unpinned, `anthropic/claude-haiku-4.5` was answered by
+        // Amazon Bedrock on every attempt of a three-run probe.
+        providers: model?.providers,
+        timeout: timeout ?? OpenAiCompatibleMealItemsApi.defaultTimeout,
+      ),
     // No pin and no metadata header: reached directly, so there is no broker
     // to constrain and nobody in between to name.
     AiProvider.openai => OpenAiMealItemsApi(
-      client,
-      key,
-      model: modelId,
-      timeout: timeout ?? OpenAiMealItemsApi.defaultTimeout,
-    ),
+        client,
+        key,
+        model: modelId,
+        timeout: timeout ?? OpenAiMealItemsApi.defaultTimeout,
+      ),
     // The user's own address, no broker, and **no forcing by name**: #733
     // measured that Ollama has no `tool_choice` field at all and llama.cpp
     // silently downgrades an object to "auto", so asking for a named function
@@ -108,22 +108,22 @@ MealItemsApi mealItemsApiFor(
     // what the app means with one tool defined, and where it is unsupported
     // the reply lands as the existing no-tool-call refusal.
     AiProvider.ownServer => OpenAiCompatibleMealItemsApi(
-      // The only provider whose address the user supplies, so the only one
-      // where plaintext is possible at all — the other three are compiled-in
-      // `https://`. Wrapping here rather than at the call site means any
-      // future caller of this factory is covered without knowing to ask.
-      GuardedPlaintextClient(client),
-      selection.apiKey == null ? null : key,
-      model: modelId,
-      endpoint: Uri.parse(selection.endpoint!),
-      toolChoice: ToolChoiceMode.anyTool,
-      // The two halves of #774, and they only make sense together. The
-      // longer budget is what stops a cold model load being reported as a
-      // failure at all; the classification is what stops the failures that
-      // remain — a machine that genuinely cannot serve this model in two
-      // minutes — from being described as a network problem.
-      timeout: timeout ?? ownServerTimeout,
-      timeoutFailure: MealInterpreterFailure.timeout,
-    ),
+        // The only provider whose address the user supplies, so the only one
+        // where plaintext is possible at all — the other three are compiled-in
+        // `https://`. Wrapping here rather than at the call site means any
+        // future caller of this factory is covered without knowing to ask.
+        GuardedPlaintextClient(client),
+        selection.apiKey == null ? null : key,
+        model: modelId,
+        endpoint: Uri.parse(selection.endpoint!),
+        toolChoice: ToolChoiceMode.anyTool,
+        // The two halves of #774, and they only make sense together. The
+        // longer budget is what stops a cold model load being reported as a
+        // failure at all; the classification is what stops the failures that
+        // remain — a machine that genuinely cannot serve this model in two
+        // minutes — from being described as a network problem.
+        timeout: timeout ?? ownServerTimeout,
+        timeoutFailure: MealInterpreterFailure.timeout,
+      ),
   };
 }

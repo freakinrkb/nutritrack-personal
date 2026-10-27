@@ -124,7 +124,8 @@ void main() {
   // #1371 review: in kJ mode a stored 100 kcal shows as 418 kJ, which
   // converts back to 99.9 kcal and was saved truncated as 99. Text the
   // user did not edit is no longer re-parsed on OK.
-  testWidgets('keeps a stored kcal adjustment when OK is tapped unedited in '
+  testWidgets(
+      'keeps a stored kcal adjustment when OK is tapped unedited in '
       'kJ mode', (tester) async {
     settingsBloc.storedAdjustment = 100;
     await openDialog(tester, usesKilojoules: true);

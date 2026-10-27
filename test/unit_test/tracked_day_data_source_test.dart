@@ -98,7 +98,8 @@ void main() {
       final result = await dataSource.getTrackedDaysInRange(day2, day4);
 
       expect(result.length, 3);
-      expect(result.map((e) => e.day).toList(), containsAll([day2, day3, day4]));
+      expect(
+          result.map((e) => e.day).toList(), containsAll([day2, day3, day4]));
 
       final resultDays = result.map((e) => e.day).toList();
       expect(resultDays.contains(day1), false);
@@ -124,7 +125,8 @@ void main() {
       final result = await dataSource.getTrackedDaysInRange(startDay, endDay);
 
       expect(result.length, 2);
-      expect(result.map((e) => e.day).toList(), containsAll([startDay, endDay]));
+      expect(
+          result.map((e) => e.day).toList(), containsAll([startDay, endDay]));
     });
 
     test('returns empty list when no days in range', () async {
@@ -239,8 +241,7 @@ void main() {
       expect(result.proteinTracked, equals(20));
     });
 
-    test('reconcileCaloriesAndMacrosTracked sets the totals exactly',
-        () async {
+    test('reconcileCaloriesAndMacrosTracked sets the totals exactly', () async {
       await ds.saveTrackedDay(seed());
       await ds.addDayCaloriesTracked(day, 999);
       await ds.addDayMacroTracked(day,
@@ -307,8 +308,7 @@ void main() {
     // `updateDayNutrientGoals`. These tests pin the persistence
     // contract — that each named field lands on the column it should,
     // and that omitted fields stay untouched.
-    test(
-        'updateDayNutrientGoals persists every nutrient goal independently',
+    test('updateDayNutrientGoals persists every nutrient goal independently',
         () async {
       await ds.saveTrackedDay(seed());
       await ds.updateDayNutrientGoals(
@@ -363,8 +363,7 @@ void main() {
       expect(result.vitaminB12Goal, isNull);
     });
 
-    test(
-        'updateDayNutrientGoals is a no-op when the day has no tracked record',
+    test('updateDayNutrientGoals is a no-op when the day has no tracked record',
         () async {
       await ds.updateDayNutrientGoals(
         day,

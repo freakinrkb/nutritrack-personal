@@ -210,7 +210,8 @@ class AiEndpointProber {
       // not be answering either of these, and if it does, the thing to fix
       // is not the model.
       MealInterpreterFailure.auth ||
-      MealInterpreterFailure.billing => AiCapability.unknown,
+      MealInterpreterFailure.billing =>
+        AiCapability.unknown,
       // Asleep, loading, rate limited, or a reply that did not parse. The
       // whole reason `unknown` exists.
       MealInterpreterFailure.transient => AiCapability.unknown,
@@ -256,8 +257,7 @@ int _probeSeq = 0;
 /// scheduling-dependent test that passes on a fast machine and fails in CI
 /// would be worse than none.
 @visibleForTesting
-String probePhotoTempPath(String directory) =>
-    '$directory/ai_probe_sample_'
+String probePhotoTempPath(String directory) => '$directory/ai_probe_sample_'
     '${DateTime.now().microsecondsSinceEpoch}_${_probeSeq++}.jpg';
 
 Future<MealPhoto?> loadProbePhoto(MealPhotoFormat format) async {

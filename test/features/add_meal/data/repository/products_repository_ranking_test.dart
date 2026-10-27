@@ -64,11 +64,13 @@ class _FakeOffDataSource extends OFFDataSource {
   final OFFWordResponseDTO response;
   _FakeOffDataSource(this.response);
   @override
-  Future<OFFWordResponseDTO> fetchSearchWordResults(String searchString) async =>
+  Future<OFFWordResponseDTO> fetchSearchWordResults(
+          String searchString) async =>
       response;
 }
 
-ProductsRepository _repoReturning(List<OFFProductDTO> productsInRelevanceOrder) {
+ProductsRepository _repoReturning(
+    List<OFFProductDTO> productsInRelevanceOrder) {
   final response = OFFWordResponseDTO(
     count: productsInRelevanceOrder.length,
     page: 1,
@@ -104,7 +106,8 @@ void main() {
       );
     });
 
-    test('a strong relevance match is not buried by popularity alone', () async {
+    test('a strong relevance match is not buried by popularity alone',
+        () async {
       final repo = _repoReturning([
         _p('top-relevance', popularity: 0),
         _p('popular-1', popularity: 9000),
@@ -138,7 +141,8 @@ void main() {
         'an Atwater-incoherent product is demoted below coherent ones even '
         'when it is popular and highly relevant', () async {
       final repo = _repoReturning([
-        _p('incoherent-but-popular', popularity: 9000, atwaterConsistent: false),
+        _p('incoherent-but-popular',
+            popularity: 9000, atwaterConsistent: false),
         _p('coherent-a', popularity: 10),
         _p('coherent-b', popularity: 5),
       ]);
@@ -167,7 +171,8 @@ void main() {
     // country (the typical dev/CI case).
     final userTag = OffCountry.fromLocale(Platform.localeName);
 
-    test('a product sold in the user country is softly boosted above a '
+    test(
+        'a product sold in the user country is softly boosted above a '
         'comparable non-local one', () async {
       if (userTag == null) return; // host locale has no mappable country
       final repo = _repoReturning([
@@ -180,7 +185,8 @@ void main() {
       expect(names.indexOf('local'), lessThan(names.indexOf('non-local')));
     });
 
-    test('the country boost is soft: a clearly dominant global product still '
+    test(
+        'the country boost is soft: a clearly dominant global product still '
         'outranks a weak local one', () async {
       if (userTag == null) return;
       final items = <OFFProductDTO>[

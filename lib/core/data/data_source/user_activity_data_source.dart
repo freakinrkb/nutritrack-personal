@@ -56,12 +56,12 @@ class UserActivityDataSource {
   /// derived id, and re-importing an old backup would then duplicate its
   /// blank-id rows.
   static List<String?> _contentOf(UserActivityDBO dbo) => [
-    dbo.date.toIso8601String(),
-    dbo.physicalActivityDBO.code,
-    dbo.physicalActivityDBO.specificActivity,
-    contentNumber(dbo.duration),
-    contentNumber(dbo.burnedKcal),
-  ];
+        dbo.date.toIso8601String(),
+        dbo.physicalActivityDBO.code,
+        dbo.physicalActivityDBO.specificActivity,
+        contentNumber(dbo.duration),
+        contentNumber(dbo.burnedKcal),
+      ];
 
   /// Rewrites every stored copy of [id], so an install the old import
   /// doubled (#1357) ends up with copies that agree. The fields an edit
@@ -82,26 +82,25 @@ class UserActivityDataSource {
     final existing = _userActivityBox.get(keys.last)!;
     // A Hive object lives under one key, so each copy gets its own.
     UserActivityDBO edited() => UserActivityDBO(
-      existing.id,
-      newDuration,
-      newBurnedKcal,
-      existing.date,
-      existing.physicalActivityDBO,
-      userKcal: userKcal ?? existing.userKcal,
-      // Carried over rather than dropped: losing the external id would make
-      // an edited imported workout eligible for a second import.
-      externalId: existing.externalId,
-      sourceReportedKcal: existing.sourceReportedKcal,
-    );
+          existing.id,
+          newDuration,
+          newBurnedKcal,
+          existing.date,
+          existing.physicalActivityDBO,
+          userKcal: userKcal ?? existing.userKcal,
+          // Carried over rather than dropped: losing the external id would make
+          // an edited imported workout eligible for a second import.
+          externalId: existing.externalId,
+          sourceReportedKcal: existing.sourceReportedKcal,
+        );
     await _userActivityBox.putAll({for (final key in keys) key: edited()});
     return _userActivityBox.get(keys.first);
   }
 
   Future<void> deleteIntakeFromId(String activityId) async {
     log.fine('Deleting activity item from db');
-    final toDelete = _userActivityBox.values
-        .where((dbo) => dbo.id == activityId)
-        .toList();
+    final toDelete =
+        _userActivityBox.values.where((dbo) => dbo.id == activityId).toList();
     for (final element in toDelete) {
       await element.delete();
     }

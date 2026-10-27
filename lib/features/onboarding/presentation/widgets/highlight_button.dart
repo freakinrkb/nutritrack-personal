@@ -33,9 +33,9 @@ class _HighlightButtonState extends State<HighlightButton> {
   /// disabled button colours, applied by hand because the button is only
   /// visually disabled, not actually disabled.
   ButtonStyle _inactiveStyle(ColorScheme colors) => ElevatedButton.styleFrom(
-    foregroundColor: colors.onSurface.withValues(alpha: 0.38),
-    backgroundColor: colors.onSurface.withValues(alpha: 0.12),
-  ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
+        foregroundColor: colors.onSurface.withValues(alpha: 0.38),
+        backgroundColor: colors.onSurface.withValues(alpha: 0.12),
+      ).copyWith(elevation: ButtonStyleButton.allOrNull(0.0));
 
   void _onBlockedPressed() {
     widget.onBlockedPressed?.call();

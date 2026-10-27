@@ -246,7 +246,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Все записи в дневнике с этим продуктом также будут удалены.",
+  "customMealsDeleteConfirmContent": "Прошлые записи в дневнике с этим пользовательским блюдом будут сохранены.",
   "customMealsDeleteConfirmTitle": "Удалить свой продукт?",
   "customMealsEmptyLabel": "Своих продуктов пока не сохранено.",
   "dailyKcalAdjustmentLabel": "Дневная корректировка ккал:",

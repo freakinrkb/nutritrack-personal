@@ -64,7 +64,8 @@ void main() {
       },
     );
 
-    test('two entries on the same day both count toward every window '
+    test(
+        'two entries on the same day both count toward every window '
         'that day is in', () {
       final entries = [
         _entry(DateTime(2026, 1, 1, 7), 80),

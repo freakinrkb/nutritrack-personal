@@ -98,7 +98,8 @@ void main() {
 
     // A build before the reader refused `Infinity` could store one; its
     // export must still be a file the reader takes back.
-    test('a stored non-finite value is exported blank, so the CSV parses '
+    test(
+        'a stored non-finite value is exported blank, so the CSV parses '
         'again', () {
       final intake = _intake(
         amount: double.infinity,
@@ -138,8 +139,7 @@ void main() {
       );
 
       final csv = CsvDataExporter.userActivitiesToCsv([activity]);
-      final parsed =
-          CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
+      final parsed = CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
 
       expect(parsed.id, 'act-1');
       expect(parsed.duration, 45);
@@ -174,8 +174,7 @@ void main() {
       );
 
       final csv = CsvDataExporter.userActivitiesToCsv([activity]);
-      final parsed =
-          CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
+      final parsed = CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
 
       expect(parsed.physicalActivityDBO.tags, isEmpty);
     });
@@ -197,8 +196,7 @@ void main() {
       );
 
       final csv = CsvDataExporter.userActivitiesToCsv([activity]);
-      final parsed =
-          CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
+      final parsed = CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
 
       expect(parsed.userKcal, isNull);
       expect(parsed.externalId, isNull);
@@ -227,8 +225,7 @@ void main() {
       );
 
       final csv = CsvDataExporter.userActivitiesToCsv([activity]);
-      final parsed =
-          CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
+      final parsed = CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
 
       expect(parsed.userKcal, 350);
       expect(parsed.externalId, 'health-connect-record-1');
@@ -244,8 +241,7 @@ void main() {
           'act-5,2026-05-13T07:00:00.000Z,20,100,02020,Walking,'
           'Walking leisure,3.5,,sport\n';
 
-      final parsed =
-          CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
+      final parsed = CsvDataExporter.parseUserActivitiesFromCsv(csv).single;
 
       expect(parsed.id, 'act-5');
       expect(parsed.burnedKcal, 100);
@@ -389,6 +385,6 @@ void _expectIntakeEqual(IntakeDBO actual, IntakeDBO expected) {
   expect(actual.meal.nutriments.carbohydrates100,
       expected.meal.nutriments.carbohydrates100);
   expect(actual.meal.nutriments.fat100, expected.meal.nutriments.fat100);
-  expect(actual.meal.nutriments.proteins100,
-      expected.meal.nutriments.proteins100);
+  expect(
+      actual.meal.nutriments.proteins100, expected.meal.nutriments.proteins100);
 }

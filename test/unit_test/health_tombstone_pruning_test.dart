@@ -79,14 +79,13 @@ void main() {
         now.subtract(const Duration(days: 31)),
         now.subtract(const Duration(days: 400)),
       ]) {
-        final nextWindowStart =
-            (watermark ??
-                    now.subtract(
-                      const Duration(
-                        days: ConfigEntity.healthImportBackfillDays,
-                      ),
-                    ))
-                .subtract(overlap);
+        final nextWindowStart = (watermark ??
+                now.subtract(
+                  const Duration(
+                    days: ConfigEntity.healthImportBackfillDays,
+                  ),
+                ))
+            .subtract(overlap);
         final cutoff = ConfigEntity.oldestUsefulTombstone(
           now: now,
           lastImportAt: watermark,

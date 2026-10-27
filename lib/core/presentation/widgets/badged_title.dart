@@ -19,8 +19,7 @@ class MutedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolved =
-        palette ??
+    final resolved = palette ??
         (Theme.of(context).brightness == Brightness.dark
             ? AppPalette.dark
             : AppPalette.light);

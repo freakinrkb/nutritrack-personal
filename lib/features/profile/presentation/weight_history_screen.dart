@@ -57,8 +57,7 @@ class _WeightHistoryScreenState extends State<WeightHistoryScreen> {
       widget.configRepository ?? locator<ConfigRepository>();
   // Optional in tests so the harness doesn't need to register the
   // user usecase in the locator just to render the chart.
-  late final GetUserUsecase? _getUserUsecase =
-      widget.getUserUsecase ??
+  late final GetUserUsecase? _getUserUsecase = widget.getUserUsecase ??
       (locator.isRegistered<GetUserUsecase>()
           ? locator<GetUserUsecase>()
           : null);
@@ -109,9 +108,8 @@ class _WeightHistoryScreenState extends State<WeightHistoryScreen> {
       case _ChartRange.all:
         final now = DateTime.now();
         final today = DateTime(now.year, now.month, now.day);
-        final nonFutureEntries = _entries
-            .where((e) => !e.date.isAfter(today))
-            .toList();
+        final nonFutureEntries =
+            _entries.where((e) => !e.date.isAfter(today)).toList();
         if (nonFutureEntries.isEmpty) {
           return 30;
         }
@@ -190,42 +188,42 @@ class _WeightHistoryScreenState extends State<WeightHistoryScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _entries.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Text(
-                  S.of(context).weightHistoryNoEntries,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Text(
+                      S.of(context).weightHistoryNoEntries,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
+                )
+              : ListView.separated(
+                  padding: const EdgeInsets.only(top: 8, bottom: 96),
+                  itemCount: _entries.length + 1,
+                  separatorBuilder: (context, index) {
+                    // No divider between the chart card and the first list tile.
+                    if (index == 0) return const SizedBox.shrink();
+                    return const Divider(height: 1);
+                  },
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildRangeSelector(),
+                          WeightTrendChart(
+                            entries: _entries,
+                            bodyWeightUnit: _bodyWeightUnit,
+                            targetWeightKg: _targetWeightKg,
+                            windowDays: _calculateWindowDays(),
+                          ),
+                        ],
+                      );
+                    }
+                    return _buildEntryTile(_entries[index - 1]);
+                  },
                 ),
-              ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.only(top: 8, bottom: 96),
-              itemCount: _entries.length + 1,
-              separatorBuilder: (context, index) {
-                // No divider between the chart card and the first list tile.
-                if (index == 0) return const SizedBox.shrink();
-                return const Divider(height: 1);
-              },
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildRangeSelector(),
-                      WeightTrendChart(
-                        entries: _entries,
-                        bodyWeightUnit: _bodyWeightUnit,
-                        targetWeightKg: _targetWeightKg,
-                        windowDays: _calculateWindowDays(),
-                      ),
-                    ],
-                  );
-                }
-                return _buildEntryTile(_entries[index - 1]);
-              },
-            ),
     );
   }
 
@@ -259,8 +257,7 @@ class _WeightHistoryScreenState extends State<WeightHistoryScreen> {
     // The profile weight is the current one: a reading for today updates
     // it, and so does editing it on the profile. A fixed 70 kg here
     // contradicted the profile on every log that had no entries (#1367).
-    final initialWeightKg =
-        _profileWeightKg ??
+    final initialWeightKg = _profileWeightKg ??
         (_entries.isNotEmpty ? _entries.first.weightKg : 70.0);
     final result = await showDialog<_NewWeightEntry>(
       context: context,

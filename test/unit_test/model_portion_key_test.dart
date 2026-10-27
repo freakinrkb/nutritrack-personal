@@ -3,8 +3,8 @@ import 'package:opennutritracker/features/add_meal/domain/meal_items_api.dart';
 import 'package:opennutritracker/features/add_meal/util/meal_text_parser.dart';
 
 Map<String, dynamic> get _itemProps =>
-    ((mealItemsToolSchema['properties'] as Map)['items']
-            as Map)['items'] as Map<String, dynamic>;
+    ((mealItemsToolSchema['properties'] as Map)['items'] as Map)['items']
+        as Map<String, dynamic>;
 
 void main() {
   group('the model may name a portion, never measure one (#864)', () {

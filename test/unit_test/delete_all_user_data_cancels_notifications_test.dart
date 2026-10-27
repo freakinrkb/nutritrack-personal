@@ -9,6 +9,8 @@ import 'package:opennutritracker/core/data/dbo/app_theme_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/config_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/fasting_session_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/favourite_meal_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_checkin_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/intake_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/tracked_day_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/user_dbo.dart';
@@ -128,8 +130,13 @@ void main() {
         weightLogBox: await Hive.openBox<WeightLogDBO>('delete_all_weight'),
         waterIntakeBox: await Hive.openBox<WaterIntakeDBO>('delete_all_water'),
         fastingBox: await Hive.openBox<FastingSessionDBO>('delete_all_fast'),
-        favouriteMealBox:
-            await Hive.openBox<FavouriteMealDBO>('delete_all_favourites'),
+        favouriteMealBox: await Hive.openBox<FavouriteMealDBO>(
+          'delete_all_favourites',
+        ),
+        habitBox: await Hive.openBox<HabitDBO>('delete_all_habits'),
+        habitCheckinBox: await Hive.openBox<HabitCheckinDBO>(
+          'delete_all_habit_checkins',
+        ),
       );
       final configDataSource = ConfigDataSource(provider);
       configRepository = ConfigRepository(configDataSource);
@@ -171,11 +178,12 @@ void main() {
     DeleteAllUserDataUsecase subject(
       NotificationService notifications, {
       DailyReminderScheduler? reminders,
-    }) => DeleteAllUserDataUsecase(
-      provider,
-      reminders ?? DailyReminderScheduler(configRepository, notifications),
-      AiCredentialStorage(_MemoryStorage()),
-    );
+    }) =>
+        DeleteAllUserDataUsecase(
+          provider,
+          reminders ?? DailyReminderScheduler(configRepository, notifications),
+          AiCredentialStorage(_MemoryStorage()),
+        );
 
     test('the alarm the OS holds is cancelled, not merely forgotten', () async {
       final notifications = _RecordingNotificationService(userBox);
@@ -256,8 +264,7 @@ void main() {
         expect(
           notifications.reminderPending,
           isFalse,
-          reason:
-              'the refresh scheduled the reminder after delete-all had '
+          reason: 'the refresh scheduled the reminder after delete-all had '
               'cancelled it, and the saved setting now reads off',
         );
       },

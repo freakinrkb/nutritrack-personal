@@ -4,11 +4,14 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:opennutritracker/core/data/data_source/custom_activity_template_dbo.dart';
+import 'package:opennutritracker/core/data/data_source/custom_meal_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/user_activity_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/favourite_meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/intake_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/recipe_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/tracked_day_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/water_intake_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/weight_log_dbo.dart';
 import 'package:opennutritracker/core/data/repository/config_repository.dart';
 import 'package:opennutritracker/core/data/repository/custom_activity_template_repository.dart';
@@ -17,6 +20,7 @@ import 'package:opennutritracker/core/data/repository/intake_repository.dart';
 import 'package:opennutritracker/core/data/repository/recipe_repository.dart';
 import 'package:opennutritracker/core/data/repository/tracked_day_repository.dart';
 import 'package:opennutritracker/core/data/repository/user_activity_repository.dart';
+import 'package:opennutritracker/core/data/repository/water_intake_repository.dart';
 import 'package:opennutritracker/core/data/repository/weight_log_repository.dart';
 import 'package:opennutritracker/core/utils/csv_data_exporter.dart';
 import 'package:opennutritracker/core/utils/extensions.dart';
@@ -37,13 +41,12 @@ Future<PlatformFile?> _pickAnyFile() => FilePicker.pickFile(type: FileType.any);
 /// wrote, keyed [importedDayKeys], from the boundary the archive recorded
 /// (null: none recorded) onto the configured one, with the credit of the
 /// archive's [importedActivities] — `restoreTrackedDays` (#1317).
-typedef RestoreTrackedDays =
-    Future<void> Function(
-      Future<void> Function() write, {
-      required Set<String> importedDayKeys,
-      required List<UserActivityDBO> importedActivities,
-      required int? keyedByOffsetMinutes,
-    });
+typedef RestoreTrackedDays = Future<void> Function(
+  Future<void> Function() write, {
+  required Set<String> importedDayKeys,
+  required List<UserActivityDBO> importedActivities,
+  required int? keyedByOffsetMinutes,
+});
 
 class ImportDataUsecase {
   final UserActivityRepository _userActivityRepository;
@@ -54,6 +57,8 @@ class ImportDataUsecase {
   final CustomActivityTemplateRepository _customActivityTemplateRepository;
   final ConfigRepository _configRepository;
   final FavouriteMealRepository _favouriteMealRepository;
+  final CustomMealDataSource? _customMealDataSource;
+  final WaterIntakeRepository? _waterIntakeRepository;
 
   /// Seam for tests: `FilePicker.pickFile` is static and needs a platform
   /// channel, so the picker outcomes (#1103: cancel, a pick without a
@@ -72,10 +77,14 @@ class ImportDataUsecase {
     this._customActivityTemplateRepository,
     this._configRepository,
     this._favouriteMealRepository, {
+    CustomMealDataSource? customMealDataSource,
+    WaterIntakeRepository? waterIntakeRepository,
     PickImportFile pickFile = _pickAnyFile,
     RestoreTrackedDays? restoreTrackedDays,
-  }) : _pickFile = pickFile,
-       _restoreTrackedDays = restoreTrackedDays;
+  })  : _customMealDataSource = customMealDataSource,
+        _waterIntakeRepository = waterIntakeRepository,
+        _pickFile = pickFile,
+        _restoreTrackedDays = restoreTrackedDays;
 
   /// Imports user activity, intake, tracked day, and (optionally) recipe,
   /// weight log, Custom activity template, goal settings and favourites
@@ -97,6 +106,8 @@ class ImportDataUsecase {
     String customActivityTemplateJsonFileName, {
     String goalSettingsJsonFileName = 'goal_settings.json',
     String favouriteJsonFileName = 'user_favourites.json',
+    String customMealJsonFileName = 'user_custom_meals.json',
+    String waterIntakeJsonFileName = 'user_water.json',
   }) async {
     final startedOn = ProfileStamp.now();
     final archive = await _pickAndDecodeArchive();
@@ -154,6 +165,20 @@ class ImportDataUsecase {
         ? null
         : _decodeJsonList(favouriteFile, FavouriteMealDBO.fromJson);
 
+    // The shared custom-meal library and this profile's water log. Both
+    // are absent from zips written before they were exported, so they stay
+    // optional; a present but malformed file rejects the whole zip before
+    // any write.
+    final customMealFile = archive.findFile(customMealJsonFileName);
+    final customMealDBOs =
+        customMealFile == null || _customMealDataSource == null
+            ? null
+            : _decodeJsonList<MealDBO>(customMealFile, MealDBO.fromJson);
+    final waterFile = archive.findFile(waterIntakeJsonFileName);
+    final waterDBOs = waterFile == null || _waterIntakeRepository == null
+        ? null
+        : _decodeJsonList<WaterIntakeDBO>(waterFile, WaterIntakeDBO.fromJson);
+
     // The profile's goal settings (#1363), absent from zips written before
     // they were exported. Checked here with everything else, so a bad
     // value rejects the zip before any of the writes below.
@@ -195,6 +220,12 @@ class ImportDataUsecase {
         // Upsert by identity while retaining favourites not in this backup.
         await _favouriteMealRepository.addAllFavouriteDBOs(favouriteDBOs);
       }
+      if (customMealDBOs != null) {
+        await _customMealDataSource!.addAllCustomMeals(customMealDBOs);
+      }
+      if (waterDBOs != null) {
+        await _waterIntakeRepository!.addAllEntries(waterDBOs);
+      }
       if (goalSettings != null) {
         await _configRepository.setConfigGoalSettings(
           kcalAdjustment: goalSettings.kcalAdjustment,
@@ -203,6 +234,8 @@ class ImportDataUsecase {
           fatGoalPct: goalSettings.fatGoalPct,
           mealKcalSharesPct: goalSettings.mealKcalSharesPct,
           dailyWaterGoalMl: goalSettings.dailyWaterGoalMl,
+          nutrientGoals: goalSettings.nutrientGoals,
+          replaceNutrientGoals: goalSettings.replaceNutrientGoals,
         );
       }
 
@@ -217,9 +250,8 @@ class ImportDataUsecase {
         final sanitized = UserImageStorage.sanitizeRelative(entry.name);
         if (sanitized == null) continue;
         final parts = sanitized.split('/');
-        final targetDir = parts[0] == UserImageKind.recipe.subdir
-            ? recipeDir
-            : mealDir;
+        final targetDir =
+            parts[0] == UserImageKind.recipe.subdir ? recipeDir : mealDir;
         final destPath = '${targetDir.path}/${parts[1]}';
         final destFile = File(destPath);
         await destFile.writeAsBytes(entry.content as List<int>, flush: true);
@@ -289,22 +321,25 @@ class ImportDataUsecase {
     List<IntakeDBO> intakes,
     List<TrackedDayDBO> trackedDays,
     int? keyedBy,
-  ) => withTrackedDayLock(() async {
-    Future<void> write() async {
-      await _userActivityRepository.upsertAllUserActivityDBOs(activities);
-      await _intakeRepository.upsertAllIntakeDBOs(intakes);
-      await _trackedDayRepository.addAllTrackedDays(trackedDays);
-    }
+  ) =>
+      withTrackedDayLock(() async {
+        Future<void> write() async {
+          await _userActivityRepository.upsertAllUserActivityDBOs(activities);
+          await _intakeRepository.upsertAllIntakeDBOs(intakes);
+          await _trackedDayRepository.addAllTrackedDays(trackedDays);
+        }
 
-    final restore = _restoreTrackedDays;
-    if (restore == null) return write();
-    await restore(
-      write,
-      importedDayKeys: {for (final day in trackedDays) day.day.toParsedDay()},
-      importedActivities: activities,
-      keyedByOffsetMinutes: keyedBy,
-    );
-  });
+        final restore = _restoreTrackedDays;
+        if (restore == null) return write();
+        await restore(
+          write,
+          importedDayKeys: {
+            for (final day in trackedDays) day.day.toParsedDay()
+          },
+          importedActivities: activities,
+          keyedByOffsetMinutes: keyedBy,
+        );
+      });
 
   /// The boundary the archive's rows are keyed by, from [entry], or null
   /// when the archive records none (#1317). A record that is not a
@@ -362,9 +397,9 @@ class ImportDataUsecase {
   /// A zip that decodes but lacks a required entry is some other zip, not
   /// an OpenNutriTracker backup.
   ExportImportFailure _missingEntry(String entryName) => ExportImportFailure(
-    ExportImportFailureReason.unreadableOrWrongFormat,
-    'Required entry $entryName not found in the archive',
-  );
+        ExportImportFailureReason.unreadableOrWrongFormat,
+        'Required entry $entryName not found in the archive',
+      );
 
   /// Decodes one archive entry holding a JSON array of [T] objects. A
   /// decode or `fromJson` failure is reported as wrong format rather than
@@ -391,14 +426,14 @@ class ImportDataUsecase {
   /// it would make the next JSON export throw. The CSV reader refuses
   /// `Infinity` the same way.
   static Object? _decodeFinite(String source) => jsonDecode(
-    source,
-    reviver: (key, value) {
-      if (value is double && !value.isFinite) {
-        throw FormatException('Not a finite number', '$key');
-      }
-      return value;
-    },
-  );
+        source,
+        reviver: (key, value) {
+          if (value is double && !value.isFinite) {
+            throw FormatException('Not a finite number', '$key');
+          }
+          return value;
+        },
+      );
 
   /// CSV counterpart of [_decodeJsonList].
   List<T> _decodeCsv<T>(ArchiveFile entry, List<T> Function(String) parse) {

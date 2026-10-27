@@ -18,9 +18,9 @@ int _hoursIn(DateTime day) =>
 
 String? _skipUnless(DateTime day, int hours, String what) =>
     _hoursIn(day) == hours
-    ? null
-    : 'no $what on $day in zone ${day.timeZoneName}; '
-          'run `just test_dst` (TZ=Europe/Berlin)';
+        ? null
+        : 'no $what on $day in zone ${day.timeZoneName}; '
+            'run `just test_dst` (TZ=Europe/Berlin)';
 
 void main() {
   group('CalendarDayCalc.daysBetween', () {

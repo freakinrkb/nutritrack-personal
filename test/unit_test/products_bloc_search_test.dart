@@ -32,7 +32,8 @@ class _FakeSearchProductsUseCase implements SearchProductsUseCase {
     String searchString, {
     bool skipRemote = false,
     bool forResolution = false,
-  }) => searchOFFProductsByString(searchString);
+  }) =>
+      searchOFFProductsByString(searchString);
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -99,8 +100,7 @@ void main() {
       expect(bloc.state, isA<ProductsLoadedState>());
     });
 
-    test('retyping the same query after a failed search retries it',
-        () async {
+    test('retyping the same query after a failed search retries it', () async {
       bloc.add(const SearchInputChangedEvent(searchString: 'apple'));
       await _settleDebounce();
       useCase.calls.single.completeError(Exception('HTTP 500'));
@@ -117,8 +117,7 @@ void main() {
       expect(bloc.state, isA<ProductsLoadedState>());
     });
 
-    test('a completed query is not searched again for the same text',
-        () async {
+    test('a completed query is not searched again for the same text', () async {
       bloc.add(const SearchInputChangedEvent(searchString: 'apple'));
       await _settleDebounce();
       useCase.calls.single.complete(_emptyResult);
@@ -237,8 +236,7 @@ void main() {
       expect((bloc.state as ProductsLoadedState).query, 'banana');
     });
 
-    test('does not turn the newer products results into a failure',
-        () async {
+    test('does not turn the newer products results into a failure', () async {
       final bloc = ProductsBloc(useCase, _FakeGetConfigUsecase());
       addTearDown(bloc.close);
       bloc.add(const LoadProductsEvent(searchString: 'apple'));
@@ -279,8 +277,7 @@ void main() {
       expect((bloc.state as FoodLoadedState).query, 'banana');
     });
 
-    test('a duplicate keystroke does not orphan the Retry in flight',
-        () async {
+    test('a duplicate keystroke does not orphan the Retry in flight', () async {
       final bloc = ProductsBloc(useCase, _FakeGetConfigUsecase());
       addTearDown(bloc.close);
       bloc.add(const LoadProductsEvent(searchString: 'apple'));

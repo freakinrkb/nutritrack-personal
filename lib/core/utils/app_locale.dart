@@ -36,8 +36,8 @@ class AppLocale {
   /// The device's preference list, as `MaterialApp` sees it. Swapped in
   /// tests to exercise the resolution without a platform.
   @visibleForTesting
-  static List<Locale> Function() preferredLocales = () =>
-      PlatformDispatcher.instance.locales;
+  static List<Locale> Function() preferredLocales =
+      () => PlatformDispatcher.instance.locales;
 
   static String get _systemLocaleName {
     final preferred = preferredLocales();

@@ -162,8 +162,7 @@ void main() {
     group('a total weight entered by hand', () {
       test('is recognised after the round trip', () {
         // 300 g of ingredients, cooked down to 240 g.
-        final decoded =
-            _roundTrip(_testRecipe().copyWith(totalWeightG: 240));
+        final decoded = _roundTrip(_testRecipe().copyWith(totalWeightG: 240));
 
         expect(decoded.totalWeightOverridden, isTrue);
       });
@@ -171,8 +170,7 @@ void main() {
       test('survives the save, and nutrition is spread over it', () async {
         final repo = _FakeRecipeRepository();
         final save = SaveRecipeUseCase(repo, ComputeRecipeNutritionUseCase());
-        final decoded =
-            _roundTrip(_testRecipe().copyWith(totalWeightG: 240));
+        final decoded = _roundTrip(_testRecipe().copyWith(totalWeightG: 240));
 
         await save.save(
           decoded.toRecipeEntity(),
@@ -200,8 +198,11 @@ void main() {
           totalWeightG: 99.999,
         ));
 
-        expect(decoded.totalWeightG - decoded.ingredients
-            .fold<double>(0, (sum, i) => sum + i.convertedAmountG), isNonZero);
+        expect(
+            decoded.totalWeightG -
+                decoded.ingredients
+                    .fold<double>(0, (sum, i) => sum + i.convertedAmountG),
+            isNonZero);
         expect(decoded.totalWeightOverridden, isFalse);
       });
 
@@ -225,8 +226,7 @@ void main() {
         // would put down to rounding; the flag says it was typed.
         final repo = _FakeRecipeRepository();
         final save = SaveRecipeUseCase(repo, ComputeRecipeNutritionUseCase());
-        final decoded =
-            _roundTrip(_testRecipe().copyWith(totalWeightG: 299.9));
+        final decoded = _roundTrip(_testRecipe().copyWith(totalWeightG: 299.9));
 
         expect(decoded.totalWeightOverridden, isTrue);
         await save.save(
@@ -265,8 +265,7 @@ void main() {
 
         test('still imports, read off the numbers', () async {
           final repo = _FakeRecipeRepository();
-          final save =
-              SaveRecipeUseCase(repo, ComputeRecipeNutritionUseCase());
+          final save = SaveRecipeUseCase(repo, ComputeRecipeNutritionUseCase());
           final decoded = legacy(240);
 
           expect(decoded.totalWeightOverrideFlag, isNull);
@@ -294,7 +293,8 @@ void main() {
 
     test('throws on unsupported version', () {
       // Manually craft a payload with version 99
-      final fakeJson = '[99,"name",null,null,100,[null,null,null,null,null,null,null],[]]';
+      final fakeJson =
+          '[99,"name",null,null,100,[null,null,null,null,null,null,null],[]]';
       expect(
         () => SharedRecipePayload.fromJsonString(fakeJson),
         throwsA(isA<SharedRecipeParseException>()),

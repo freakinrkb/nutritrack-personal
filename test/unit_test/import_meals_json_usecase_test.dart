@@ -53,7 +53,8 @@ class _NoopAddTrackedDayUsecase extends AddTrackedDayUsecase {
   ) async {}
 
   @override
-  Future<void> addDayCaloriesTracked(DateTime day, double caloriesTracked) async {}
+  Future<void> addDayCaloriesTracked(
+      DateTime day, double caloriesTracked) async {}
 
   @override
   Future<void> addDayMacrosTracked(
@@ -104,17 +105,22 @@ void main() {
       customMealBox = await Hive.openBox<MealDBO>(
         'custom_meal_json_usecase_${DateTime.now().microsecondsSinceEpoch}',
       );
-      customMealDataSource = CustomMealDataSource(FakeHiveDBProvider(customMealBox: customMealBox));
+      customMealDataSource = CustomMealDataSource(
+          FakeHiveDBProvider(customMealBox: customMealBox));
 
       // The super constructors of the use cases require concrete repository
       // instances. The recording/no-op subclasses below never call into
       // those repositories — they short-circuit the public methods — so
       // we pass repositories backed by uninitialised data sources. None of
       // these are ever read.
-      final dummyIntakeRepo = IntakeRepository(IntakeDataSource(FakeHiveDBProvider()));
-      final dummyTrackedRepo = TrackedDayRepository(TrackedDayDataSource(FakeHiveDBProvider()));
-      final dummyUserRepo = UserRepository(UserDataSource(FakeHiveDBProvider()));
-      final dummyConfigRepo = ConfigRepository(ConfigDataSource(FakeHiveDBProvider()));
+      final dummyIntakeRepo =
+          IntakeRepository(IntakeDataSource(FakeHiveDBProvider()));
+      final dummyTrackedRepo =
+          TrackedDayRepository(TrackedDayDataSource(FakeHiveDBProvider()));
+      final dummyUserRepo =
+          UserRepository(UserDataSource(FakeHiveDBProvider()));
+      final dummyConfigRepo =
+          ConfigRepository(ConfigDataSource(FakeHiveDBProvider()));
       final dummyActivityRepo =
           UserActivityRepository(UserActivityDataSource(FakeHiveDBProvider()));
 
@@ -122,7 +128,8 @@ void main() {
       sut = ImportMealsJsonUsecase(
         addIntake,
         _NoopAddTrackedDayUsecase(dummyTrackedRepo),
-        _StubGetKcalGoalUsecase(dummyUserRepo, dummyConfigRepo, dummyActivityRepo),
+        _StubGetKcalGoalUsecase(
+            dummyUserRepo, dummyConfigRepo, dummyActivityRepo),
         _StubGetMacroGoalUsecase(dummyConfigRepo),
         customMealDataSource,
       );
@@ -133,7 +140,8 @@ void main() {
     });
 
     test('one pasted entry writes one intake and one custom meal', () async {
-      const json = '{"name":"Apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
+      const json =
+          '{"name":"Apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
 
       final result = await sut.importFromJsonString(json);
 
@@ -147,7 +155,8 @@ void main() {
     test(
         'pasting the same entry twice writes two intakes but only one custom meal '
         '(dedup on name)', () async {
-      const json = '{"name":"Apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
+      const json =
+          '{"name":"Apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
 
       await sut.importFromJsonString(json);
       final second = await sut.importFromJsonString(json);
@@ -163,10 +172,11 @@ void main() {
               'skips the custom-meal write');
     });
 
-    test(
-        'name dedup is case-insensitive', () async {
-      const json1 = '{"name":"Apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
-      const json2 = '{"name":"apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
+    test('name dedup is case-insensitive', () async {
+      const json1 =
+          '{"name":"Apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
+      const json2 =
+          '{"name":"apple","kcal":95,"protein":0.5,"carbs":25,"fat":0.3}';
 
       await sut.importFromJsonString(json1);
       final second = await sut.importFromJsonString(json2);
@@ -175,7 +185,8 @@ void main() {
       expect(second.savedAsCustomMeals, 0);
     });
 
-    test('an array of three distinct entries writes three intakes and three custom meals',
+    test(
+        'an array of three distinct entries writes three intakes and three custom meals',
         () async {
       const json = '['
           '{"name":"Oats","kcal":150,"protein":5,"carbs":27,"fat":2.5},'

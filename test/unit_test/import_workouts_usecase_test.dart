@@ -86,14 +86,15 @@ ExternalWorkout _workout({
   required DateTime start,
   Duration duration = const Duration(hours: 1),
   double? energyBurnedKcal = 500,
-}) => ExternalWorkout(
-  id: id,
-  start: start,
-  end: start.add(duration),
-  activityTypeName: activityTypeName,
-  energyBurnedKcal: energyBurnedKcal,
-  sourceAppName: 'Fake Watch',
-);
+}) =>
+    ExternalWorkout(
+      id: id,
+      start: start,
+      end: start.add(duration),
+      activityTypeName: activityTypeName,
+      energyBurnedKcal: energyBurnedKcal,
+      sourceAppName: 'Fake Watch',
+    );
 
 void main() {
   // A fixed "now", well clear of both midnight and any configurable day
@@ -232,7 +233,8 @@ void main() {
         expect(
           (await trackedDayRepository.getTrackedDay(
             DateTime(2026, 5, 22),
-          ))!.calorieGoal,
+          ))!
+              .calorieGoal,
           closeTo(base + 500, 0.001),
         );
       },
@@ -470,7 +472,8 @@ void main() {
       expect(healthService.readWorkoutsCalls, equals(2));
     });
 
-    test('a failing health store is swallowed in the background and raised '
+    test(
+        'a failing health store is swallowed in the background and raised '
         'on the user-initiated path', () async {
       healthService.throwOnRead = true;
 
@@ -536,7 +539,8 @@ void main() {
       );
     });
 
-    test('a switch while the workout waits for the tracked-day lock files '
+    test(
+        'a switch while the workout waits for the tracked-day lock files '
         'nothing', () async {
       // #1317 review: the switch holds the lock from the box swap on, so
       // the run gets past its own profile check and then waits for it.
@@ -739,7 +743,8 @@ void main() {
   });
 
   group('ImportWorkoutsUsecase day boundary', () {
-    test('a boundary moved during the platform read is the one the workout '
+    test(
+        'a boundary moved during the platform read is the one the workout '
         'is credited under', () async {
       // 02:30 is the 23rd at a 00:00 boundary and the 22nd at 04:00.
       healthService.workouts = [_workout(start: DateTime(2026, 5, 23, 2, 30))];

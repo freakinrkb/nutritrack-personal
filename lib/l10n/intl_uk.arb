@@ -225,7 +225,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Усі записи в щоденнику, що використовують цю страву, також буде видалено.",
+  "customMealsDeleteConfirmContent": "Попередні записи щоденника з цієї власної страви залишаться.",
   "customMealsDeleteConfirmTitle": "Видалити власну страву?",
   "customMealsEmptyLabel": "Ще немає збережених власних страв.",
   "dailyKcalAdjustmentLabel": "Щоденна корекція калорій:",

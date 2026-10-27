@@ -42,16 +42,16 @@ final _day = DateTime.utc(2026, 10, 14);
 
 /// What another writer has put on the day by the time a creator acts.
 TrackedDayDBO _rowWithTotals() => TrackedDayDBO(
-  day: _day,
-  calorieGoal: 2000,
-  caloriesTracked: 500,
-  carbsGoal: 250,
-  carbsTracked: 60,
-  fatGoal: 70,
-  fatTracked: 20,
-  proteinGoal: 100,
-  proteinTracked: 30,
-);
+      day: _day,
+      calorieGoal: 2000,
+      caloriesTracked: 500,
+      carbsGoal: 250,
+      carbsTracked: 60,
+      fatGoal: 70,
+      fatTracked: 20,
+      proteinGoal: 100,
+      proteinTracked: 30,
+    );
 
 /// The real use case over a real box, except that its check loses the race:
 /// it answers "no such day", and before the caller can act on that, another
@@ -75,7 +75,8 @@ class _FakeGetKcalGoalUsecase extends Fake implements GetKcalGoalUsecase {
     Object? userEntity,
     double? totalKcalActivitiesParam,
     double? kcalUserAdjustment,
-  }) async => 1800;
+  }) async =>
+      1800;
 }
 
 class _FakeGetMacroGoalUsecase extends Fake implements GetMacroGoalUsecase {
@@ -215,7 +216,8 @@ void main() {
     });
   });
 
-  test('a creator whose check went stale leaves the other writer\'s day '
+  test(
+      'a creator whose check went stale leaves the other writer\'s day '
       'alone', () async {
     final usecase = AddTrackedDayUsecase(repository);
 
@@ -370,7 +372,8 @@ void main() {
       expect((await dataSource.getTrackedDay(_day))!.caloriesTracked, 200);
     });
 
-    test('ActivityDetailBloc.persistActivity, several in a row as the '
+    test(
+        'ActivityDetailBloc.persistActivity, several in a row as the '
         'activity scanner logs them', () async {
       final bloc = ActivityDetailBloc(
         _FakeGetUserUsecase(),
@@ -394,7 +397,8 @@ void main() {
             _day,
           );
         }
-      }().then((_) => done = true);
+      }()
+          .then((_) => done = true);
       await pumpEventQueue();
       expect(done, isFalse);
       expect(await dataSource.getTrackedDay(_day), isNull);

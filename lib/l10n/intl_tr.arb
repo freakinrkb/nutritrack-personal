@@ -225,7 +225,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Bu yemeği kullanan tüm günlük girişleri de kaldırılacak.",
+  "customMealsDeleteConfirmContent": "Bu özel yemekten günlüğe eklenen önceki girdiler korunacaktır.",
   "customMealsDeleteConfirmTitle": "Özel yemek silinsin mi?",
   "customMealsEmptyLabel": "Henüz özel yemek kaydedilmedi.",
   "dailyKcalAdjustmentLabel": "Günlük Kcal ayarı:",

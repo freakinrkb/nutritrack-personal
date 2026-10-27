@@ -144,15 +144,15 @@ class OpenAiMealItemsApi implements MealItemsApi {
   List<Map<String, Object?>> _contentJson(MealContent content) =>
       switch (content) {
         MealTextContent(:final text) => [
-          {'type': 'input_text', 'text': text},
-        ],
+            {'type': 'input_text', 'text': text},
+          ],
         MealPhotoContent(:final mediaType, :final base64Data) => [
-          {
-            'type': 'input_image',
-            'image_url': 'data:$mediaType;base64,$base64Data',
-          },
-          {'type': 'input_text', 'text': mealPhotoContentPrompt},
-        ],
+            {
+              'type': 'input_image',
+              'image_url': 'data:$mediaType;base64,$base64Data',
+            },
+            {'type': 'input_text', 'text': mealPhotoContentPrompt},
+          ],
       };
 
   /// The items from the forced tool call.
@@ -268,17 +268,18 @@ class OpenAiMealItemsApi implements MealItemsApi {
   static MealInterpreterFailure _failureFor(
     int statusCode,
     ({String? code, String? type}) error,
-  ) => switch (statusCode) {
-    401 || 403 => MealInterpreterFailure.auth,
-    400 when error.code == 'model_not_found' =>
-      MealInterpreterFailure.unsupported,
-    400 || 422 => MealInterpreterFailure.rejected,
-    402 => MealInterpreterFailure.billing,
-    429 when error.code == _quotaCode || error.type == _quotaCode =>
-      MealInterpreterFailure.billing,
-    404 => MealInterpreterFailure.unsupported,
-    _ => MealInterpreterFailure.transient,
-  };
+  ) =>
+      switch (statusCode) {
+        401 || 403 => MealInterpreterFailure.auth,
+        400 when error.code == 'model_not_found' =>
+          MealInterpreterFailure.unsupported,
+        400 || 422 => MealInterpreterFailure.rejected,
+        402 => MealInterpreterFailure.billing,
+        429 when error.code == _quotaCode || error.type == _quotaCode =>
+          MealInterpreterFailure.billing,
+        404 => MealInterpreterFailure.unsupported,
+        _ => MealInterpreterFailure.transient,
+      };
 
   /// What OpenAI calls an exhausted balance, in either field.
   static const _quotaCode = 'insufficient_quota';

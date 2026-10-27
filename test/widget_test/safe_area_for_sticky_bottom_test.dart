@@ -70,8 +70,7 @@ void main() {
         expect(
           file.existsSync(),
           isTrue,
-          reason:
-              '$relativePath is listed as a screen with persistent bottom '
+          reason: '$relativePath is listed as a screen with persistent bottom '
               'UI but the file does not exist. If the screen was renamed or '
               'removed, update _screensWithStickyBottomUi in this test.',
         );
@@ -81,8 +80,7 @@ void main() {
         expect(
           source.contains('SafeArea'),
           isTrue,
-          reason:
-              '$relativePath has persistent bottom UI but is missing a '
+          reason: '$relativePath has persistent bottom UI but is missing a '
               'SafeArea wrap. Bottom buttons will sit under the Android '
               'gesture-navigation strip on devices that do not reserve '
               'insets — see issue #156. Wrap the bottom region (or the '

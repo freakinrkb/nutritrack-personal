@@ -118,7 +118,8 @@ void main() {
       expect(next.location.name, equals('Asia/Tokyo'));
     });
 
-    test('DST spring-forward: 02:30 in US/Eastern does not exist on '
+    test(
+        'DST spring-forward: 02:30 in US/Eastern does not exist on '
         '2026-03-08, slot rolls to next day', () {
       // 2026-03-08 in America/New_York: clocks jump 02:00 → 03:00, so 02:30
       // is a non-existent local time. The TZDateTime constructor canonicalises
@@ -143,7 +144,8 @@ void main() {
       expect(next.day, equals(8));
     });
 
-    test('DST fall-back: 01:30 occurs twice on 2026-11-01 in US/Eastern; '
+    test(
+        'DST fall-back: 01:30 occurs twice on 2026-11-01 in US/Eastern; '
         'helper still produces a strictly future occurrence', () {
       final ny = tz.getLocation('America/New_York');
       final after = tz.TZDateTime(ny, 2026, 11, 1, 3, 0);

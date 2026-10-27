@@ -55,9 +55,8 @@ class _ManageProfilesScreenState extends State<ManageProfilesScreen> {
             ListTile(
               leading: ProfileAvatar(profile: profile),
               title: Text(profileDisplayName(context, profile)),
-              subtitle: profile.id == _activeId
-                  ? Text(s.profileActiveLabel)
-                  : null,
+              subtitle:
+                  profile.id == _activeId ? Text(s.profileActiveLabel) : null,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

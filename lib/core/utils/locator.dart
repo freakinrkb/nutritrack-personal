@@ -238,9 +238,7 @@ Future<void> initLocator() async {
   // The iOS home-screen widget's App Group copy. One instance for Home,
   // the language picker, delete-all and the profile switch, so they share
   // the App Group it resolves once from the bundle id.
-  locator.registerLazySingleton<CalorieWidgetStore>(
-    HomeWidgetCalorieStore.new,
-  );
+  locator.registerLazySingleton<CalorieWidgetStore>(HomeWidgetCalorieStore.new);
 
   // Cache manager
   locator.registerLazySingleton<CacheManager>(
@@ -343,15 +341,7 @@ Future<void> initLocator() async {
   // create-from-popup flow on the same tab — both must mutate / observe the
   // same instance so the list refreshes after a new entry is created.
   locator.registerLazySingleton<CustomMealsBloc>(
-    () =>
-        CustomMealsBloc(
-          locator(),
-          locator(),
-          locator(),
-          locator(),
-          locator(),
-          locator(),
-        ),
+    () => CustomMealsBloc(locator(), locator(), locator()),
   );
 
   locator.registerFactory<ActivitiesBloc>(() => ActivitiesBloc(locator()));
@@ -583,6 +573,7 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      waterIntakeRepository: locator(),
     ),
   );
   locator.registerLazySingleton(
@@ -595,6 +586,8 @@ Future<void> initLocator() async {
       locator(),
       locator(),
       locator(),
+      customMealDataSource: locator(),
+      waterIntakeRepository: locator(),
       restoreTrackedDays:
           (
             write, {

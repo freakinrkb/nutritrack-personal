@@ -152,14 +152,15 @@ class OpenAiCompatibleMealItemsApi implements MealItemsApi {
     required String model,
     List<String>? providers,
     Duration timeout = defaultTimeout,
-  }) => OpenAiCompatibleMealItemsApi(
-    client,
-    apiKey,
-    model: model,
-    endpoint: openRouterEndpoint,
-    broker: OpenRouterBroker(providers: providers),
-    timeout: timeout,
-  );
+  }) =>
+      OpenAiCompatibleMealItemsApi(
+        client,
+        apiKey,
+        model: model,
+        endpoint: openRouterEndpoint,
+        broker: OpenRouterBroker(providers: providers),
+        timeout: timeout,
+      );
 
   @override
   Future<MealTextParseResult> requestItems({
@@ -224,29 +225,30 @@ class OpenAiCompatibleMealItemsApi implements MealItemsApi {
         }
       else if (toolChoice == ToolChoiceMode.anyTool)
         'tool_choice': 'required',
-      if (broker != null) 'provider': {
-        // Without this, OpenRouter documents that a provider which does not
-        // support a parameter still receives the request and ignores it —
-        // and `tool_choice` is not in the set it steers by. A dropped
-        // `tool_choice` means a prose answer this client cannot read, which
-        // would surface as "malformed response" rather than as the
-        // capability problem it is. With it, an unfit provider is refused up
-        // front with a 404 the user can be told about.
-        'require_parameters': true,
-        // Routing default is `allow`, meaning providers that store input
-        // non-transiently and may train on it are eligible. The app cannot
-        // promise a destination's behaviour it never asked for.
-        //
-        // Enforced here as a policy field rather than by reading the slug:
-        // free *usage* triggers the training clauses, not the `:free`
-        // suffix, so slug inspection would be a check that looks like one
-        // and is not.
-        'data_collection': 'deny',
-        if (broker?.providers case final only?) ...{
-          'only': only,
-          'allow_fallbacks': false,
+      if (broker != null)
+        'provider': {
+          // Without this, OpenRouter documents that a provider which does not
+          // support a parameter still receives the request and ignores it —
+          // and `tool_choice` is not in the set it steers by. A dropped
+          // `tool_choice` means a prose answer this client cannot read, which
+          // would surface as "malformed response" rather than as the
+          // capability problem it is. With it, an unfit provider is refused up
+          // front with a 404 the user can be told about.
+          'require_parameters': true,
+          // Routing default is `allow`, meaning providers that store input
+          // non-transiently and may train on it are eligible. The app cannot
+          // promise a destination's behaviour it never asked for.
+          //
+          // Enforced here as a policy field rather than by reading the slug:
+          // free *usage* triggers the training clauses, not the `:free`
+          // suffix, so slug inspection would be a check that looks like one
+          // and is not.
+          'data_collection': 'deny',
+          if (broker?.providers case final only?) ...{
+            'only': only,
+            'allow_fallbacks': false,
+          },
         },
-      },
     });
 
     final http.Response response;
@@ -369,15 +371,15 @@ class OpenAiCompatibleMealItemsApi implements MealItemsApi {
   /// documentation recommends — and the opposite of what the Anthropic client
   /// sends, which is the clearest single reason these are two classes.
   Object _contentJson(MealContent content) => switch (content) {
-    MealTextContent(:final text) => text,
-    MealPhotoContent(:final mediaType, :final base64Data) => [
-      {'type': 'text', 'text': mealPhotoContentPrompt},
-      {
-        'type': 'image_url',
-        'image_url': {'url': 'data:$mediaType;base64,$base64Data'},
-      },
-    ],
-  };
+        MealTextContent(:final text) => text,
+        MealPhotoContent(:final mediaType, :final base64Data) => [
+            {'type': 'text', 'text': mealPhotoContentPrompt},
+            {
+              'type': 'image_url',
+              'image_url': {'url': 'data:$mediaType;base64,$base64Data'},
+            },
+          ],
+      };
 
   /// Pulls the tool arguments out of the reply.
   ///
@@ -452,9 +454,8 @@ class OpenAiCompatibleMealItemsApi implements MealItemsApi {
     _log.warning('Interpreter generation failed with $code');
     throw MealInterpreterException(
       'generation failed',
-      failure: code is int
-          ? failureFor(code)
-          : MealInterpreterFailure.transient,
+      failure:
+          code is int ? failureFor(code) : MealInterpreterFailure.transient,
       statusCode: code is int ? code : null,
     );
   }

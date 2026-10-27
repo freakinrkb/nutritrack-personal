@@ -156,15 +156,16 @@ Set<String> namedQualifiers(
   Set<String> titleTokens,
   Set<String> qualifierTokens,
   Set<String> queryTokens,
-) => {
-  for (final qualifier in qualifierTokens)
-    if (queryTokens.any(
-      (token) =>
-          tokenSimilarity(token, qualifier) >
-          _bestAgreement(token, titleTokens),
-    ))
-      qualifier,
-};
+) =>
+    {
+      for (final qualifier in qualifierTokens)
+        if (queryTokens.any(
+          (token) =>
+              tokenSimilarity(token, qualifier) >
+              _bestAgreement(token, titleTokens),
+        ))
+          qualifier,
+    };
 
 /// [text]'s agreement with [queryTokens], 0.0-1.0: the soft Dice of its
 /// tokens — plus whichever tokens of [qualifiers] the query names, see

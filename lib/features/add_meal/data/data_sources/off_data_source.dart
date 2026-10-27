@@ -89,8 +89,7 @@ class OFFDataSource {
   Future<OFFWordResponseDTO> _fetchWordResults(Uri searchUrl) async {
     final userAgentString = await AppConst.getUserAgentString();
     final httpClient = ONTHttpClient(userAgentString, _clientFactory());
-    final response =
-        await httpClient.get(searchUrl).timeout(_timeoutDuration);
+    final response = await httpClient.get(searchUrl).timeout(_timeoutDuration);
     log.fine('Fetching OFF results from: $searchUrl');
     if (response.statusCode == OFFConst.offHttpSuccessCode) {
       final wordResponse = OFFWordResponseDTO.fromJson(

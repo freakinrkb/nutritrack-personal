@@ -5,18 +5,18 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_entity.dart';
 
 MealEntity _meal() => MealEntity(
-  code: '123',
-  name: 'Bread, rye',
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: 38,
-  servingUnit: 'g',
-  servingSize: '1 slice (38 g)',
-  source: MealSourceEntity.fdc,
-  backendSource: 'fdc_survey',
-  nutriments: MealNutrimentsEntity.empty(),
-);
+      code: '123',
+      name: 'Bread, rye',
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: 38,
+      servingUnit: 'g',
+      servingSize: '1 slice (38 g)',
+      source: MealSourceEntity.fdc,
+      backendSource: 'fdc_survey',
+      nutriments: MealNutrimentsEntity.empty(),
+    );
 
 final _portion = MealPortionEntity(
   label: '1 slice',
@@ -49,8 +49,8 @@ void main() {
       // in whichever order the two lookups are read; a copier that dropped
       // the flag would un-mark the record halfway through decoration.
       final marked = _meal().withPortionsUnavailable().withServingLabel(
-        '1 Scheibe (38 g)',
-      );
+            '1 Scheibe (38 g)',
+          );
 
       expect(marked.servingSize, '1 Scheibe (38 g)');
       expect(marked.servingSizeIsLocalized, isTrue);

@@ -106,8 +106,7 @@ void main() {
     final sorted = DiarySortType.kcal.apply(source);
     expect(identical(sorted, source), isFalse,
         reason: 'apply must return a copy');
-    expect(source.map((i) => i.id).toList(),
-        original.map((i) => i.id).toList(),
+    expect(source.map((i) => i.id).toList(), original.map((i) => i.id).toList(),
         reason: 'source list must be untouched');
   });
 

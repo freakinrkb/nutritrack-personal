@@ -78,8 +78,8 @@ void main() {
       'android/app/src/main/AndroidManifest.xml',
     ).readAsStringSync();
     final activity = File(
-      'android/app/src/main/kotlin/com/opennutritracker/ont/'
-      'opennutritracker/MainActivity.kt',
+      'android/app/src/main/kotlin/com/freakinrkb/nutritrack/'
+      'MainActivity.kt',
     ).readAsStringSync();
 
     test('the manifest offers both ways in', () {

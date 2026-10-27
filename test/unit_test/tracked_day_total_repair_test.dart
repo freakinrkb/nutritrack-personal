@@ -18,37 +18,38 @@ MealDBO _meal({
   required double? carbs,
   required double? fat,
   required double? protein,
-}) => MealDBO(
-  code: null,
-  name: 'Custom',
-  brands: null,
-  thumbnailImageUrl: null,
-  mainImageUrl: null,
-  url: null,
-  mealQuantity: '100',
-  mealUnit: 'g',
-  servingQuantity: 100,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: MealNutrimentsDBO(
-    energyKcal100: kcal,
-    carbohydrates100: carbs,
-    fat100: fat,
-    proteins100: protein,
-    sugars100: null,
-    saturatedFat100: null,
-    fiber100: null,
-  ),
-  source: MealSourceDBO.custom,
-);
+}) =>
+    MealDBO(
+      code: null,
+      name: 'Custom',
+      brands: null,
+      thumbnailImageUrl: null,
+      mainImageUrl: null,
+      url: null,
+      mealQuantity: '100',
+      mealUnit: 'g',
+      servingQuantity: 100,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: MealNutrimentsDBO(
+        energyKcal100: kcal,
+        carbohydrates100: carbs,
+        fat100: fat,
+        proteins100: protein,
+        sugars100: null,
+        saturatedFat100: null,
+        fiber100: null,
+      ),
+      source: MealSourceDBO.custom,
+    );
 
 /// What a custom meal saved with a base quantity of 0 stored (#1254).
 MealDBO _nanMeal() => _meal(
-  kcal: double.nan,
-  carbs: double.nan,
-  fat: double.nan,
-  protein: double.nan,
-);
+      kcal: double.nan,
+      carbs: double.nan,
+      fat: double.nan,
+      protein: double.nan,
+    );
 
 /// 200 kcal, 20 g carbs, 10 g fat and 5 g protein per 100 g.
 MealDBO _okMeal() => _meal(kcal: 200, carbs: 20, fat: 10, protein: 5);
@@ -69,17 +70,18 @@ TrackedDayDBO _day(
   double? carbs,
   double? fat,
   double? protein,
-}) => TrackedDayDBO(
-  day: day,
-  calorieGoal: 2000,
-  caloriesTracked: kcal,
-  carbsGoal: 250,
-  carbsTracked: carbs,
-  fatGoal: 70,
-  fatTracked: fat,
-  proteinGoal: 100,
-  proteinTracked: protein,
-);
+}) =>
+    TrackedDayDBO(
+      day: day,
+      calorieGoal: 2000,
+      caloriesTracked: kcal,
+      carbsGoal: 250,
+      carbsTracked: carbs,
+      fatGoal: 70,
+      fatTracked: fat,
+      proteinGoal: 100,
+      proteinTracked: protein,
+    );
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -151,7 +153,8 @@ void main() {
     Future<int> repair() =>
         ensureTrackedDayTotalsFinite(db, ConfigDataSource(db));
 
-    test('rebuilds a NaN day from its intakes, the NaN entry counting as 0, '
+    test(
+        'rebuilds a NaN day from its intakes, the NaN entry counting as 0, '
         'and a second run changes nothing', () async {
       await intakeBox.addAll([
         _intake('nan', _nanMeal(), DateTime(2026, 9, 24, 8)),
@@ -231,7 +234,8 @@ void main() {
       expect(trackedDayBox.get('broken')!.caloriesTracked, 100);
     });
 
-    test('leaves finite days alone, even when they disagree with their '
+    test(
+        'leaves finite days alone, even when they disagree with their '
         'intakes', () async {
       await intakeBox.add(_intake('ok', _okMeal(), DateTime(2026, 9, 25, 13)));
       await trackedDayBox.put(

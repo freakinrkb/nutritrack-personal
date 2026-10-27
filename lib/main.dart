@@ -43,6 +43,7 @@ import 'package:opennutritracker/features/recipes/presentation/screens/import_re
 import 'package:opennutritracker/features/recipes/presentation/screens/recipe_builder_screen.dart';
 import 'package:opennutritracker/features/recipes/presentation/screens/recipe_detail_screen.dart';
 import 'package:opennutritracker/features/recipes/presentation/screens/recipes_page.dart';
+import 'package:opennutritracker/features/routines/presentation/routines_screen.dart';
 import 'package:opennutritracker/features/home/presentation/screens/import_activity_scanner_screen.dart';
 import 'package:opennutritracker/features/home/presentation/screens/import_meal_scanner_screen.dart';
 import 'package:opennutritracker/features/scanner/scanner_screen.dart';
@@ -378,7 +379,8 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
         NavigationOptions.settingsRoute: (context) => const SettingsScreen(),
         NavigationOptions.accentColourRoute: (context) =>
             const AccentColourScreen(),
-        NavigationOptions.healthSyncRoute: (context) => const HealthSyncScreen(),
+        NavigationOptions.healthSyncRoute: (context) =>
+            const HealthSyncScreen(),
         NavigationOptions.addMealRoute: (context) => const AddMealScreen(),
         NavigationOptions.bulkAddRoute: (context) => const BulkAddScreen(),
         NavigationOptions.scannerRoute: (context) => const ScannerScreen(),
@@ -405,6 +407,7 @@ class _OpenNutriTrackerAppState extends State<OpenNutriTrackerApp>
         NavigationOptions.weightHistoryRoute: (context) =>
             const WeightHistoryScreen(),
         NavigationOptions.fastingRoute: (context) => const FastingScreen(),
+        NavigationOptions.routinesRoute: (context) => const RoutinesScreen(),
         NavigationOptions.manageProfilesRoute: (context) =>
             const ManageProfilesScreen(),
       },

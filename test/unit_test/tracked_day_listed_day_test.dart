@@ -56,7 +56,8 @@ class _FakeKcalGoal extends Fake implements GetKcalGoalUsecase {
     dynamic userEntity,
     double? totalKcalActivitiesParam,
     double? kcalUserAdjustment,
-  }) async => 2000;
+  }) async =>
+      2000;
 }
 
 /// Holds a writer between storing its entry and adding it to the row: the
@@ -215,32 +216,32 @@ void main() {
   }
 
   Future<void> addFood(DateTime day) => mealDetailBloc.addIntake(
-    _FakeContext(),
-    'g',
-    '100',
-    IntakeTypeEntity.breakfast,
-    _meal,
-    day,
-  );
+        _FakeContext(),
+        'g',
+        '100',
+        IntakeTypeEntity.breakfast,
+        _meal,
+        day,
+      );
 
   UserActivityEntity activityAt(DateTime at) => UserActivityEntity(
-    'walk-${at.microsecondsSinceEpoch}',
-    30,
-    150,
-    at,
-    PhysicalActivityFixtures.moderateBicycling,
-  );
+        'walk-${at.microsecondsSinceEpoch}',
+        30,
+        150,
+        at,
+        PhysicalActivityFixtures.moderateBicycling,
+      );
 
   /// A walk the health import filed, which it marks with the platform's
   /// record id.
   UserActivityEntity importedActivityAt(DateTime at) => UserActivityEntity(
-    'import-${at.microsecondsSinceEpoch}',
-    30,
-    150,
-    at,
-    PhysicalActivityFixtures.moderateBicycling,
-    externalId: 'hc-${at.microsecondsSinceEpoch}',
-  );
+        'import-${at.microsecondsSinceEpoch}',
+        30,
+        150,
+        at,
+        PhysicalActivityFixtures.moderateBicycling,
+        externalId: 'hc-${at.microsecondsSinceEpoch}',
+      );
 
   /// The boundary, in minutes, the profile's rows are on record as keyed by.
   int? recordedOffset() =>
@@ -274,7 +275,8 @@ void main() {
   group('with a 04:00 day boundary', () {
     setUp(() => setBoundary(4));
 
-    test('food logged from Home at 02:00 lands on the row of the day the '
+    test(
+        'food logged from Home at 02:00 lands on the row of the day the '
         'Diary lists it under', () async {
       // Home hands MealDetailBloc a raw DateTime.now().
       final at = DateTime(2026, 10, 5, 2);
@@ -294,7 +296,8 @@ void main() {
       expect(nextDay.row, isNull, reason: 'nothing is listed on the 5th');
     });
 
-    test('an activity logged from Home at 02:00 raises the goal of the day '
+    test(
+        'an activity logged from Home at 02:00 raises the goal of the day '
         'the Diary lists it under', () async {
       final at = DateTime(2026, 10, 5, 2);
       await logActivity.logActivity(activityAt(at), day: at);
@@ -336,17 +339,17 @@ void main() {
 
   /// A row as an older build keyed it, holding one 200 kcal toast.
   TrackedDayDBO legacyRow(DateTime day, {double kcal = 200}) => TrackedDayDBO(
-    day: day,
-    calorieGoal: 1800,
-    caloriesTracked: kcal,
-    carbsGoal: 225,
-    carbsTracked: kcal / 5,
-    fatGoal: 60,
-    fatTracked: kcal / 100,
-    proteinGoal: 90,
-    proteinTracked: kcal * 3 / 100,
-    fibreGoal: 35,
-  );
+        day: day,
+        calorieGoal: 1800,
+        caloriesTracked: kcal,
+        carbsGoal: 225,
+        carbsTracked: kcal / 5,
+        fatGoal: 60,
+        fatTracked: kcal / 100,
+        proteinGoal: 90,
+        proteinTracked: kcal * 3 / 100,
+        fibreGoal: 35,
+      );
 
   double totalTracked() =>
       trackedDayBox.values.fold(0.0, (sum, row) => sum + row.caloriesTracked);
@@ -371,7 +374,8 @@ void main() {
       );
     }
 
-    test('moves onto the day the Diary lists its entries under, and the '
+    test(
+        'moves onto the day the Diary lists its entries under, and the '
         'stale row goes with its marker', () async {
       await logAsOlderBuild();
 
@@ -394,7 +398,8 @@ void main() {
       expect(totalTracked(), 200);
     });
 
-    test('a later entry on the stale row\'s day starts a row of its '
+    test(
+        'a later entry on the stale row\'s day starts a row of its '
         'own', () async {
       await logAsOlderBuild();
       await reconcile();
@@ -417,7 +422,8 @@ void main() {
       expect(await reconcile(), 0);
     });
 
-    test('a row with nothing listed and nothing counted keeps its '
+    test(
+        'a row with nothing listed and nothing counted keeps its '
         'goal', () async {
       // Every entry of the 30th was deleted again; the row stays.
       await trackedDayBox.put(
@@ -429,7 +435,8 @@ void main() {
       expect(trackedDayBox.get('2026-09-30')!.calorieGoal, 1800);
     });
 
-    test('a stale row that also holds a NaN total is removed by the '
+    test(
+        'a stale row that also holds a NaN total is removed by the '
         'activation repairs, not zeroed and kept', () async {
       await logAsOlderBuild();
       // A NaN intake (#1254) also reached the stale row's running total.
@@ -451,7 +458,8 @@ void main() {
       expect(totalTracked(), 200);
     });
 
-    test('a row holding only an activity\'s goal credit moves with the '
+    test(
+        'a row holding only an activity\'s goal credit moves with the '
         'activity, which is credited once', () async {
       // Logged from the activity screen at 02:00: listed on the 4th, but
       // the old keying raised the goal of a row for the 5th, which counts
@@ -480,7 +488,8 @@ void main() {
       expect(recordedOffset(), 240);
     });
 
-    test('an imported workout\'s credit stays where the import put it, on '
+    test(
+        'an imported workout\'s credit stays where the import put it, on '
         'the day it is listed under', () async {
       // Unlike the other writers, the import credited a workout's logical
       // day on older builds too.
@@ -505,7 +514,8 @@ void main() {
     Future<TrackedDayGoals> currentGoals() async =>
         (kcal: 2000.0, carbs: 250.0, fat: 70.0, protein: 100.0);
 
-    test('gets the row of a day with entries, from the current goal raised '
+    test(
+        'gets the row of a day with entries, from the current goal raised '
         'by its activity, totals summed from its entries', () async {
       await addLoggedIntake('legacy-toast', label);
       await activityRepository.addUserActivity(activityAt(label));
@@ -527,7 +537,8 @@ void main() {
   });
 
   group('a profile that was not active when the boundary moved', () {
-    test('has its activity energy moved on activation, not credited '
+    test(
+        'has its activity energy moved on activation, not credited '
         'twice', () async {
       // Activated under the 00:00 boundary, which goes on record.
       await reconcile();
@@ -555,7 +566,8 @@ void main() {
   });
 
   group('a day that lists entries but has no row', () {
-    test('takes its goal from the earlier of two rows a calendar day '
+    test(
+        'takes its goal from the earlier of two rows a calendar day '
         'either side, across a daylight-saving change', () async {
       // Where summer time ends on 25 Oct 2026 (Europe), the 25th's
       // midnight is 25 hours before the 26th's and the 27th's 24 after.
@@ -583,7 +595,8 @@ void main() {
       setDayBoundary = SetDayBoundaryUsecase(db, ConfigDataSource(db));
     });
 
-    test('takes the rows along: no entry counted twice, no marker left on '
+    test(
+        'takes the rows along: no entry counted twice, no marker left on '
         'a day with nothing listed', () async {
       await addFood(DateTime(2026, 10, 4, 12));
       await addFood(DateTime(2026, 10, 5, 2));
@@ -649,7 +662,8 @@ void main() {
   });
 
   group('writers running alongside the pass', () {
-    test('a row another writer creates while the pass awaits the goals is '
+    test(
+        'a row another writer creates while the pass awaits the goals is '
         'updated, not replaced', () async {
       final label = DateTime.utc(2026, 9, 20);
       await addLoggedIntake('legacy-toast', label);
@@ -684,7 +698,8 @@ void main() {
       expect(await pending, 2);
     });
 
-    test('a writer holding a row across the pass adds to its rewritten '
+    test(
+        'a writer holding a row across the pass adds to its rewritten '
         'totals', () async {
       await addFood(DateTime(2026, 10, 4, 12));
       // The tracked-day increments read the row, yield, then add and save.
@@ -746,7 +761,8 @@ void main() {
       expect(totalTracked(), 400);
     });
 
-    test('an activity logged across a boundary move raises one goal, '
+    test(
+        'an activity logged across a boundary move raises one goal, '
         'once', () async {
       await addFood(DateTime(2026, 10, 4, 12));
       final gate = _GatedKcalGoal();

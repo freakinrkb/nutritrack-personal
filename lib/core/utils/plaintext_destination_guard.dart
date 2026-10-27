@@ -173,14 +173,13 @@ class GuardedPlaintextClient extends http.BaseClient {
   final PlaintextDestinationGuard _guard;
 
   GuardedPlaintextClient(this._inner, {PlaintextDestinationGuard? guard})
-    : _guard = guard ?? PlaintextDestinationGuard();
+      : _guard = guard ?? PlaintextDestinationGuard();
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     final approved = await _guard.approve(request.url);
-    final outgoing = approved == request.url
-        ? request
-        : _reboundTo(approved, request);
+    final outgoing =
+        approved == request.url ? request : _reboundTo(approved, request);
 
     // Redirects are followed inside `dart:io`, below `BaseClient.send`, so a
     // hop never comes back through here and never meets [approve]. Left on,
@@ -217,9 +216,8 @@ class GuardedPlaintextClient extends http.BaseClient {
     final origin = request.url;
     return http.Request(request.method, url)
       ..headers.addAll(request.headers)
-      ..headers['host'] = origin.hasPort
-          ? '${origin.host}:${origin.port}'
-          : origin.host
+      ..headers['host'] =
+          origin.hasPort ? '${origin.host}:${origin.port}' : origin.host
       ..bodyBytes = request.bodyBytes
       ..maxRedirects = request.maxRedirects
       ..persistentConnection = request.persistentConnection;

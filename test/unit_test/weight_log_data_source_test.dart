@@ -69,10 +69,12 @@ void main() {
 
       expect(result.length, equals(2));
       final dates = result.map((e) => e.date).toList();
-      expect(dates, containsAll([
-        DateTime.utc(2025, 3, 12),
-        DateTime.utc(2025, 3, 14),
-      ]));
+      expect(
+          dates,
+          containsAll([
+            DateTime.utc(2025, 3, 12),
+            DateTime.utc(2025, 3, 14),
+          ]));
     });
 
     test('deleteEntry removes the entry for that day only', () async {

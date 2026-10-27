@@ -30,8 +30,10 @@ class CustomMealDataSource {
             .firstOrNull;
     if (edited != null) {
       final collisions = _customMealBox.values
-          .where((m) =>
-              m.key != edited.key && _identityOf(m) == _identityOf(mealDBO))
+          .where(
+            (m) =>
+                m.key != edited.key && _identityOf(m) == _identityOf(mealDBO),
+          )
           .toList();
       await _customMealBox.put(edited.key, mealDBO);
       for (final meal in collisions) {
@@ -41,10 +43,11 @@ class CustomMealDataSource {
     }
 
     final existing = _customMealBox.values.cast<MealDBO?>().firstWhere(
-        (m) =>
-            (mealDBO.code != null && m?.code == mealDBO.code) ||
-            (mealDBO.code == null && m?.name == mealDBO.name),
-        orElse: () => null);
+          (m) =>
+              (mealDBO.code != null && m?.code == mealDBO.code) ||
+              (mealDBO.code == null && m?.name == mealDBO.name),
+          orElse: () => null,
+        );
     if (existing != null) {
       await _customMealBox.put(existing.key, mealDBO);
     } else {
@@ -56,6 +59,15 @@ class CustomMealDataSource {
   static String? _identityOf(MealDBO meal) => meal.code ?? meal.name;
 
   List<MealDBO> getAllCustomMeals() => _customMealBox.values.toList();
+
+  /// Merges a backup's meals into the library by identity, so importing the
+  /// same bundle twice changes nothing and meals already on the device are
+  /// kept.
+  Future<void> addAllCustomMeals(Iterable<MealDBO> meals) async {
+    for (final meal in meals) {
+      await saveCustomMeal(meal);
+    }
+  }
 
   Future<void> deleteCustomMeal(String mealKey) async {
     final toDelete = _customMealBox.values

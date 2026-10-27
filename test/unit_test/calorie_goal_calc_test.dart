@@ -79,8 +79,7 @@ void main() {
       expect(result, equals(baseline - 300));
     });
 
-    test(
-        'weekly weight goal in kg overrides the lose/gain default adjustment',
+    test('weekly weight goal in kg overrides the lose/gain default adjustment',
         () {
       // -0.5 kg/week → -550 kcal/day (vs -500 default for loseWeight)
       final base = UserEntityFixtures.middleAgedActiveFemaleWantingToLoseWeight;

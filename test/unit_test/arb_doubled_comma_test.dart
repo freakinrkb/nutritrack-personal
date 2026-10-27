@@ -60,7 +60,8 @@ void main() {
         if (match == null) continue;
         final from = (match.start - 30).clamp(0, value.length);
         final to = (match.end + 30).clamp(0, value.length);
-        offenders.add('$locale/${entry.key}: ...${value.substring(from, to)}...');
+        offenders
+            .add('$locale/${entry.key}: ...${value.substring(from, to)}...');
       }
     }
     expect(offenders, isEmpty, reason: offenders.join('\n'));

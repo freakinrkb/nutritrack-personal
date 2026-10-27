@@ -16,7 +16,8 @@ double _storedKcalToKjDisplay(double kcal) =>
     double.parse(UnitCalc.kcalToKj(kcal).toStringAsFixed(1));
 
 void main() {
-  group('edit-meal manual energy entry, kJ ↔ kcal round trip (#177 follow-up)', () {
+  group('edit-meal manual energy entry, kJ ↔ kcal round trip (#177 follow-up)',
+      () {
     test('typing 2000 in kJ mode stores ≈ 478.0 kcal', () {
       // 2000 kJ / 4.184 = 477.9923... rounded to 1dp = 478.0
       expect(_kjToStoredKcal(2000), equals(478.0));
@@ -39,12 +40,15 @@ void main() {
       expect(typed, equals(typed));
     });
 
-    test('a 250 kcal stored value displays as ≈ 1046.0 kJ when kJ is active', () {
+    test('a 250 kcal stored value displays as ≈ 1046.0 kJ when kJ is active',
+        () {
       // 250 kcal × 4.184 = 1046.0 — clean to 1dp.
       expect(_storedKcalToKjDisplay(250.0), equals(1046.0));
     });
 
-    test('round-trip kJ → stored kcal → kJ display for typical daily-goal values', () {
+    test(
+        'round-trip kJ → stored kcal → kJ display for typical daily-goal values',
+        () {
       // Picks values a user might plausibly type as a calorie goal in
       // either unit. After one full pass through the conversion the
       // display value should land within 0.5 kJ of the original — well

@@ -96,8 +96,7 @@ class UserImagePickerTile extends StatelessWidget {
                       height: 96,
                       child: hasImage
                           ? FutureBuilder<String>(
-                              future:
-                                  UserImageStorage.absolutePath(imagePath!),
+                              future: UserImageStorage.absolutePath(imagePath!),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return Container(
@@ -111,8 +110,8 @@ class UserImagePickerTile extends StatelessWidget {
                                     color: theme.colorScheme.primaryContainer,
                                     child: Icon(
                                       _fallbackIcon,
-                                      color: theme
-                                          .colorScheme.onPrimaryContainer,
+                                      color:
+                                          theme.colorScheme.onPrimaryContainer,
                                     ),
                                   ),
                                 );

@@ -225,7 +225,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Tutte le voci del diario che utilizzano questo pasto verranno rimosse.",
+  "customMealsDeleteConfirmContent": "Le voci del diario registrate da questo pasto personalizzato saranno mantenute.",
   "customMealsDeleteConfirmTitle": "Eliminare il pasto personalizzato?",
   "customMealsEmptyLabel": "Nessun pasto personalizzato salvato.",
   "dailyKcalAdjustmentLabel": "Regolazione kcal giornaliere:",

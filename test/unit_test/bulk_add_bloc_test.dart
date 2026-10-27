@@ -22,19 +22,20 @@ MealEntity meal(
   String? servingSize,
   String? mealUnit,
   List<MealPortionEntity> portions = const [],
-}) => MealEntity(
-  code: name,
-  name: name,
-  url: null,
-  mealQuantity: null,
-  mealUnit: mealUnit,
-  servingQuantity: servingQuantity,
-  servingUnit: servingUnit,
-  servingSize: servingSize,
-  portions: portions,
-  source: MealSourceEntity.off,
-  nutriments: MealNutrimentsEntity.empty(),
-);
+}) =>
+    MealEntity(
+      code: name,
+      name: name,
+      url: null,
+      mealQuantity: null,
+      mealUnit: mealUnit,
+      servingQuantity: servingQuantity,
+      servingUnit: servingUnit,
+      servingSize: servingSize,
+      portions: portions,
+      source: MealSourceEntity.off,
+      nutriments: MealNutrimentsEntity.empty(),
+    );
 
 class _FakeSearch implements SearchProductsUseCase {
   final Map<String, List<MealEntity>> results;
@@ -59,7 +60,8 @@ class _FakeSearch implements SearchProductsUseCase {
     String searchString, {
     bool skipRemote = false,
     bool forResolution = false,
-  }) async => const SearchProductsResult(meals: [], remoteSourceEmpty: false);
+  }) async =>
+      const SearchProductsResult(meals: [], remoteSourceEmpty: false);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -68,16 +70,16 @@ class _FakeSearch implements SearchProductsUseCase {
 /// No credential stored, so the use case always takes the parser path —
 /// these tests are about the bloc, not about which reader produced the items.
 ReadMealTextUseCase parserOnlyReader() => ReadMealTextUseCase(
-  AiCredentialStorage(_EmptyStorage()),
-  (_) => throw StateError('must not be built without a key'),
-);
+      AiCredentialStorage(_EmptyStorage()),
+      (_) => throw StateError('must not be built without a key'),
+    );
 
 /// Same idea for photos: no credential, so the use case reports the feature
 /// unavailable without ever building an interpreter.
 ReadMealPhotoUseCase photoReaderWithoutKey() => ReadMealPhotoUseCase(
-  AiCredentialStorage(_EmptyStorage()),
-  (_) => throw StateError('must not be built without a key'),
-);
+      AiCredentialStorage(_EmptyStorage()),
+      (_) => throw StateError('must not be built without a key'),
+    );
 
 /// A key *is* stored here, so the use case really builds an interpreter and
 /// really takes the model path — which is the only way to exercise what
@@ -124,36 +126,40 @@ class _FixedInterpreter implements MealTextInterpreter {
   _FixedInterpreter(this.items);
 
   @override
-  Future<MealTextParseResult> interpret(String input, {String? localeCode}) async =>
+  Future<MealTextParseResult> interpret(String input,
+          {String? localeCode}) async =>
       MealTextParseResult(items: items, errors: const []);
 }
 
 BulkAddBloc blocWithModelReply(
   Map<String, List<MealEntity>> results,
   List<ParsedMealItem> items,
-) => BulkAddBloc(
-  ResolveParsedMealsUseCase(_FakeSearch(results)),
-  readerReturning(items),
-  photoReaderWithoutKey(),
-);
+) =>
+    BulkAddBloc(
+      ResolveParsedMealsUseCase(_FakeSearch(results)),
+      readerReturning(items),
+      photoReaderWithoutKey(),
+    );
 
 BulkAddBloc blocWithFailingReader(
   Map<String, List<MealEntity>> results,
   MealInterpreterException failure,
-) => BulkAddBloc(
-  ResolveParsedMealsUseCase(_FakeSearch(results)),
-  readerFailingWith(failure),
-  photoReaderWithoutKey(),
-);
+) =>
+    BulkAddBloc(
+      ResolveParsedMealsUseCase(_FakeSearch(results)),
+      readerFailingWith(failure),
+      photoReaderWithoutKey(),
+    );
 
 BulkAddBloc blocWith(
   Map<String, List<MealEntity>> results, {
   ReadMealPhotoUseCase? photoReader,
-}) => BulkAddBloc(
-  ResolveParsedMealsUseCase(_FakeSearch(results)),
-  parserOnlyReader(),
-  photoReader ?? photoReaderWithoutKey(),
-);
+}) =>
+    BulkAddBloc(
+      ResolveParsedMealsUseCase(_FakeSearch(results)),
+      parserOnlyReader(),
+      photoReader ?? photoReaderWithoutKey(),
+    );
 
 /// Candidates come back ranked, not in the order they were faked, so tests
 /// that switch candidates have to look the wanted one up by name.
@@ -841,13 +847,15 @@ void main() {
       // Before this, a wrong key produced a screen indistinguishable from a
       // working one. The rows are still the parser's — what changes is that
       // the user is told the better reader never ran.
-      final bloc = blocWithFailingReader({
-        'toast': [meal('Toast')],
-      }, const MealInterpreterException(
-        'unauthorized',
-        failure: MealInterpreterFailure.auth,
-        statusCode: 401,
-      ));
+      final bloc = blocWithFailingReader(
+          {
+            'toast': [meal('Toast')],
+          },
+          const MealInterpreterException(
+            'unauthorized',
+            failure: MealInterpreterFailure.auth,
+            statusCode: 401,
+          ));
       addTearDown(bloc.close);
 
       final state = await parse(bloc, '100g toast');
@@ -862,13 +870,15 @@ void main() {
     });
 
     test('a model nothing can serve reaches the state', () async {
-      final bloc = blocWithFailingReader({
-        'toast': [meal('Toast')],
-      }, const MealInterpreterException(
-        'no endpoints',
-        failure: MealInterpreterFailure.unsupported,
-        statusCode: 404,
-      ));
+      final bloc = blocWithFailingReader(
+          {
+            'toast': [meal('Toast')],
+          },
+          const MealInterpreterException(
+            'no endpoints',
+            failure: MealInterpreterFailure.unsupported,
+            statusCode: 404,
+          ));
       addTearDown(bloc.close);
 
       final state = await parse(bloc, '100g toast');
@@ -881,13 +891,15 @@ void main() {
       // Deliberate. A banner that fires on a dropped connection is one
       // people learn to scroll past, and it would cost the notice the value
       // it has for the failures that never fix themselves.
-      final bloc = blocWithFailingReader({
-        'toast': [meal('Toast')],
-      }, const MealInterpreterException(
-        'rate limited',
-        failure: MealInterpreterFailure.transient,
-        statusCode: 429,
-      ));
+      final bloc = blocWithFailingReader(
+          {
+            'toast': [meal('Toast')],
+          },
+          const MealInterpreterException(
+            'rate limited',
+            failure: MealInterpreterFailure.transient,
+            statusCode: 429,
+          ));
       addTearDown(bloc.close);
 
       final state = await parse(bloc, '100g toast');
@@ -931,7 +943,8 @@ void main() {
       expect((state as BulkAddPhotoErrorState).error, BulkAddPhotoError.auth);
     });
 
-    test('exhausted credit is not offered as retryable or an auth fix', () async {
+    test('exhausted credit is not offered as retryable or an auth fix',
+        () async {
       final state = await readPhoto(
         {},
         const MealPhotoFailed(MealPhotoFailure.billing),
@@ -955,7 +968,8 @@ void main() {
       );
     });
 
-    test('a refused plaintext photo points at the address, not the model', () async {
+    test('a refused plaintext photo points at the address, not the model',
+        () async {
       final state = await readPhoto(
         {},
         const MealPhotoFailed(MealPhotoFailure.insecureDestination),
@@ -985,18 +999,19 @@ void main() {
       MealEntity food, {
       double? statedQuantity,
       bool amountEdited = false,
-    }) => BulkAddRow(
-      resolved: ResolvedMealItem(
-        parsed: ParsedMealItem(query: food.name!, quantity: statedQuantity),
-        candidates: [food],
-        selectedIndex: 0,
-        confidence: 0.9,
-      ),
-      selectedIndex: 0,
-      amountText: '100',
-      unit: 'g',
-      amountEditedByUser: amountEdited,
-    );
+    }) =>
+        BulkAddRow(
+          resolved: ResolvedMealItem(
+            parsed: ParsedMealItem(query: food.name!, quantity: statedQuantity),
+            candidates: [food],
+            selectedIndex: 0,
+            confidence: 0.9,
+          ),
+          selectedIndex: 0,
+          amountText: '100',
+          unit: 'g',
+          amountEditedByUser: amountEdited,
+        );
 
     test('nobody stated an amount and the record carries none', () {
       // The flat 100 g. `amountNeedsCheck` cannot see this case at all,
@@ -1076,12 +1091,11 @@ void main() {
     });
   });
 
-
   group('the typed word picks the portion (#864)', () {
-    const cup = MealPortionEntity(
-        label: '1 cup', gramWeight: 244, localized: false);
-    const slice = MealPortionEntity(
-        label: '1 slice', gramWeight: 38, localized: false);
+    const cup =
+        MealPortionEntity(label: '1 cup', gramWeight: 244, localized: false);
+    const slice =
+        MealPortionEntity(label: '1 slice', gramWeight: 38, localized: false);
 
     test('"3 slices of bread" preselects the slice, not the cup', () async {
       // The whole point. Without this the row takes the first portion and
@@ -1103,7 +1117,9 @@ void main() {
       // Decision 7: this only ever narrows. A bare count with no word still
       // means the default portion, which is what the row did before.
       final bloc = blocWith({
-        'bread': [meal('Bread', servingQuantity: 244, portions: [cup, slice])],
+        'bread': [
+          meal('Bread', servingQuantity: 244, portions: [cup, slice])
+        ],
       });
 
       final row = (await parse(bloc, '3 bread')).rows.single;
@@ -1148,7 +1164,11 @@ void main() {
       // thing that can name a slice on that path. Driven here through the
       // text interpreter, which is the same ParsedMealItem either way.
       final bloc = blocWithModelReply(
-        {'bread': [meal('Bread', servingQuantity: 244, portions: [cup, slice])]},
+        {
+          'bread': [
+            meal('Bread', servingQuantity: 244, portions: [cup, slice])
+          ]
+        },
         const [ParsedMealItem(query: 'bread', quantity: 3, portion: 'slice')],
       );
 
@@ -1161,7 +1181,11 @@ void main() {
       // The weak failure this design chose: an unusable key is ignored, and
       // the row keeps the preselection it would have had.
       final bloc = blocWithModelReply(
-        {'bread': [meal('Bread', servingQuantity: 244, portions: [cup, slice])]},
+        {
+          'bread': [
+            meal('Bread', servingQuantity: 244, portions: [cup, slice])
+          ]
+        },
         const [ParsedMealItem(query: 'bread', quantity: 3, portion: 'thimble')],
       );
 
@@ -1393,9 +1417,8 @@ void main() {
         ),
       );
       bloc.add(ReadMealPhotoEvent(photo: _photo, usesImperialUnits: false));
-      final state =
-          await bloc.stream.firstWhere((s) => s is BulkAddLoadedState)
-              as BulkAddLoadedState;
+      final state = await bloc.stream.firstWhere((s) => s is BulkAddLoadedState)
+          as BulkAddLoadedState;
 
       final row = state.rows.single;
       expect(state.source, BulkAddReadSource.photo);
@@ -1581,7 +1604,8 @@ class _StubPhotoReader implements ReadMealPhotoUseCase {
   Future<MealPhotoReadResult> read(
     MealPhoto photo, {
     String? localeCode,
-  }) async => reading;
+  }) async =>
+      reading;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -1600,7 +1624,7 @@ class _MapStorage implements FlutterSecureStorage {
   /// leaves the device (#836), so a map holding a key and no agreement is a
   /// state the app cannot reach.
   _MapStorage(Map<String, String> values)
-    : values = {'AiTermsAcceptedTag': 'true', ...values};
+      : values = {'AiTermsAcceptedTag': 'true', ...values};
 
   @override
   Future<String?> read({
@@ -1611,7 +1635,8 @@ class _MapStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => values[key];
+  }) async =>
+      values[key];
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -1627,7 +1652,8 @@ class _EmptyStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => null;
+  }) async =>
+      null;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

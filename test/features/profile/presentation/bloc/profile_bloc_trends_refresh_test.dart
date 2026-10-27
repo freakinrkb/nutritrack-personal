@@ -92,7 +92,8 @@ void main() {
     GetIt.instance.reset();
   });
 
-  test('updateUser refreshes TrendsBloc, preserving the currently selected '
+  test(
+      'updateUser refreshes TrendsBloc, preserving the currently selected '
       'range chip (regression: home weight chip did not update the Trends '
       'weight card)', () async {
     final user = UserEntityFixtures.youngSedentaryMaleWantingToMaintainWeight;
@@ -125,7 +126,8 @@ void main() {
     expect(event.rangeDays, 30);
   });
 
-  test('updateUser refreshes TrendsBloc with the default 7-day range when '
+  test(
+      'updateUser refreshes TrendsBloc with the default 7-day range when '
       'Trends has not loaded yet', () async {
     final user = UserEntityFixtures.youngSedentaryMaleWantingToMaintainWeight;
     trendsBloc = _FakeTrendsBloc(const TrendsInitial());

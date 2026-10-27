@@ -75,33 +75,33 @@ class RecipeDBOAdapter extends TypeAdapter<RecipeDBO> {
 // **************************************************************************
 
 RecipeDBO _$RecipeDBOFromJson(Map<String, dynamic> json) => RecipeDBO(
-  id: json['id'] as String,
-  name: json['name'] as String,
-  description: json['description'] as String?,
-  ingredients: (json['ingredients'] as List<dynamic>)
-      .map((e) => RecipeIngredientDBO.fromJson(e as Map<String, dynamic>))
-      .toList(),
-  totalWeightG: (json['totalWeightG'] as num).toDouble(),
-  aggregatedNutrimentsPer100: MealNutrimentsDBO.fromJson(
-    json['aggregatedNutrimentsPer100'] as Map<String, dynamic>,
-  ),
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt: DateTime.parse(json['updatedAt'] as String),
-  servingsCount: (json['servingsCount'] as num?)?.toInt(),
-  tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  imagePath: json['imagePath'] as String?,
-);
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      ingredients: (json['ingredients'] as List<dynamic>)
+          .map((e) => RecipeIngredientDBO.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      totalWeightG: (json['totalWeightG'] as num).toDouble(),
+      aggregatedNutrimentsPer100: MealNutrimentsDBO.fromJson(
+        json['aggregatedNutrimentsPer100'] as Map<String, dynamic>,
+      ),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      servingsCount: (json['servingsCount'] as num?)?.toInt(),
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      imagePath: json['imagePath'] as String?,
+    );
 
 Map<String, dynamic> _$RecipeDBOToJson(RecipeDBO instance) => <String, dynamic>{
-  'id': instance.id,
-  'name': instance.name,
-  'description': instance.description,
-  'ingredients': instance.ingredients,
-  'totalWeightG': instance.totalWeightG,
-  'aggregatedNutrimentsPer100': instance.aggregatedNutrimentsPer100,
-  'createdAt': instance.createdAt.toIso8601String(),
-  'updatedAt': instance.updatedAt.toIso8601String(),
-  'servingsCount': instance.servingsCount,
-  'tags': instance.tags,
-  'imagePath': instance.imagePath,
-};
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'ingredients': instance.ingredients,
+      'totalWeightG': instance.totalWeightG,
+      'aggregatedNutrimentsPer100': instance.aggregatedNutrimentsPer100,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
+      'servingsCount': instance.servingsCount,
+      'tags': instance.tags,
+      'imagePath': instance.imagePath,
+    };

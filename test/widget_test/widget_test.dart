@@ -34,6 +34,8 @@ void main() {
             totalCarbsGoal: 250,
             totalFatsGoal: 60,
             totalProteinsGoal: 120,
+            totalFiberIntake: 20,
+            totalFiberGoal: 30,
           ),
         ),
       ),

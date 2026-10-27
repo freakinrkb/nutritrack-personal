@@ -25,10 +25,9 @@ class _ScriptedClient extends http.BaseClient {
     requests.add(
       jsonDecode((request as http.Request).body) as Map<String, dynamic>,
     );
-    final step =
-        _script[requests.length - 1 < _script.length
-            ? requests.length - 1
-            : _script.length - 1];
+    final step = _script[requests.length - 1 < _script.length
+        ? requests.length - 1
+        : _script.length - 1];
     return step(request);
   }
 }
@@ -38,30 +37,30 @@ http.StreamedResponse Function(http.BaseRequest) _reply(
   int status = 200,
 }) =>
     (request) => http.StreamedResponse(
-      Stream.value(utf8.encode(body)),
-      status,
-      request: request,
-    );
+          Stream.value(utf8.encode(body)),
+          status,
+          request: request,
+        );
 
 http.StreamedResponse Function(http.BaseRequest) _throws(Object error) =>
     (request) => throw error;
 
 String _toolReply(List<Map<String, dynamic>> items) => jsonEncode({
-  'choices': [
-    {
-      'message': {
-        'tool_calls': [
-          {
-            'function': {
-              'name': mealItemsToolName,
-              'arguments': jsonEncode({'items': items}),
-            },
+      'choices': [
+        {
+          'message': {
+            'tool_calls': [
+              {
+                'function': {
+                  'name': mealItemsToolName,
+                  'arguments': jsonEncode({'items': items}),
+                },
+              },
+            ],
           },
-        ],
-      },
-    },
-  ],
-});
+        },
+      ],
+    });
 
 /// A well-formed 200 that answers in prose. The expected way a weak model
 /// fails on Ollama, which has no `tool_choice` field at all (#733).
@@ -77,17 +76,18 @@ AiEndpointProber _prober(
   _ScriptedClient client, {
   List<MealPhotoFormat>? formatsAskedFor,
   MealPhoto? photo,
-}) => AiEndpointProber(
-  client,
-  sampleImage: (format) async {
-    formatsAskedFor?.add(format);
-    return photo ??
-        MealPhoto(
-          bytes: Uint8List.fromList([1, 2, 3]),
-          mediaType: format.mediaType,
-        );
-  },
-);
+}) =>
+    AiEndpointProber(
+      client,
+      sampleImage: (format) async {
+        formatsAskedFor?.add(format);
+        return photo ??
+            MealPhoto(
+              bytes: Uint8List.fromList([1, 2, 3]),
+              mediaType: format.mediaType,
+            );
+      },
+    );
 
 void main() {
   group('the pass bar is at least one item, not merely a reply', () {
@@ -310,11 +310,11 @@ void main() {
           ((params['properties'] as Map)['items'] as Map)['items'] as Map;
       expect(
         (item['properties'] as Map).keys,
-      // `portion` joined the set in #864. It is a lookup key rather than a
-      // measurement — the model names a portion, the gram weight comes from
-      // the food's own record — so the provenance guarantee is unchanged.
-      // Kept exact rather than loosened to "contains no macros", because
-      // exact is what caught this addition and has to catch the next one.
+        // `portion` joined the set in #864. It is a lookup key rather than a
+        // measurement — the model names a portion, the gram weight comes from
+        // the food's own record — so the provenance guarantee is unchanged.
+        // Kept exact rather than loosened to "contains no macros", because
+        // exact is what caught this addition and has to catch the next one.
         unorderedEquals(['query', 'quantity', 'unit', 'portion']),
       );
     },

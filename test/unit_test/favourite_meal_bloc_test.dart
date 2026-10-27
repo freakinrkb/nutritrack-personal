@@ -19,18 +19,18 @@ class _FakeGetConfigUsecase implements GetConfigUsecase {
 }
 
 MealEntity _meal(String code, String name, {String? brands}) => MealEntity(
-  code: code,
-  name: name,
-  brands: brands,
-  url: null,
-  mealQuantity: '100',
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: null,
-  servingSize: null,
-  nutriments: MealNutrimentsEntity.empty(),
-  source: MealSourceEntity.off,
-);
+      code: code,
+      name: name,
+      brands: brands,
+      url: null,
+      mealQuantity: '100',
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: null,
+      servingSize: null,
+      nutriments: MealNutrimentsEntity.empty(),
+      source: MealSourceEntity.off,
+    );
 
 List<String?> _names(FavouriteMealState state) =>
     (state as FavouriteMealLoadedState).favourites.map((m) => m.name).toList();

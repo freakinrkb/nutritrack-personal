@@ -68,10 +68,22 @@ Uint8List jpegWithMetadata({List<int> trailer = const []}) =>
       0xFF, 0xD8, // SOI
       ...jpegSegment(0xE0, [
         ...jpegJfifNeedle.codeUnits,
-        0x00, 0x01, 0x02, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00
+        0x00,
+        0x01,
+        0x02,
+        0x00,
+        0x00,
+        0x01,
+        0x00,
+        0x01,
+        0x00,
+        0x00
       ]), // APP0/JFIF — keep
       ...jpegSegment(0xE1, [
-        ...'Exif'.codeUnits, 0x00, 0x00, ...gpsNeedle.codeUnits
+        ...'Exif'.codeUnits,
+        0x00,
+        0x00,
+        ...gpsNeedle.codeUnits
       ]), // APP1/EXIF — drop
       // The real APP1 XMP identifier is NUL-terminated, as is the APP13
       // Photoshop one and a PNG text chunk's keyword. Written as escapes so
@@ -103,14 +115,17 @@ const pngIdatNeedle = 'IDAT-KEEP-ME';
 /// copied whole, so a real file's CRCs stay correct without being recomputed,
 /// and computing one here would only be testing the test.
 List<int> pngChunk(String type, List<int> data) => [
-  (data.length >> 24) & 0xFF,
-  (data.length >> 16) & 0xFF,
-  (data.length >> 8) & 0xFF,
-  data.length & 0xFF,
-  ...type.codeUnits,
-  ...data,
-  0xDE, 0xAD, 0xBE, 0xEF,
-];
+      (data.length >> 24) & 0xFF,
+      (data.length >> 16) & 0xFF,
+      (data.length >> 8) & 0xFF,
+      data.length & 0xFF,
+      ...type.codeUnits,
+      ...data,
+      0xDE,
+      0xAD,
+      0xBE,
+      0xEF,
+    ];
 
 /// A PNG with an `eXIf` block and two text chunks to remove, around the
 /// header and pixel chunks that have to stay.
@@ -141,14 +156,14 @@ const webpAlphaFlag = 0x10;
 /// A RIFF chunk: four-character type, little-endian size, payload, and a pad
 /// byte when the size is odd.
 List<int> webpChunk(String type, List<int> data) => [
-  ...type.codeUnits,
-  data.length & 0xFF,
-  (data.length >> 8) & 0xFF,
-  (data.length >> 16) & 0xFF,
-  (data.length >> 24) & 0xFF,
-  ...data,
-  if (data.length.isOdd) 0x00,
-];
+      ...type.codeUnits,
+      data.length & 0xFF,
+      (data.length >> 8) & 0xFF,
+      (data.length >> 16) & 0xFF,
+      (data.length >> 24) & 0xFF,
+      ...data,
+      if (data.length.isOdd) 0x00,
+    ];
 
 /// An extended-format WebP whose `VP8X` flags advertise EXIF and XMP, with
 /// both chunks present.
@@ -182,10 +197,10 @@ Uint8List webpWithMetadata() {
 /// A GIF89a header with a comment extension and a trailer. Nothing in here
 /// can hold coordinates, which is the point.
 Uint8List gifWithComment() => Uint8List.fromList([
-  ...'GIF89a'.codeUnits,
-  0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, // logical screen descriptor
-  0x21, 0xFE, 0x05, ...'hello'.codeUnits, 0x00, // comment extension
-  0x3B, // trailer
-]);
+      ...'GIF89a'.codeUnits,
+      0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, // logical screen descriptor
+      0x21, 0xFE, 0x05, ...'hello'.codeUnits, 0x00, // comment extension
+      0x3B, // trailer
+    ]);
 
 // dart format on

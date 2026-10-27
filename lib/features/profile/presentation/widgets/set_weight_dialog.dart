@@ -98,7 +98,8 @@ class _SetWeightDialogState extends State<SetWeightDialog> {
     } else {
       final display = clampWeightSelection(
         _pickerDisplayWeight,
-        minSelectableWeight(_pickerDisplayWeight, widget.unit == BodyWeightUnit.lb),
+        minSelectableWeight(
+            _pickerDisplayWeight, widget.unit == BodyWeightUnit.lb),
       );
       kg = _pickerWeightToKg(display);
     }

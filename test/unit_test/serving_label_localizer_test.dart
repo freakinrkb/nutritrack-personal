@@ -9,8 +9,7 @@ void main() {
       final s = lookupS(const Locale('de'));
       expect(localizeServingLabel(s, '1 slice (38 g)'), '1 Scheibe (38 g)');
       expect(localizeServingLabel(s, '2 slices (76 g)'), '2 Scheiben (76 g)');
-      expect(localizeServingLabel(s, '1 portion (150 g)'),
-          '1 Portion (150 g)');
+      expect(localizeServingLabel(s, '1 portion (150 g)'), '1 Portion (150 g)');
       expect(localizeServingLabel(s, '1 cup'), '1 Tasse');
     });
 

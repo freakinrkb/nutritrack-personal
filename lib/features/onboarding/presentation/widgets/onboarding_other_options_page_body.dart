@@ -86,6 +86,7 @@ class _OnboardingOtherOptionsPageBodyState
   bool? _aiConfigured;
   String? _aiEndpoint;
   bool _aiEnabled = false;
+
   /// Null when the stored name is unrecognised — see #753.
   AiProvider? _aiProvider;
 
@@ -204,8 +205,8 @@ class _OnboardingOtherOptionsPageBodyState
               child: _swatch(
                 context,
                 color: color,
-                selected: !materialYouSelected &&
-                    _accentColor == color.toARGB32(),
+                selected:
+                    !materialYouSelected && _accentColor == color.toARGB32(),
                 onTap: () => _onAccentColorSelected(color),
               ),
             ),
@@ -401,8 +402,7 @@ class _OnboardingOtherOptionsPageBodyState
     // Open Food Facts is always searched and has no switch, so it counts
     // towards both sides of the summary.
     const alwaysOnCount = 1;
-    final enabled =
-        alwaysOnCount +
+    final enabled = alwaysOnCount +
         SPConst.settingsSelectableFoodSources
             .where((source) => _foodSourceToggles[source] ?? true)
             .length;
@@ -428,7 +428,8 @@ class _OnboardingOtherOptionsPageBodyState
           ),
           for (final sourceCode in SPConst.settingsSelectableFoodSources)
             Semantics(
-              identifier: 'onboarding-food-source-${sourceCode.replaceAll('_', '-')}',
+              identifier:
+                  'onboarding-food-source-${sourceCode.replaceAll('_', '-')}',
               child: SwitchListTile(
                 dense: true,
                 title: Text(

@@ -131,7 +131,8 @@ void main() {
     expect(find.text('onboarding'), findsOneWidget);
   });
 
-  testWidgets('switching to an onboarded profile from a screen that closed '
+  testWidgets(
+      'switching to an onboarded profile from a screen that closed '
       'meanwhile still clears the calorie widget', (tester) async {
     // The Home reload that would republish the widget for the new profile
     // is skipped for an unmounted context, so without the clear the

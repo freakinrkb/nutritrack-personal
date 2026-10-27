@@ -16,7 +16,7 @@ class DeleteRecipeUseCase {
   /// profile's snapshot is brought up to the version being deleted first.
   /// The lock keeps a profile switch out between the two steps.
   Future<void> delete(String id) => withTrackedDayLock(() async {
-    await _favouriteMealRepository.keepLatestRecipeSnapshot(id);
-    await _repository.deleteRecipe(id);
-  });
+        await _favouriteMealRepository.keepLatestRecipeSnapshot(id);
+        await _repository.deleteRecipe(id);
+      });
 }

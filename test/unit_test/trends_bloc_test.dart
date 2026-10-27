@@ -77,8 +77,7 @@ class _FakeGetUserUsecase implements GetUserUsecase {
   Future<bool> hasUserData() async => true;
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _FakeGetConfigUsecase implements GetConfigUsecase {
@@ -96,8 +95,7 @@ class _FakeGetConfigUsecase implements GetConfigUsecase {
       );
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _FakeGetWaterIntakeUsecase implements GetWaterIntakeUsecase {
@@ -107,8 +105,7 @@ class _FakeGetWaterIntakeUsecase implements GetWaterIntakeUsecase {
   Future<List<WaterIntakeEntity>> getAllEntries() async => result;
 
   @override
-  dynamic noSuchMethod(Invocation invocation) =>
-      super.noSuchMethod(invocation);
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 WeightLogEntity _wl(DateTime date, double kg) =>
@@ -122,8 +119,7 @@ void main() {
   // The bloc ends ranges at the close of the day so a time-stamped tracked
   // day (today's) isn't excluded.
   final endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
-  final endOfPriorWeek =
-      DateTime(now.year, now.month, now.day - 7, 23, 59, 59);
+  final endOfPriorWeek = DateTime(now.year, now.month, now.day - 7, 23, 59, 59);
 
   group('TrendsBloc', () {
     late _FakeGetTrackedDayUsecase trackedDay;
@@ -165,7 +161,8 @@ void main() {
       expect((emitted.last as TrendsLoaded).rangeDays, 7);
     });
 
-    test('RefreshTrendsEvent reloads with the range the user last picked '
+    test(
+        'RefreshTrendsEvent reloads with the range the user last picked '
         '(#1359)', () async {
       await load(const LoadTrendsEvent(rangeDays: 30));
       trackedDay.rangeCalls.clear();

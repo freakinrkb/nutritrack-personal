@@ -58,41 +58,42 @@ MealEntity _meal(
   String code,
   String name, {
   MealSourceEntity source = MealSourceEntity.custom,
-}) => MealEntity(
-  code: code,
-  name: name,
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: null,
-  servingSize: null,
-  nutriments: MealNutrimentsEntity.empty(),
-  source: source,
-);
+}) =>
+    MealEntity(
+      code: code,
+      name: name,
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: null,
+      servingSize: null,
+      nutriments: MealNutrimentsEntity.empty(),
+      source: source,
+    );
 
 Widget _app() => ChangeNotifierProvider<EnergyUnitProvider>(
-  create: (_) => EnergyUnitProvider(usesKilojoules: false),
-  child: MaterialApp(
-    localizationsDelegates: const [
-      S.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: S.supportedLocales,
-    onGenerateRoute: (settings) => MaterialPageRoute<void>(
-      settings: RouteSettings(
-        name: settings.name,
-        arguments: AddMealScreenArguments(
-          AddMealType.lunchType,
-          DateTime(2026, 10, 4),
+      create: (_) => EnergyUnitProvider(usesKilojoules: false),
+      child: MaterialApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.supportedLocales,
+        onGenerateRoute: (settings) => MaterialPageRoute<void>(
+          settings: RouteSettings(
+            name: settings.name,
+            arguments: AddMealScreenArguments(
+              AddMealType.lunchType,
+              DateTime(2026, 10, 4),
+            ),
+          ),
+          builder: (_) => const AddMealScreen(),
         ),
       ),
-      builder: (_) => const AddMealScreen(),
-    ),
-  ),
-);
+    );
 
 void main() {
   final getIt = GetIt.instance;
@@ -256,10 +257,10 @@ void main() {
     final backend = _meal('123', 'Milk', source: MealSourceEntity.fdc);
     favourites.add(off);
     Widget star(MealEntity meal) => MaterialApp(
-      localizationsDelegates: const [S.delegate],
-      supportedLocales: S.supportedLocales,
-      home: Scaffold(body: FavouriteToggleButton(meal: meal)),
-    );
+          localizationsDelegates: const [S.delegate],
+          supportedLocales: S.supportedLocales,
+          home: Scaffold(body: FavouriteToggleButton(meal: meal)),
+        );
 
     await tester.pumpWidget(star(off));
     await tester.pumpAndSettle();
@@ -354,5 +355,5 @@ void main() {
 final _cardStar = find.byType(FavouriteToggleButton);
 
 Finder _withIdentifier(String identifier) => find.byWidgetPredicate(
-  (w) => w is Semantics && w.properties.identifier == identifier,
-);
+      (w) => w is Semantics && w.properties.identifier == identifier,
+    );

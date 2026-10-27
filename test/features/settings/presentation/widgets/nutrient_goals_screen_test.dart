@@ -20,12 +20,22 @@ class _FakeSettingsBloc extends Fake implements SettingsBloc {
   double? savedIron;
   bool? savedClearAll;
   Map<String, double?> savedGoals = {};
+  Map<String, double> durableGoals = {};
+  Map<String, double>? savedDurableGoals;
 
   /// Today's row as the screen loads it; null means no row yet.
   TrackedDayEntity? today;
 
   @override
   Future<TrackedDayEntity?> getTodayTrackedDay(DateTime day) async => today;
+
+  @override
+  Future<Map<String, double>> getNutrientGoals() async => durableGoals;
+
+  @override
+  Future<void> setNutrientGoals(Map<String, double> goals) async {
+    savedDurableGoals = Map<String, double>.from(goals);
+  }
 
   @override
   Future<DateTime> getCurrentLogicalDay() async => DateTime(2026, 10, 10);
@@ -157,6 +167,40 @@ void main() {
     expect(settingsBloc.savedFibre, 32);
     expect(settingsBloc.savedIron, 12.5);
     expect(find.byType(NutrientGoalsScreen), findsNothing);
+  });
+
+  testWidgets('loads and saves durable goals when today has no override', (
+    tester,
+  ) async {
+    final settingsBloc = _FakeSettingsBloc()
+      ..durableGoals = {'fiber': 34.0, 'iron': 9.5};
+    await openScreen(tester, settingsBloc);
+
+    expect(find.widgetWithText(TextField, '34'), findsOneWidget);
+    expect(find.widgetWithText(TextField, '9.5'), findsOneWidget);
+
+    await tapSave(tester);
+
+    expect(settingsBloc.savedDurableGoals, {'fiber': 34.0, 'iron': 9.5});
+    expect(settingsBloc.savedGoals['fibre'], 34.0);
+    expect(settingsBloc.savedGoals['iron'], 9.5);
+  });
+
+  testWidgets("today's override wins over the durable target on load", (
+    tester,
+  ) async {
+    final settingsBloc = _FakeSettingsBloc()
+      ..durableGoals = {'fiber': 34.0}
+      ..today = TrackedDayEntity(
+        day: DateTime(2026, 10, 14),
+        calorieGoal: 2000,
+        caloriesTracked: 0,
+        fibreGoal: 22,
+      );
+    await openScreen(tester, settingsBloc);
+
+    expect(find.widgetWithText(TextField, '22'), findsOneWidget);
+    expect(find.widgetWithText(TextField, '34'), findsNothing);
   });
 
   // #1371 review: Save used to re-parse every field, so an untouched

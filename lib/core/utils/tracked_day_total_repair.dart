@@ -37,9 +37,8 @@ Future<int> ensureTrackedDayTotalsFinite(
   HiveDBProvider db,
   ConfigDataSource configDataSource,
 ) async {
-  final broken = db.trackedDayBox.values
-      .where(hasNonFiniteTrackedTotal)
-      .toList();
+  final broken =
+      db.trackedDayBox.values.where(hasNonFiniteTrackedTotal).toList();
   if (broken.isEmpty) return 0;
 
   final config = ConfigEntity.fromConfigDBO(await configDataSource.getConfig());

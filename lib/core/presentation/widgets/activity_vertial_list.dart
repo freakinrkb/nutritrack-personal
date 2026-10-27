@@ -42,8 +42,8 @@ class _ActivityVerticalListState extends State<ActivityVerticalList> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.fromLTRB(
-              Dimens.spacing16, Dimens.spacing16, Dimens.spacing16, Dimens.spacing8),
+          padding: const EdgeInsets.fromLTRB(Dimens.spacing16, Dimens.spacing16,
+              Dimens.spacing16, Dimens.spacing8),
           alignment: Alignment.centerLeft,
           child: Row(
             children: [
@@ -72,8 +72,8 @@ class _ActivityVerticalListState extends State<ActivityVerticalList> {
                       }
                     case _ActivityPopupMenuSelection.onShare:
                       if (context.mounted) {
-                        final code = SharedActivityPayload
-                                .fromUserActivityList(widget.userActivityList)
+                        final code = SharedActivityPayload.fromUserActivityList(
+                                widget.userActivityList)
                             .toJsonString();
                         await showDialog(
                           context: context,

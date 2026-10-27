@@ -146,19 +146,19 @@ class AnthropicMealItemsApi implements MealItemsApi {
   /// OpenRouter recommends, which is why this rendering is per-client rather
   /// than on [MealContent].
   Object _contentJson(MealContent content) => switch (content) {
-    MealTextContent(:final text) => text,
-    MealPhotoContent(:final mediaType, :final base64Data) => [
-      {
-        'type': 'image',
-        'source': {
-          'type': 'base64',
-          'media_type': mediaType,
-          'data': base64Data,
-        },
-      },
-      {'type': 'text', 'text': mealPhotoContentPrompt},
-    ],
-  };
+        MealTextContent(:final text) => text,
+        MealPhotoContent(:final mediaType, :final base64Data) => [
+            {
+              'type': 'image',
+              'source': {
+                'type': 'base64',
+                'media_type': mediaType,
+                'data': base64Data,
+              },
+            },
+            {'type': 'text', 'text': mealPhotoContentPrompt},
+          ],
+      };
 
   /// Pulls the tool input out of the reply. Every shape that is not the one
   /// expected raises rather than guessing, so a changed API surfaces as a

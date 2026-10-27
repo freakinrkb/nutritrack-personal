@@ -1,22 +1,26 @@
 import 'package:opennutritracker/core/data/dbo/config_dbo.dart';
 import 'package:opennutritracker/core/domain/entity/config_entity.dart';
+import 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 
 /// The active profile's goal settings as they travel in a JSON backup, as
 /// `goal_settings.json` (#1363).
 ///
 /// Only the goals the config keeps per profile (see `ConfigDataSource`):
-/// the kcal adjustment, the macro split, the per-meal kcal shares and the
-/// daily water goal. Device-wide preferences (theme, language, units,
-/// notifications, consents) and the health-import state are left out; see
-/// `docs/export-format.md` for why. Per-nutrient goals are not here either:
-/// they are stored on each tracked day and travel in
-/// `user_tracked_day.json`.
+/// the kcal adjustment, the macro split, the per-meal kcal shares, the daily
+/// water goal and the durable per-nutrient targets. Device-wide preferences
+/// (theme, language, units, notifications, consents) and the health-import
+/// state are left out; see `docs/export-format.md` for why. A tracked day's
+/// own nutrient overrides still travel in `user_tracked_day.json`.
 ///
 /// A null field means "no override, use the app's default".
 class GoalSettingsBackup {
   /// Bumped only for a change an older reader would misread. A reader
   /// that meets a newer version skips the file rather than guess.
-  static const formatVersion = 1;
+  ///
+  /// Version 2 added `nutrientGoals`. Version 1 files remain readable; an
+  /// import of one leaves the destination's durable nutrient goals alone,
+  /// because the file predates them and cannot say what they should be.
+  static const formatVersion = 2;
 
   // The ranges the Settings dialogs enforce. Kept loose where an older
   // build's rounding could have stored a value just off the mark: the macro
@@ -43,6 +47,15 @@ class GoalSettingsBackup {
   final Map<String, int>? mealKcalSharesPct;
   final int? dailyWaterGoalMl;
 
+  /// Durable targets keyed by [NutrientPanelKeys]. Null means "no durable
+  /// targets"; version-1 files have no such key at all.
+  final Map<String, double>? nutrientGoals;
+
+  /// Whether an import should replace the destination's durable nutrient
+  /// goals with [nutrientGoals] (including clearing them when null). False
+  /// for version-1 files, which never carried that section.
+  final bool replaceNutrientGoals;
+
   const GoalSettingsBackup({
     this.kcalAdjustment,
     this.carbGoalPct,
@@ -50,6 +63,8 @@ class GoalSettingsBackup {
     this.fatGoalPct,
     this.mealKcalSharesPct,
     this.dailyWaterGoalMl,
+    this.nutrientGoals,
+    this.replaceNutrientGoals = true,
   });
 
   /// The goals stored in [config], with any value [fromJson] would reject
@@ -76,6 +91,7 @@ class GoalSettingsBackup {
           ? {for (final k in _mealKeys) k: shares[k]!}
           : null,
       dailyWaterGoalMl: _waterGoalError(water) == null ? water : null,
+      nutrientGoals: _validNutrientGoals(config.nutrientGoals),
     );
   }
 
@@ -104,12 +120,14 @@ class GoalSettingsBackup {
     ];
     final shares = _optionalShares(json, 'mealKcalSharesPct');
     final water = _optionalInt(json, 'dailyWaterGoalMl');
+    final goals =
+        version >= 2 ? _optionalNutrientGoals(json, 'nutrientGoals') : null;
 
-    final error =
-        _kcalAdjustmentError(kcal) ??
+    final error = _kcalAdjustmentError(kcal) ??
         _macroSplitError(macros) ??
         (shares == null ? null : _mealSharesError(shares)) ??
-        _waterGoalError(water);
+        _waterGoalError(water) ??
+        (goals == null ? null : _nutrientGoalsError(goals));
     if (error != null) throw FormatException(error);
 
     return GoalSettingsBackup(
@@ -117,22 +135,24 @@ class GoalSettingsBackup {
       carbGoalPct: macros[0],
       proteinGoalPct: macros[1],
       fatGoalPct: macros[2],
-      mealKcalSharesPct: shares == null
-          ? null
-          : {for (final k in _mealKeys) k: shares[k]!},
+      mealKcalSharesPct:
+          shares == null ? null : {for (final k in _mealKeys) k: shares[k]!},
       dailyWaterGoalMl: water,
+      nutrientGoals: goals,
+      replaceNutrientGoals: version >= 2,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'version': formatVersion,
-    'kcalAdjustment': kcalAdjustment,
-    'carbGoalPct': carbGoalPct,
-    'proteinGoalPct': proteinGoalPct,
-    'fatGoalPct': fatGoalPct,
-    'mealKcalSharesPct': mealKcalSharesPct,
-    'dailyWaterGoalMl': dailyWaterGoalMl,
-  };
+        'version': formatVersion,
+        'kcalAdjustment': kcalAdjustment,
+        'carbGoalPct': carbGoalPct,
+        'proteinGoalPct': proteinGoalPct,
+        'fatGoalPct': fatGoalPct,
+        'mealKcalSharesPct': mealKcalSharesPct,
+        'dailyWaterGoalMl': dailyWaterGoalMl,
+        'nutrientGoals': nutrientGoals,
+      };
 
   static double? _optionalDouble(Map<String, dynamic> json, String key) {
     final value = json[key];
@@ -162,6 +182,53 @@ class GoalSettingsBackup {
       throw FormatException('$key must map meal names to whole numbers');
     }
     return value.cast<String, int>();
+  }
+
+  static Map<String, double>? _optionalNutrientGoals(
+    Map<String, dynamic> json,
+    String key,
+  ) {
+    final value = json[key];
+    if (value == null) return null;
+    if (value is! Map<String, dynamic>) {
+      throw FormatException('$key must be an object');
+    }
+    final goals = <String, double>{};
+    for (final entry in value.entries) {
+      final amount = entry.value;
+      if (amount is! num) {
+        throw FormatException(
+          '$key.${entry.key} must be a number, got $amount',
+        );
+      }
+      goals[entry.key] = amount.toDouble();
+    }
+    return goals;
+  }
+
+  /// Drops corrupt stored entries rather than exporting a map that would make
+  /// the whole backup unrestorable. Unknown keys are dropped too: they may be
+  /// from a newer build, and this version cannot interpret them.
+  static Map<String, double>? _validNutrientGoals(Map<String, double>? stored) {
+    if (stored == null) return null;
+    final goals = <String, double>{
+      for (final key in NutrientPanelKeys.all)
+        if (stored[key] != null && stored[key]!.isFinite && stored[key]! >= 0)
+          key: stored[key]!,
+    };
+    return goals.isEmpty ? null : goals;
+  }
+
+  static String? _nutrientGoalsError(Map<String, double> goals) {
+    for (final entry in goals.entries) {
+      if (!NutrientPanelKeys.all.contains(entry.key)) {
+        return 'unknown nutrient goal: ${entry.key}';
+      }
+      if (!entry.value.isFinite || entry.value < 0) {
+        return 'nutrient goal ${entry.key} must be finite and non-negative';
+      }
+    }
+    return null;
   }
 
   static String? _kcalAdjustmentError(double? kcal) {

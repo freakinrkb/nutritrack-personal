@@ -5,13 +5,15 @@ void main() {
   group('householdPortionLabel', () {
     test('pulls the measure out of an FDC-style label', () {
       // What `MealEntity._spServingLabel` renders for a backend food.
-      expect(householdPortionLabel('1 slice (38 g)', languageCode: 'en'), 'slice');
+      expect(
+          householdPortionLabel('1 slice (38 g)', languageCode: 'en'), 'slice');
     });
 
     test('keeps a qualified measure whole, comma and all', () {
       // The backend's own schema comment names this exact shape, and the
       // comma is why the word may never reach the *stored* unit (#864).
-      expect(householdPortionLabel('1 cup, sliced (240 g)', languageCode: 'en'), 'cup, sliced');
+      expect(householdPortionLabel('1 cup, sliced (240 g)', languageCode: 'en'),
+          'cup, sliced');
     });
 
     test('handles a description with no weight appended', () {
@@ -27,7 +29,8 @@ void main() {
     });
 
     test('a decimal or comma count is stripped like any other', () {
-      expect(householdPortionLabel('0.5 cup (120 g)', languageCode: 'en'), 'cup');
+      expect(
+          householdPortionLabel('0.5 cup (120 g)', languageCode: 'en'), 'cup');
       expect(householdPortionLabel('1,5 slices', languageCode: 'en'), 'slices');
     });
 
@@ -110,7 +113,8 @@ void main() {
       // The other rules still apply: a verified translation of "30 g" names
       // no household measure, and one too long for the row is still too long.
       expect(
-        householdPortionLabel('30 g', languageCode: 'de', textIsLocalized: true),
+        householdPortionLabel('30 g',
+            languageCode: 'de', textIsLocalized: true),
         isNull,
       );
       final long = 'a' * (maxHouseholdPortionLabel + 1);
@@ -125,7 +129,8 @@ void main() {
       // The backend translates portion descriptions per locale, so this
       // function must not assume the Latin script it was written against.
       expect(householdPortionLabel('1 片 (38 g)', languageCode: 'en'), '片');
-      expect(householdPortionLabel('1 Scheibe (38 g)', languageCode: 'en'), 'Scheibe');
+      expect(householdPortionLabel('1 Scheibe (38 g)', languageCode: 'en'),
+          'Scheibe');
     });
   });
 }

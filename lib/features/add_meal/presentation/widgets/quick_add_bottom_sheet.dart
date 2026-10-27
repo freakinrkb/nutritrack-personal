@@ -252,7 +252,8 @@ class _QuickAddBottomSheetState extends State<QuickAddBottomSheet> {
             _field(
               controller: _energyController,
               identifier: 'quick-add-energy',
-              label: usesKj ? s.quickAddEnergyLabelKj : s.quickAddEnergyLabelKcal,
+              label:
+                  usesKj ? s.quickAddEnergyLabelKj : s.quickAddEnergyLabelKcal,
               isRequired: true,
               numeric: true,
             ),
@@ -315,7 +316,8 @@ class _QuickAddBottomSheetState extends State<QuickAddBottomSheet> {
           keyboardType: numeric
               ? const TextInputType.numberWithOptions(decimal: true)
               : TextInputType.text,
-          inputFormatters: numeric ? CustomTextInputFormatter.doubleOnly() : null,
+          inputFormatters:
+              numeric ? CustomTextInputFormatter.doubleOnly() : null,
           decoration: InputDecoration(
             labelText: isRequired ? '$label *' : label,
             border: const OutlineInputBorder(),

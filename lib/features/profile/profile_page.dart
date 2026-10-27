@@ -239,8 +239,8 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: Icons.timer_rounded,
               title: S.of(context).profileFastingEntry,
               showChevron: true,
-              onTap: () =>
-                  Navigator.of(context).pushNamed(NavigationOptions.fastingRoute),
+              onTap: () => Navigator.of(context)
+                  .pushNamed(NavigationOptions.fastingRoute),
             ),
           ],
         ),
@@ -314,8 +314,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 palette: palette,
                 icon: Icons.tune_rounded,
                 title: S.of(context).caloriesProfileInfoTitle,
-                subtitle: (user.caloriesProfile ?? CaloriesProfileEntity.averaged)
-                    .getName(context),
+                subtitle:
+                    (user.caloriesProfile ?? CaloriesProfileEntity.averaged)
+                        .getName(context),
                 onTap: () {
                   _showCaloriesProfileDialog(context, user);
                 },
@@ -334,8 +335,8 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: Icons.menu_book_rounded,
               title: S.of(context).recipesLabel,
               showChevron: true,
-              onTap: () =>
-                  Navigator.of(context).pushNamed(NavigationOptions.recipesRoute),
+              onTap: () => Navigator.of(context)
+                  .pushNamed(NavigationOptions.recipesRoute),
             ),
           ],
         ),
@@ -394,11 +395,15 @@ class _ProfilePageState extends State<ProfilePage> {
     switch (bodyWeightUnit) {
       case BodyWeightUnit.kg:
         final sign = goal > 0 ? '+' : '';
-        return S.of(context).weeklyWeightGoalKgPerWeek('$sign${goal.toStringAsFixed(2)}');
+        return S
+            .of(context)
+            .weeklyWeightGoalKgPerWeek('$sign${goal.toStringAsFixed(2)}');
       case BodyWeightUnit.lb:
         final displayLb = goal * 2.20462;
         final sign = displayLb > 0 ? '+' : '';
-        return S.of(context).weeklyWeightGoalLbsPerWeek('$sign${displayLb.toStringAsFixed(2)}');
+        return S
+            .of(context)
+            .weeklyWeightGoalLbsPerWeek('$sign${displayLb.toStringAsFixed(2)}');
       case BodyWeightUnit.st:
         final displaySt = goal * 2.20462 / 14;
         final sign = displaySt > 0 ? '+' : '';
@@ -680,7 +685,8 @@ class _ProfileTile extends StatelessWidget {
     return Semantics(
       identifier: identifier,
       child: ListTile(
-        leading: _IconChip(palette: palette, icon: icon, iconWidget: iconWidget),
+        leading:
+            _IconChip(palette: palette, icon: icon, iconWidget: iconWidget),
         title: Text(
           title,
           style: text.titleMedium?.copyWith(fontWeight: FontWeight.w700),

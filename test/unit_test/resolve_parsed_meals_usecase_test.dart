@@ -10,18 +10,19 @@ import '../fixture/backend_sibling_fixtures.dart';
 MealEntity meal(
   String name, {
   MealSourceEntity source = MealSourceEntity.off,
-}) => MealEntity(
-  code: name,
-  name: name,
-  url: null,
-  mealQuantity: null,
-  mealUnit: null,
-  servingQuantity: null,
-  servingUnit: null,
-  servingSize: null,
-  source: source,
-  nutriments: MealNutrimentsEntity.empty(),
-);
+}) =>
+    MealEntity(
+      code: name,
+      name: name,
+      url: null,
+      mealQuantity: null,
+      mealUnit: null,
+      servingQuantity: null,
+      servingUnit: null,
+      servingSize: null,
+      source: source,
+      nutriments: MealNutrimentsEntity.empty(),
+    );
 
 /// Records call order so the concurrency assertion can tell "all searches
 /// started before any finished" from "each waited for the last".
@@ -40,10 +41,10 @@ class _FakeSearch implements SearchProductsUseCase {
     Map<String, List<MealEntity>>? supabase,
     Set<String>? throwOff,
     Set<String>? throwSupabase,
-  }) : off = off ?? {},
-       supabase = supabase ?? {},
-       throwOff = throwOff ?? {},
-       throwSupabase = throwSupabase ?? {};
+  })  : off = off ?? {},
+        supabase = supabase ?? {},
+        throwOff = throwOff ?? {},
+        throwSupabase = throwSupabase ?? {};
 
   Future<SearchProductsResult> _respond(
     String tag,

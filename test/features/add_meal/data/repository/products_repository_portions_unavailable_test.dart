@@ -11,18 +11,18 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_portion_en
 import 'package:opennutritracker/features/add_meal/util/resolver_relevance.dart';
 
 SpFoodDTO _food(int id, String name) => SpFoodDTO(
-  foodId: id,
-  source: 'fdc_survey',
-  sourceCode: '$id',
-  name: name,
-  servingGramWeight: 38,
-  servingSize: '1 slice',
-  energyKcal100: 250,
-  carbohydrates100: 40,
-  sugars100: 5,
-  fat100: 4,
-  proteins100: 8,
-);
+      foodId: id,
+      source: 'fdc_survey',
+      sourceCode: '$id',
+      name: name,
+      servingGramWeight: 38,
+      servingSize: '1 slice',
+      energyKcal100: 250,
+      carbohydrates100: 40,
+      sugars100: 5,
+      fat100: 4,
+      proteins100: 8,
+    );
 
 MealPortionEntity _portion(String label) =>
     MealPortionEntity(label: label, gramWeight: 38, localized: false);
@@ -53,20 +53,22 @@ class _FakeSp extends SpFoodDataSource {
   @override
   Future<Map<int, List<MealPortionEntity>>?> fetchPortions(
     List<int> foodIds,
-  ) async => portions;
+  ) async =>
+      portions;
 }
 
 class _NoOff extends OFFDataSource {
   @override
   Future<OFFWordResponseDTO> fetchSearchWordResults(
     String searchString,
-  ) async => OFFWordResponseDTO(
-    count: 0,
-    page: 1,
-    page_count: 1,
-    page_size: 0,
-    products: const <OFFProductDTO>[],
-  );
+  ) async =>
+      OFFWordResponseDTO(
+        count: 0,
+        page: 1,
+        page_count: 1,
+        page_size: 0,
+        products: const <OFFProductDTO>[],
+      );
 }
 
 Future<Map<String, MealEntity>> _search(

@@ -89,13 +89,11 @@ class WorkoutCompensationCalc {
     double? bodyFatPercent,
     required UserEntity user,
   }) {
-    final percentile =
-        _percentileFromBodyFat(bodyFatPercent, user) ??
+    final percentile = _percentileFromBodyFat(bodyFatPercent, user) ??
         _percentileFromBmi(user);
     if (percentile == null) return fallbackMultiplier;
 
-    final compensationPct =
-        leanCompensationPct +
+    final compensationPct = leanCompensationPct +
         (heavyCompensationPct - leanCompensationPct) *
             ((percentile - 10) / 80).clamp(0.0, 1.0);
     return _round(1 - compensationPct / 100);
@@ -131,26 +129,28 @@ class WorkoutCompensationCalc {
   /// for TDEE, so a user only states their reference body chemistry once —
   /// mirrors `ConfigEntity.seedWaterGoalForGender`.
   static double _bodyFatP10For(UserEntity user) => switch (user.gender) {
-    UserGenderEntity.male => maleBodyFatP10,
-    UserGenderEntity.female => femaleBodyFatP10,
-    UserGenderEntity.nonBinary => switch (user.caloriesProfile ??
-        CaloriesProfileEntity.averaged) {
-      CaloriesProfileEntity.testosteroneTypical => maleBodyFatP10,
-      CaloriesProfileEntity.estrogenTypical => femaleBodyFatP10,
-      CaloriesProfileEntity.averaged => (maleBodyFatP10 + femaleBodyFatP10) / 2,
-    },
-  };
+        UserGenderEntity.male => maleBodyFatP10,
+        UserGenderEntity.female => femaleBodyFatP10,
+        UserGenderEntity.nonBinary => switch (
+              user.caloriesProfile ?? CaloriesProfileEntity.averaged) {
+            CaloriesProfileEntity.testosteroneTypical => maleBodyFatP10,
+            CaloriesProfileEntity.estrogenTypical => femaleBodyFatP10,
+            CaloriesProfileEntity.averaged =>
+              (maleBodyFatP10 + femaleBodyFatP10) / 2,
+          },
+      };
 
   static double _bodyFatP90For(UserEntity user) => switch (user.gender) {
-    UserGenderEntity.male => maleBodyFatP90,
-    UserGenderEntity.female => femaleBodyFatP90,
-    UserGenderEntity.nonBinary => switch (user.caloriesProfile ??
-        CaloriesProfileEntity.averaged) {
-      CaloriesProfileEntity.testosteroneTypical => maleBodyFatP90,
-      CaloriesProfileEntity.estrogenTypical => femaleBodyFatP90,
-      CaloriesProfileEntity.averaged => (maleBodyFatP90 + femaleBodyFatP90) / 2,
-    },
-  };
+        UserGenderEntity.male => maleBodyFatP90,
+        UserGenderEntity.female => femaleBodyFatP90,
+        UserGenderEntity.nonBinary => switch (
+              user.caloriesProfile ?? CaloriesProfileEntity.averaged) {
+            CaloriesProfileEntity.testosteroneTypical => maleBodyFatP90,
+            CaloriesProfileEntity.estrogenTypical => femaleBodyFatP90,
+            CaloriesProfileEntity.averaged =>
+              (maleBodyFatP90 + femaleBodyFatP90) / 2,
+          },
+      };
 
   /// Linear read-off between the 10th and 90th percentile anchors. The result
   /// is deliberately left unclamped at the ends — [suggestedMultiplier]
@@ -159,7 +159,8 @@ class WorkoutCompensationCalc {
     double value,
     double anchorP10,
     double anchorP90,
-  ) => 10 + (value - anchorP10) / (anchorP90 - anchorP10) * 80;
+  ) =>
+      10 + (value - anchorP10) / (anchorP90 - anchorP10) * 80;
 
   static double _round(double multiplier) {
     final clamped = multiplier.clamp(

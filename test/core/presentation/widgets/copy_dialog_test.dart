@@ -17,8 +17,8 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    final dropdown =
-        tester.widget<DropdownButton<AddMealType>>(find.byType(DropdownButton<AddMealType>));
+    final dropdown = tester.widget<DropdownButton<AddMealType>>(
+        find.byType(DropdownButton<AddMealType>));
     expect(dropdown.value, AddMealType.dinnerType);
   });
 
@@ -101,8 +101,7 @@ void main() {
 
     final future = showDialog<AddMealType>(
       context: capturedContext,
-      builder: (_) =>
-          const CopyDialog(initialValue: AddMealType.breakfastType),
+      builder: (_) => const CopyDialog(initialValue: AddMealType.breakfastType),
     );
     await tester.pumpAndSettle();
 

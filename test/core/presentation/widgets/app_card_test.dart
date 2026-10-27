@@ -14,8 +14,7 @@ void main() {
         '(regression: padding on the Container shrank the Material while the '
         'clip kept the full corner radius, so the arc curved in over the '
         'content and sliced the first glyph of text in a card corner — the '
-        'home macro totals rendered "89/79 g" as "39/79 g")',
-        (tester) async {
+        'home macro totals rendered "89/79 g" as "39/79 g")', (tester) async {
       const radius = 20.0;
       const padding = EdgeInsets.all(16);
 

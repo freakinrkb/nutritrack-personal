@@ -63,6 +63,13 @@ class _FakeSettingsBloc extends Fake implements SettingsBloc {
   }
 
   @override
+  Future<Map<String, double>> getNutrientGoals() async =>
+      const <String, double>{};
+
+  @override
+  Future<void> setNutrientGoals(Map<String, double> goals) async {}
+
+  @override
   Future<void> setTodayNutrientGoals(
     DateTime day, {
     double? fibreGoal,
@@ -76,7 +83,8 @@ class _FakeSettingsBloc extends Fake implements SettingsBloc {
     double? vitaminB12Goal,
     double? magnesiumGoal,
     bool clearAll = false,
-  }) async => nutrientGoalWrites.add(day);
+  }) async =>
+      nutrientGoalWrites.add(day);
 
   @override
   Future<double> getKcalAdjustment() async => 0;
@@ -139,30 +147,30 @@ class _FakeCalendarDayBloc extends Fake implements CalendarDayBloc {
 class _FakeConfigUsecase extends Fake implements GetConfigUsecase {
   @override
   Future<ConfigEntity> getConfig() async => const ConfigEntity(
-    true,
-    true,
-    false,
-    AppThemeEntity.system,
-    dayStartOffsetHours: 22,
-  );
+        true,
+        true,
+        false,
+        AppThemeEntity.system,
+        dayStartOffsetHours: 22,
+      );
 }
 
 Widget _openerApp(Widget Function() dialog) => ChangeNotifierProvider(
-  create: (_) => EnergyUnitProvider(),
-  child: MaterialApp(
-    localizationsDelegates: const [S.delegate],
-    supportedLocales: S.supportedLocales,
-    home: Scaffold(
-      body: Builder(
-        builder: (context) => ElevatedButton(
-          onPressed: () =>
-              showDialog<void>(context: context, builder: (_) => dialog()),
-          child: const Text('Open'),
+      create: (_) => EnergyUnitProvider(),
+      child: MaterialApp(
+        localizationsDelegates: const [S.delegate],
+        supportedLocales: S.supportedLocales,
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => ElevatedButton(
+              onPressed: () =>
+                  showDialog<void>(context: context, builder: (_) => dialog()),
+              child: const Text('Open'),
+            ),
+          ),
         ),
       ),
-    ),
-  ),
-);
+    );
 
 void main() {
   // The kcal and macro dialogs reload the Diary and Trends through the

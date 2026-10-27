@@ -36,9 +36,9 @@ void main() {
   /// The badge sits in the same Row as its chip, which is how we tell which
   /// option was marked.
   Finder badgeBesideChip(String chipLabel) => find.descendant(
-    of: find.ancestor(of: find.text(chipLabel), matching: find.byType(Row)),
-    matching: find.text(l10nEn.onboardingGoalSuggestedBadge),
-  );
+        of: find.ancestor(of: find.text(chipLabel), matching: find.byType(Row)),
+        matching: find.text(l10nEn.onboardingGoalSuggestedBadge),
+      );
 
   testWidgets('nothing is preselected even with a suggestion', (tester) async {
     bool? lastActive;

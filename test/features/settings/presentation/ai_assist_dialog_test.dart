@@ -72,7 +72,8 @@ class _MemoryStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => store.remove(key);
+  }) async =>
+      store.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -109,13 +110,15 @@ class _FakeProber implements AiEndpointProber {
   Future<AiCapability> probeText(
     AiSelection selection, {
     String? localeCode,
-  }) async => result.text;
+  }) async =>
+      result.text;
 
   @override
   Future<AiCapability> probePhoto(
     AiSelection selection, {
     String? localeCode,
-  }) async => result.photo;
+  }) async =>
+      result.photo;
 }
 
 class _Server {
@@ -139,28 +142,30 @@ class _Server {
   /// A different list per host, so one server's answer can be told apart
   /// from the answer of the server asked before it.
   factory _Server.perHost(Map<String, List<String>> byHost) => _Server(
-    (url) => http.Response(
-      jsonEncode({
-        'object': 'list',
-        'data': [
-          for (final id in byHost[url.host] ?? const <String>[])
-            {'id': id, 'object': 'model'},
-        ],
-      }),
-      200,
-    ),
-  );
+        (url) => http.Response(
+          jsonEncode({
+            'object': 'list',
+            'data': [
+              for (final id in byHost[url.host] ?? const <String>[])
+                {'id': id, 'object': 'model'},
+            ],
+          }),
+          200,
+        ),
+      );
 
   /// Answers with a `/v1/models` body in the shape all four runtimes serve.
   factory _Server.listing(List<String> ids) => _Server(
-    (_) => http.Response(
-      jsonEncode({
-        'object': 'list',
-        'data': [for (final id in ids) {'id': id, 'object': 'model'}],
-      }),
-      200,
-    ),
-  );
+        (_) => http.Response(
+          jsonEncode({
+            'object': 'list',
+            'data': [
+              for (final id in ids) {'id': id, 'object': 'model'}
+            ],
+          }),
+          200,
+        ),
+      );
 
   /// Nothing is listening — asleep, on another network, or a VPN that is off.
   factory _Server.unreachable() =>
@@ -181,23 +186,24 @@ Widget _app(
   Locale? locale,
   AiModelListApi? modelList,
   AiEndpointProbeRunner? probeRunner,
-}) => MaterialApp(
-  locale: locale,
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  home: Scaffold(
-    body: AiAssistDialog(
-      storage: storage,
-      modelList: modelList,
-      probeRunner: probeRunner,
-    ),
-  ),
-);
+}) =>
+    MaterialApp(
+      locale: locale,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      home: Scaffold(
+        body: AiAssistDialog(
+          storage: storage,
+          modelList: modelList,
+          probeRunner: probeRunner,
+        ),
+      ),
+    );
 
 /// The dialog on a real dialog route, behind an `open` button, where a
 /// keyboard inset is what shrinks its scroll viewport — [_app] puts it in a
@@ -205,24 +211,25 @@ Widget _app(
 Widget _routeApp(
   AiCredentialStorage storage, {
   AiModelListApi? modelList,
-}) => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  home: Builder(
-    builder: (context) => Scaffold(
-      body: TextButton(
-        onPressed: () =>
-            AiAssistDialog.show(context, storage, modelList: modelList),
-        child: const Text('open'),
+}) =>
+    MaterialApp(
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: TextButton(
+            onPressed: () =>
+                AiAssistDialog.show(context, storage, modelList: modelList),
+            child: const Text('open'),
+          ),
+        ),
       ),
-    ),
-  ),
-);
+    );
 
 void main() {
   late _MemoryStorage backing;
@@ -558,9 +565,8 @@ void main() {
     );
 
     for (final vendor in vendors) {
-      final rows = AiModelCatalogue.openrouter
-          .where((m) => m.servedBy == vendor)
-          .length;
+      final rows =
+          AiModelCatalogue.openrouter.where((m) => m.servedBy == vendor).length;
       expect(
         find.textContaining(l10nEn.aiAssistServedByLabel(vendor)),
         findsNWidgets(rows),
@@ -652,8 +658,8 @@ void main() {
 
       expect(find.bySemanticsIdentifier('ai-assist-endpoint-field'),
           findsOneWidget);
-      expect(find.bySemanticsIdentifier('ai-assist-model-field'),
-          findsOneWidget);
+      expect(
+          find.bySemanticsIdentifier('ai-assist-model-field'), findsOneWidget);
     });
 
     testWidgets('offers no curated model rows, and no served-by line', (
@@ -793,8 +799,8 @@ void main() {
         'http://192.168.1.5:11434/v1/chat/completions',
         reason: 'a base address is completed to the route runtimes answer on',
       );
-      expect(await storage.readModel(provider: AiProvider.ownServer),
-          'gemma3:4b');
+      expect(
+          await storage.readModel(provider: AiProvider.ownServer), 'gemma3:4b');
       expect(
         (await storage.readSummary()).configured,
         isTrue,
@@ -826,7 +832,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(l10nEn.aiAssistEndpointInvalidLabel), findsOneWidget);
-      expect(await storage.readEndpoint(provider: AiProvider.ownServer), isNull);
+      expect(
+          await storage.readEndpoint(provider: AiProvider.ownServer), isNull);
       expect(
         find.byType(AiAssistDialog),
         findsOneWidget,
@@ -852,7 +859,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(l10nEn.aiAssistModelRequiredLabel), findsOneWidget);
-      expect(await storage.readEndpoint(provider: AiProvider.ownServer), isNull);
+      expect(
+          await storage.readEndpoint(provider: AiProvider.ownServer), isNull);
       expect(
         await storage.isEnabled(),
         isFalse,
@@ -860,7 +868,8 @@ void main() {
       );
     });
 
-    testWidgets('a refusal on OK is brought into view, with the cursor in '
+    testWidgets(
+        'a refusal on OK is brought into view, with the cursor in '
         'the field (#1364)', (tester) async {
       // The dialog is taller than a phone, and the model field sits below
       // the address. With the address still being edited, OK refused below
@@ -966,7 +975,8 @@ void main() {
       expect(viewport.bottom, lessThanOrEqualTo(640 - 280));
     });
 
-    testWidgets('a refusal on OK stays in view when the keyboard rises '
+    testWidgets(
+        'a refusal on OK stays in view when the keyboard rises '
         'after it (#1364)', (tester) async {
       // OK pressed with the keyboard down: the refusal is scrolled into the
       // tall viewport, and only then does the focus it moved bring the
@@ -1331,11 +1341,11 @@ void main() {
       /// assertion with teeth rather than one that happens to check the
       /// message nobody was going to show anyway.
       List<String> messagesFor(String host) => [
-        l10nEn.aiAssistModelsUnreachableLabel(host),
-        l10nEn.aiAssistModelsEmptyLabel(host),
-        l10nEn.aiAssistModelsRejectedLabel(host),
-        l10nEn.aiAssistModelsInsecureLabel,
-      ];
+            l10nEn.aiAssistModelsUnreachableLabel(host),
+            l10nEn.aiAssistModelsEmptyLabel(host),
+            l10nEn.aiAssistModelsRejectedLabel(host),
+            l10nEn.aiAssistModelsInsecureLabel,
+          ];
 
       testWidgets('opening the dialog asks the server nothing', (tester) async {
         // The promise the README is built on is about what leaves the device
@@ -1470,7 +1480,8 @@ void main() {
         );
       });
 
-      testWidgets('a server that cannot be reached says so, and an empty one '
+      testWidgets(
+          'a server that cannot be reached says so, and an empty one '
           'says something else', (tester) async {
         // Both produce a blank picker and they want opposite fixes: wake the
         // machine, or pull a model. One message covering both would send half
@@ -1557,7 +1568,8 @@ void main() {
         );
       });
 
-      testWidgets('changing the address fetches, and drops the model that '
+      testWidgets(
+          'changing the address fetches, and drops the model that '
           'belonged to the old one', (tester) async {
         // #755 clears the stored model whenever the address changes, because
         // `gemma3:4b` is a claim about one machine and says nothing about the
@@ -1606,7 +1618,8 @@ void main() {
           .controller
           ?.text;
 
-      testWidgets('a failed fetch after an address change leaves the model '
+      testWidgets(
+          'a failed fetch after an address change leaves the model '
           'alone (#1364)', (tester) async {
         // Clearing up front, before anything had answered, left an empty
         // field and nothing to pick from whenever the new server was
@@ -1652,7 +1665,8 @@ void main() {
         });
       }
 
-      testWidgets('a retry that succeeds after a failed fetch still drops a '
+      testWidgets(
+          'a retry that succeeds after a failed fetch still drops a '
           'model the new server lacks', (tester) async {
         final server = wakesUpListing(['qwen3:8b']);
         await storage.writeOwnServerConfiguration(
@@ -1744,7 +1758,8 @@ void main() {
         );
       }
 
-      testWidgets('Load models on an edited address drops a model that '
+      testWidgets(
+          'Load models on an edited address drops a model that '
           'server lacks, without the field being left', (tester) async {
         final server = _Server.listing(['qwen3:8b']);
         await storage.writeOwnServerConfiguration(
@@ -1764,7 +1779,8 @@ void main() {
         expect(modelText(tester), isEmpty);
       });
 
-      testWidgets('a model kept through a failed fetch is settled by the '
+      testWidgets(
+          'a model kept through a failed fetch is settled by the '
           'next address it is loaded for', (tester) async {
         // The address goes to .9, which does not answer, so the model stays
         // — tagged as .9's to settle. The address then goes to .7 and Load
@@ -1800,7 +1816,8 @@ void main() {
         expect(modelText(tester), isEmpty);
       });
 
-      testWidgets('a model typed while the fetch is out is not dropped when '
+      testWidgets(
+          'a model typed while the fetch is out is not dropped when '
           'it lands', (tester) async {
         // Moving from the address to the model field is itself what starts
         // the fetch, so typing into it while the request is out is the
@@ -1833,7 +1850,8 @@ void main() {
         expect(modelText(tester), 'llama3.2:3b');
       });
 
-      testWidgets('a second address committed while the first is still out '
+      testWidgets(
+          'a second address committed while the first is still out '
           'is asked too', (tester) async {
         // #796. The one-request-per-act rule was read as "one at a time", so
         // committing a second address while the first was still out cleared
@@ -1867,7 +1885,8 @@ void main() {
         await tester.pumpAndSettle();
       });
 
-      testWidgets('the first server\'s list is not shown under the second '
+      testWidgets(
+          'the first server\'s list is not shown under the second '
           'server\'s address', (tester) async {
         // The visible half of the same bug, and the one that costs something:
         // `_pickModel` writes the chosen id into the model field, so a list
@@ -1916,7 +1935,8 @@ void main() {
         );
       });
 
-      testWidgets('a list that lands after a provider switch changes '
+      testWidgets(
+          'a list that lands after a provider switch changes '
           'nothing', (tester) async {
         // Every other await in this dialog drops a write that no longer
         // belongs (#788); this one arrived with #757 and did not. Contained
@@ -1960,16 +1980,19 @@ void main() {
         await tester.ensureVisible(button);
         await tester.pumpAndSettle();
         expect(
-          tester.widget<TextButton>(
-            find.descendant(of: button, matching: find.byType(TextButton)),
-          ).onPressed,
+          tester
+              .widget<TextButton>(
+                find.descendant(of: button, matching: find.byType(TextButton)),
+              )
+              .onPressed,
           isNotNull,
           reason: 'a request nobody wants any more must not disable the '
               'button for the rest of the dialog',
         );
       });
 
-      testWidgets('returning to a configured server and leaving the address '
+      testWidgets(
+          'returning to a configured server and leaving the address '
           'alone asks nothing', (tester) async {
         // The other half of the same rule. Focus crossing the field is not a
         // URL change, or every glance at this dialog would be a request.
@@ -1992,7 +2015,8 @@ void main() {
         expect(server.requests, isEmpty);
       });
 
-      testWidgets('Cancel asks nothing, even with a half-changed address in '
+      testWidgets(
+          'Cancel asks nothing, even with a half-changed address in '
           'the field', (tester) async {
         // Leaving is not an explicit ask. Cancel takes focus off the address
         // field, and a focus-loss fetch fires on the way out — a request the
@@ -2022,7 +2046,8 @@ void main() {
         );
       });
 
-      testWidgets('moving on from a changed address fetches, without pressing '
+      testWidgets(
+          'moving on from a changed address fetches, without pressing '
           'anything', (tester) async {
         // The positive half of the two exit tests above. They prove the fetch
         // is *suppressed* while the route is going away; without this, they
@@ -2050,7 +2075,8 @@ void main() {
         ]);
       });
 
-      testWidgets('moving an already-configured server to a new address saves '
+      testWidgets(
+          'moving an already-configured server to a new address saves '
           'both fields', (tester) async {
         // The third exit, and the one where suppressing the fetch has to not
         // break anything: OK must still commit what is on screen. If leaving
@@ -2129,7 +2155,8 @@ void main() {
         expect(server.requests, isEmpty);
       });
 
-      testWidgets('an address that is not a URL is refused before anything is '
+      testWidgets(
+          'an address that is not a URL is refused before anything is '
           'sent', (tester) async {
         // The form Ollama's own documentation shows, and not a URL. The same
         // refusal OK gives, on the same field.
@@ -2294,7 +2321,8 @@ void main() {
           );
         });
 
-        testWidgets('editing the address clears the list fetched for the old '
+        testWidgets(
+            'editing the address clears the list fetched for the old '
             'one', (tester) async {
           // The other statement about a particular host, immediately below the
           // first. A picker offering one machine's models under another
@@ -2322,7 +2350,8 @@ void main() {
           );
         });
 
-        testWidgets('an edit elsewhere in the dialog leaves the verdict '
+        testWidgets(
+            'an edit elsewhere in the dialog leaves the verdict '
             'standing', (tester) async {
           // The half that stops this being "clear it whenever anything
           // happens". A model name, the pause switch and the key say nothing
@@ -2370,7 +2399,8 @@ void main() {
           );
         });
 
-        testWidgets('asking again after the edit answers about the new '
+        testWidgets(
+            'asking again after the edit answers about the new '
             'address', (tester) async {
           // Clearing the sentence is only half of what the user was told to
           // do. The button beside it has to work against what they typed
@@ -2396,7 +2426,8 @@ void main() {
           }
         });
 
-        testWidgets('an answer for the old address does not land under the '
+        testWidgets(
+            'an answer for the old address does not land under the '
             'new one', (tester) async {
           // A verdict that arrives *after* the edit is as stale as one that
           // was already there — a machine on someone's LAN answers when it
@@ -2429,9 +2460,12 @@ void main() {
           await tester.ensureVisible(button);
           await tester.pumpAndSettle();
           expect(
-            tester.widget<TextButton>(
-              find.descendant(of: button, matching: find.byType(TextButton)),
-            ).onPressed,
+            tester
+                .widget<TextButton>(
+                  find.descendant(
+                      of: button, matching: find.byType(TextButton)),
+                )
+                .onPressed,
             isNotNull,
             reason: 'the button has to be pressable against the address that '
                 'replaced the one being fetched for',
@@ -2461,10 +2495,10 @@ void main() {
       /// A saved, usable server, so the section is on screen without going
       /// through the save path first.
       Future<void> configure() => storage.writeOwnServerConfiguration(
-        endpoint: 'http://192.168.1.5:11434',
-        model: 'gemma3:4b',
-        provider: AiProvider.ownServer,
-      );
+            endpoint: 'http://192.168.1.5:11434',
+            model: 'gemma3:4b',
+            provider: AiProvider.ownServer,
+          );
 
       /// The section sits below the model fields, so on the default test
       /// viewport the button is inside the dialog's scroll view and off
@@ -2548,7 +2582,8 @@ void main() {
         expect(find.text(l10nEn.aiAssistProbePhotoLabel), findsOneWidget);
       });
 
-      testWidgets('"not checked yet" reads differently from "checked and '
+      testWidgets(
+          '"not checked yet" reads differently from "checked and '
           'failed"', (tester) async {
         // Two states, not one. Nothing about never having asked is an error:
         // there is nothing to dismiss and nothing to fix, and the answer is
@@ -2568,7 +2603,8 @@ void main() {
         );
       });
 
-      testWidgets('a check that came back with nothing does not read as '
+      testWidgets(
+          'a check that came back with nothing does not read as '
           '"not checked yet" (#850)', (tester) async {
         // Measured on a Pixel 6 against an unresponsive endpoint: probe
         // started 19:44:36, the text leg timed out at 19:46:36, the photo leg
@@ -2828,7 +2864,8 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(
-          find.text(l10nEn.aiAssistProbeRunningLabel(aiProbeWorstCaseMinutes())),
+          find.text(
+              l10nEn.aiAssistProbeRunningLabel(aiProbeWorstCaseMinutes())),
           findsOneWidget,
         );
         final retry = tester.widget<TextButton>(
@@ -2843,7 +2880,8 @@ void main() {
         prober.gate!.complete();
         await tester.pumpAndSettle();
         expect(
-          find.text(l10nEn.aiAssistProbeRunningLabel(aiProbeWorstCaseMinutes())),
+          find.text(
+              l10nEn.aiAssistProbeRunningLabel(aiProbeWorstCaseMinutes())),
           findsNothing,
         );
         expect(find.text(l10nEn.aiAssistProbePassedLabel), findsOneWidget);
@@ -2876,12 +2914,13 @@ void main() {
           find.text(l10nEn.aiAssistEndpointPublicPlaintextLabel),
           findsOneWidget,
         );
-        expect(await storage.readEndpoint(provider: AiProvider.ownServer),
-            isNull);
+        expect(
+            await storage.readEndpoint(provider: AiProvider.ownServer), isNull);
         expect(prober.calls, 0, reason: 'nothing was configured to check');
       });
 
-      testWidgets('a private address is not refused, and https is not '
+      testWidgets(
+          'a private address is not refused, and https is not '
           'either', (tester) async {
         await tester.pumpWidget(_app(storage, probeRunner: runner));
         await tester.pumpAndSettle();
@@ -2971,7 +3010,8 @@ void main() {
     });
   });
 
-  testWidgets('the check belongs to the server the user runs, and nowhere '
+  testWidgets(
+      'the check belongs to the server the user runs, and nowhere '
       'else', (tester) async {
     // The hosted three were screened behaviourally over live calls before
     // they were ever offered (#735), so there is nothing here a check would
@@ -3011,7 +3051,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final field = tester.getRect(find.byType(TextField));
-    final viewport = tester.view.physicalSize.height / tester.view.devicePixelRatio;
+    final viewport =
+        tester.view.physicalSize.height / tester.view.devicePixelRatio;
 
     expect(
       field.bottom,
@@ -3388,9 +3429,12 @@ void main() {
   List<(String, RenderParagraph)> modelTitles(WidgetTester tester) => tester
       .widgetList<RadioListTile<String>>(find.byType(RadioListTile<String>))
       .map((tile) => (tile.title as Text).data!)
-      .map((data) => (data, tester.renderObject<RenderParagraph>(
-            find.text(data),
-          )))
+      .map((data) => (
+            data,
+            tester.renderObject<RenderParagraph>(
+              find.text(data),
+            )
+          ))
       .toList();
 
   test('provider identifiers are kebab-case, and one per provider', () {
@@ -3399,9 +3443,8 @@ void main() {
     // AGENTS.md by accident and nothing was watching when the fourth did
     // not — the adb verifier greps these, and a fifth provider is likelier
     // to be two words than one.
-    final identifiers = AiProvider.values
-        .map(AiAssistDialog.providerIdentifier)
-        .toList();
+    final identifiers =
+        AiProvider.values.map(AiAssistDialog.providerIdentifier).toList();
 
     for (final identifier in identifiers) {
       expect(identifier, matches(RegExp(r'^[a-z0-9]+(-[a-z0-9]+)*$')));
@@ -3520,7 +3563,8 @@ void main() {
   group('agreeing before anything is stored', () {
     setUp(() async => storage.setTermsAccepted(false));
 
-    Future<void> typeKeyAndSave(WidgetTester tester, {String key = 'sk-x'}) async {
+    Future<void> typeKeyAndSave(WidgetTester tester,
+        {String key = 'sk-x'}) async {
       await tester.enterText(find.byType(TextField).first, key);
       await tester.pumpAndSettle();
       await tester.tap(find.bySemanticsIdentifier('ai-assist-save-key'));

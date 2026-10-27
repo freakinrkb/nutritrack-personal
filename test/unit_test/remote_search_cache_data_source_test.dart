@@ -94,8 +94,7 @@ void main() {
       expect(ds.count, equals(2));
     });
 
-    test('cache uses code as timestamp key when present, else name',
-        () async {
+    test('cache uses code as timestamp key when present, else name', () async {
       await ds.cache(_meal(code: 'A', name: 'Apple'));
       expect(tsBox.get('A'), isNotNull);
       expect(tsBox.get('Apple'), isNull);
@@ -137,13 +136,13 @@ void main() {
 
       await ds.cacheFromSearch([
         _meal(code: 'A', name: 'Apple v2'), // existing → keep ts, refresh data
-        _meal(code: 'B', name: 'Banana'),   // new → fresh ts
+        _meal(code: 'B', name: 'Banana'), // new → fresh ts
       ]);
 
       expect(tsBox.get('A'), equals(originalTs),
           reason: 'existing entry timestamp must be preserved on re-search');
-      expect(ds.getAll().firstWhere((m) => m.code == 'A').name,
-          equals('Apple v2'),
+      expect(
+          ds.getAll().firstWhere((m) => m.code == 'A').name, equals('Apple v2'),
           reason: 'meal data should still be refreshed even though ts is kept');
       expect(tsBox.get('B'), isNotNull);
     });
@@ -159,8 +158,7 @@ void main() {
 
       expect(ds.count, equals(2),
           reason: 'duplicate code within a batch must not double-add');
-      final apples =
-          ds.getAll().where((m) => m.code == 'A').toList();
+      final apples = ds.getAll().where((m) => m.code == 'A').toList();
       expect(apples, hasLength(1));
       expect(apples.first.name, equals('Apple v2'));
     });
@@ -279,9 +277,8 @@ void main() {
       // Touch A so it jumps to the top.
       await ds.touch('A');
 
-      final ordered = ds.getAllByMostRecentlyTouched()
-          .map((m) => m.code)
-          .toList();
+      final ordered =
+          ds.getAllByMostRecentlyTouched().map((m) => m.code).toList();
       expect(ordered.first, equals('A'));
       expect(ordered, equals(const ['A', 'C', 'B']));
     });
@@ -293,9 +290,8 @@ void main() {
       // Manually add an entry without a timestamp record (pre-TTL data).
       await cacheBox.add(_meal(code: 'OLD', name: 'Legacy'));
 
-      final ordered = ds.getAllByMostRecentlyTouched()
-          .map((m) => m.code)
-          .toList();
+      final ordered =
+          ds.getAllByMostRecentlyTouched().map((m) => m.code).toList();
       expect(ordered.last, equals('OLD'));
     });
 
@@ -360,8 +356,7 @@ void main() {
     group('the language of the cached names', () {
       tearDown(AppLocale.reset);
 
-      test('a cache written in another language is dropped on write',
-          () async {
+      test('a cache written in another language is dropped on write', () async {
         AppLocale.select('de');
         await ds.cache(_meal(code: 'A', name: 'Brot'));
         expect(ds.count, equals(1));
@@ -396,8 +391,7 @@ void main() {
         expect(ds.getByBarcode('A'), isNotNull);
       });
 
-      test('a cache from before the language stamp is dropped once',
-          () async {
+      test('a cache from before the language stamp is dropped once', () async {
         await cacheBox.add(_meal(code: 'OLD', name: 'Unknown language'));
         expect(ds.getAll(), isEmpty);
         await ds.settle();

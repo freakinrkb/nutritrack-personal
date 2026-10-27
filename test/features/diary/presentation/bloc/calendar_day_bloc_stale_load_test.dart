@@ -33,7 +33,8 @@ class _GatedActivities extends Fake implements GetUserActivityUsecase {
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) => gates.putIfAbsent(day, Completer.new).future;
+  }) =>
+      gates.putIfAbsent(day, Completer.new).future;
 }
 
 class _NoIntakes extends Fake implements GetIntakeUsecase {
@@ -42,28 +43,32 @@ class _NoIntakes extends Fake implements GetIntakeUsecase {
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 
   @override
   Future<List<IntakeEntity>> getLunchIntakeByDay(
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 
   @override
   Future<List<IntakeEntity>> getDinnerIntakeByDay(
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 
   @override
   Future<List<IntakeEntity>> getSnackIntakeByDay(
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 }
 
 /// Names the day each load read, so the emitted state says which it is.

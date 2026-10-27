@@ -77,7 +77,8 @@ void main() {
   // #1317 review: profile B was last active under a 00:00 boundary, which
   // is now 04:00. Its 02:00 ride on the 5th is credited on the 5th's row,
   // but is listed on the 4th now. Profile A copies a 02:30 snack to it.
-  test('a copy into a profile keyed by an old boundary credits its '
+  test(
+      'a copy into a profile keyed by an old boundary credits its '
       'activity once', () async {
     DayBoundaryCalc.clock = () => DateTime(2026, 10, 5, 3);
     Future<Box<T>> open<T>(String name) =>

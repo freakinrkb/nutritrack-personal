@@ -146,7 +146,7 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
       _resolvePhotoDestination();
 
   Future<({AiProvider provider, String name})?>
-  _resolvePhotoDestination() async {
+      _resolvePhotoDestination() async {
     final storage = locator<AiCredentialStorage>();
     final provider = await storage.activeProvider();
     if (provider == null) return null;
@@ -365,12 +365,12 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
   /// on a 320dp screen, the same defect #820 fixed and the same one #824
   /// uncovered under it. This region is the one that can give ground.
   Widget _withModelHint(BuildContext context, Widget body) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      _buildModelHint(context),
-      Expanded(child: body),
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildModelHint(context),
+          Expanded(child: body),
+        ],
+      );
 
   /// The line that says a model could read this, for a user who has never
   /// configured one.
@@ -389,106 +389,107 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
   /// something that changes whether this tap leads anywhere — it belongs on
   /// the agreement, which is where it is.
   Widget _buildModelHint(BuildContext context) => FutureBuilder<bool>(
-    future: _modelUnknown,
-    builder: (context, snapshot) {
-      // Nothing until the keystore read lands, and nothing for anyone who has
-      // configured a provider. A line that appeared and then vanished would
-      // resize the screen under someone already typing.
-      if (snapshot.data != true) return const SizedBox.shrink();
-      final s = S.of(context);
-      final theme = Theme.of(context);
-      return Semantics(
-        identifier: 'bulk-add-model-hint',
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: InkWell(
-            // Asks for the AI dialog by name, the same way the failure
-            // notices below have since #852. Plain Settings opens with the
-            // AI row several category groups down, and of this screen's two
-            // audiences the one reading this hint is the one that knows
-            // least about where it is going — sending it the longer way
-            // round was exactly backwards. #992.
-            onTap: () => _openSettings(
-              arguments: const SettingsScreenArguments(openAiAssist: true),
-            ),
+        future: _modelUnknown,
+        builder: (context, snapshot) {
+          // Nothing until the keystore read lands, and nothing for anyone who has
+          // configured a provider. A line that appeared and then vanished would
+          // resize the screen under someone already typing.
+          if (snapshot.data != true) return const SizedBox.shrink();
+          final s = S.of(context);
+          final theme = Theme.of(context);
+          return Semantics(
+            identifier: 'bulk-add-model-hint',
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.auto_awesome_rounded,
-                    size: 18,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${s.bulkAddModelHintLabel} · '
-                          '${s.aiAssistExperimentalLabel}',
-                          style: theme.textTheme.bodyMedium,
+              padding: const EdgeInsets.only(bottom: 12),
+              child: InkWell(
+                // Asks for the AI dialog by name, the same way the failure
+                // notices below have since #852. Plain Settings opens with the
+                // AI row several category groups down, and of this screen's two
+                // audiences the one reading this hint is the one that knows
+                // least about where it is going — sending it the longer way
+                // round was exactly backwards. #992.
+                onTap: () => _openSettings(
+                  arguments: const SettingsScreenArguments(openAiAssist: true),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.auto_awesome_rounded,
+                        size: 18,
+                        color: theme.colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${s.bulkAddModelHintLabel} · '
+                              '${s.aiAssistExperimentalLabel}',
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            Text(
+                              s.bulkAddModelHintKeyLabel,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          s.bulkAddModelHintKeyLabel,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
-    },
-  );
 
   Widget _buildInput(
     BuildContext context, {
     required double maxFieldHeight,
-  }) => Padding(
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Scrolls past its ceiling rather than being clipped: what is typed
-        // must stay reachable, and at ordinary text sizes four lines are far
-        // below this so nothing changes.
-        ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: maxFieldHeight),
-          child: Semantics(
-            identifier: 'bulk-add-input',
-            child: TextField(
-              controller: _textController,
-              minLines: 2,
-              maxLines: 4,
-              textInputAction: TextInputAction.newline,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                hintText: S.of(context).bulkAddInputHint,
-                border: const OutlineInputBorder(),
+  }) =>
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Scrolls past its ceiling rather than being clipped: what is typed
+            // must stay reachable, and at ordinary text sizes four lines are far
+            // below this so nothing changes.
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: maxFieldHeight),
+              child: Semantics(
+                identifier: 'bulk-add-input',
+                child: TextField(
+                  controller: _textController,
+                  minLines: 2,
+                  maxLines: 4,
+                  textInputAction: TextInputAction.newline,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    hintText: S.of(context).bulkAddInputHint,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 12),
+            Semantics(
+              identifier: 'bulk-add-parse',
+              child: FilledButton.icon(
+                onPressed: _onParsePressed,
+                icon: const Icon(Icons.search),
+                label: Text(S.of(context).bulkAddParseLabel),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
-        Semantics(
-          identifier: 'bulk-add-parse',
-          child: FilledButton.icon(
-            onPressed: _onParsePressed,
-            icon: const Icon(Icons.search),
-            label: Text(S.of(context).bulkAddParseLabel),
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 
   Widget _buildBody(BuildContext context, BulkAddState state) {
     if (state is BulkAddLoadingState) {
@@ -550,13 +551,15 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
           BulkAddPhotoError.unavailable ||
           BulkAddPhotoError.auth ||
           BulkAddPhotoError.unsupported ||
-          BulkAddPhotoError.insecureDestination => () => _openAiSettings(
-            context,
-          ),
+          BulkAddPhotoError.insecureDestination =>
+            () => _openAiSettings(
+                  context,
+                ),
           BulkAddPhotoError.transient ||
           BulkAddPhotoError.camera ||
           BulkAddPhotoError.unreadable ||
-          BulkAddPhotoError.billing => null,
+          BulkAddPhotoError.billing =>
+            null,
         },
       );
     }
@@ -571,21 +574,23 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
     if (state.rows.isEmpty) {
       return _withModelHint(
         context,
-        _centeredMessage(context, switch (state) {
-          // A bad segment explains itself; that outranks either generic line.
-          _ when state.parseErrors.isNotEmpty => _parseErrorsText(
+        _centeredMessage(
             context,
-            state.parseErrors,
-          ),
-          // The model looked at a photograph and reported no food. "Nothing to
-          // log yet" is true but reads as though nothing happened, and the
-          // notice that would have said a photo was read is not drawn on this
-          // branch — so the one screen where the user most needs to know a
-          // machine answered was the one screen that never said so.
-          _ when state.source == BulkAddReadSource.photo =>
-            S.of(context).bulkAddPhotoNoFoodLabel,
-          _ => S.of(context).bulkAddNothingToLogLabel,
-        }),
+            switch (state) {
+              // A bad segment explains itself; that outranks either generic line.
+              _ when state.parseErrors.isNotEmpty => _parseErrorsText(
+                  context,
+                  state.parseErrors,
+                ),
+              // The model looked at a photograph and reported no food. "Nothing to
+              // log yet" is true but reads as though nothing happened, and the
+              // notice that would have said a photo was read is not drawn on this
+              // branch — so the one screen where the user most needs to know a
+              // machine answered was the one screen that never said so.
+              _ when state.source == BulkAddReadSource.photo =>
+                S.of(context).bulkAddPhotoNoFoodLabel,
+              _ => S.of(context).bulkAddNothingToLogLabel,
+            }),
       );
     }
 
@@ -734,7 +739,9 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
                           Expanded(
                             child: Text(
                               text,
-                              style: Theme.of(context).textTheme.bodySmall
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
                                   ?.copyWith(
                                     color: emphasised
                                         ? scheme.onErrorContainer
@@ -766,9 +773,8 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
                             child: TextButton(
                               onPressed: action,
                               style: TextButton.styleFrom(
-                                foregroundColor: emphasised
-                                    ? scheme.onErrorContainer
-                                    : null,
+                                foregroundColor:
+                                    emphasised ? scheme.onErrorContainer : null,
                                 visualDensity: VisualDensity.compact,
                               ),
                               child: Text(S.of(context).settingsLabel),
@@ -801,8 +807,9 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
   /// photo failure action — and only the ones that went through
   /// [_openSettings] noticed a provider configured while they were away.
   void _openAiSettings(BuildContext context) => unawaited(
-    _openSettings(arguments: const SettingsScreenArguments(openAiAssist: true)),
-  );
+        _openSettings(
+            arguments: const SettingsScreenArguments(openAiAssist: true)),
+      );
 
   /// A message that fills the body, optionally with something to do about it.
   ///
@@ -813,34 +820,35 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
     BuildContext context,
     String message, {
     VoidCallback? action,
-  }) => Padding(
-    padding: const EdgeInsets.all(24),
-    // Scrollable rather than clipped, for the reason #777 settled: this
-    // region takes a tight height from the `Expanded` above, and German at 2x
-    // on a 320dp screen wants 484px more than it has. A bare `Column` there
-    // paints its overflow past the bottom of the screen, and the button is
-    // the last thing in it — so the control this change exists to add would
-    // have been the first thing to go: in the tree, and untappable. Measured,
-    // not assumed; the test pins it.
-    child: Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(message, textAlign: TextAlign.center),
-            if (action != null)
-              Semantics(
-                identifier: 'bulk-add-message-action',
-                child: TextButton(
-                  onPressed: action,
-                  child: Text(S.of(context).settingsLabel),
-                ),
-              ),
-          ],
+  }) =>
+      Padding(
+        padding: const EdgeInsets.all(24),
+        // Scrollable rather than clipped, for the reason #777 settled: this
+        // region takes a tight height from the `Expanded` above, and German at 2x
+        // on a 320dp screen wants 484px more than it has. A bare `Column` there
+        // paints its overflow past the bottom of the screen, and the button is
+        // the last thing in it — so the control this change exists to add would
+        // have been the first thing to go: in the tree, and untappable. Measured,
+        // not assumed; the test pins it.
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(message, textAlign: TextAlign.center),
+                if (action != null)
+                  Semantics(
+                    identifier: 'bulk-add-message-action',
+                    child: TextButton(
+                      onPressed: action,
+                      child: Text(S.of(context).settingsLabel),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   /// The parser reports *what* was wrong with *which* item; the sentence is
   /// built here, where there is a `BuildContext` to localize it with. See
@@ -861,20 +869,22 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
   String _parseErrorsText(
     BuildContext context,
     List<MealTextParseError> errors,
-  ) => errors.map((e) => _parseErrorText(context, e)).join('\n');
+  ) =>
+      errors.map((e) => _parseErrorText(context, e)).join('\n');
 
   Widget _buildParseErrors(
     BuildContext context,
     List<MealTextParseError> errors,
-  ) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-    child: Text(
-      _parseErrorsText(context, errors),
-      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-        color: Theme.of(context).colorScheme.error,
-      ),
-    ),
-  );
+  ) =>
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: Text(
+          _parseErrorsText(context, errors),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+        ),
+      );
 
   Widget _buildRow(BuildContext context, BulkAddLoadedState state, int index) {
     final row = state.rows[index];
@@ -905,8 +915,7 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
             );
             // Below this the name has no share of the line worth reading, so
             // the controls take a line of their own and leave it the width.
-            final stacked =
-                available - actionsWidth <
+            final stacked = available - actionsWidth <
                 MediaQuery.textScalerOf(context).scale(72);
 
             final buttons = [
@@ -932,9 +941,8 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
                     minFontSize: 12,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleSmall?.copyWith(
-                      decoration: row.skipped
-                          ? TextDecoration.lineThrough
-                          : null,
+                      decoration:
+                          row.skipped ? TextDecoration.lineThrough : null,
                     ),
                   ),
                   // The brand names *which* food this is; a warning only
@@ -1027,25 +1035,26 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
     BuildContext context,
     int index,
     BulkAddRow row,
-  ) => [
-    if (!row.isResolved)
-      (label: S.of(context).quickAddCardLabel, onPressed: _showQuickAdd),
-    (
-      label: row.skipped
-          ? S.of(context).bulkAddIncludeLabel
-          : S.of(context).bulkAddSkipLabel,
-      onPressed: () => _bloc.add(ToggleRowSkippedEvent(index)),
-    ),
-  ];
+  ) =>
+      [
+        if (!row.isResolved)
+          (label: S.of(context).quickAddCardLabel, onPressed: _showQuickAdd),
+        (
+          label: row.skipped
+              ? S.of(context).bulkAddIncludeLabel
+              : S.of(context).bulkAddSkipLabel,
+          onPressed: () => _bloc.add(ToggleRowSkippedEvent(index)),
+        ),
+      ];
 
   /// The width a text button needs for [label]: the label itself, Material's
   /// horizontal padding at its widest, and never less than the narrowest a
   /// button is allowed to be.
   double _actionWidth(BuildContext context, String label) => math.max(
-    _minButtonWidth,
-    _textWidth(context, label, Theme.of(context).textTheme.labelLarge) +
-        _buttonPadding,
-  );
+        _minButtonWidth,
+        _textWidth(context, label, Theme.of(context).textTheme.labelLarge) +
+            _buttonPadding,
+      );
 
   static const _buttonPadding = 24.0;
   static const _minButtonWidth = 64.0;
@@ -1061,7 +1070,8 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
         text: TextSpan(text: text, style: style),
         textDirection: Directionality.of(context),
         textScaler: MediaQuery.textScalerOf(context),
-      )..layout()).width;
+      )..layout())
+          .width;
 
   Widget _buildAmountRow(
     BuildContext context,
@@ -1190,12 +1200,15 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
   String _quantityErrorText(
     BuildContext context,
     BulkAddQuantityError error,
-  ) => switch (error) {
-    BulkAddQuantityError.malformed => S.of(context).bulkAddRowQuantityInvalid,
-    BulkAddQuantityError.tooSmall => S.of(context).bulkAddRowQuantityTooSmall,
-    BulkAddQuantityError.tooLarge =>
-      S.of(context).bulkAddRowQuantityTooLarge(bulkAddMaxQuantity),
-  };
+  ) =>
+      switch (error) {
+        BulkAddQuantityError.malformed =>
+          S.of(context).bulkAddRowQuantityInvalid,
+        BulkAddQuantityError.tooSmall =>
+          S.of(context).bulkAddRowQuantityTooSmall,
+        BulkAddQuantityError.tooLarge =>
+          S.of(context).bulkAddRowQuantityTooLarge(bulkAddMaxQuantity),
+      };
 
   /// What the unit dropdown needs to show its longest unit without clipping
   /// it: the dropdown sizes itself to its widest item, plus its arrow.
@@ -1226,17 +1239,18 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
   List<DropdownMenuItem<String>> _unitItems(
     BuildContext context,
     BulkAddRow row,
-  ) => [
-    for (final unit in row.allowedUnits)
-      DropdownMenuItem(
-        value: unit,
-        child: Text(
-          _unitLabel(context, unit, row),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-  ];
+  ) =>
+      [
+        for (final unit in row.allowedUnits)
+          DropdownMenuItem(
+            value: unit,
+            child: Text(
+              _unitLabel(context, unit, row),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+      ];
 
   /// Takes the row because one of the six units is not a fixed word: the
   /// food names its own portion, and "3 slice" says what "3 serving" only
@@ -1269,13 +1283,12 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
         UnitDropdownItem.gml => S.of(context).gramMilliliterUnit,
         UnitDropdownItem.oz => S.of(context).ozUnit,
         UnitDropdownItem.flOz => S.of(context).flOzUnit,
-        UnitDropdownItem.serving =>
-          householdPortionLabel(
-                row.meal?.servingSize,
-                languageCode: Localizations.localeOf(context).languageCode,
-                textIsLocalized: row.meal?.servingSizeIsLocalized ?? false,
-              ) ??
-              S.of(context).servingLabel,
+        UnitDropdownItem.serving => householdPortionLabel(
+              row.meal?.servingSize,
+              languageCode: Localizations.localeOf(context).languageCode,
+              textIsLocalized: row.meal?.servingSizeIsLocalized ?? false,
+            ) ??
+            S.of(context).servingLabel,
       };
 
   Widget _buildSubmitBar(BuildContext context, BulkAddLoadedState state) {
@@ -1452,9 +1465,8 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
                   subtitle: row.resolved.candidates[i].brands != null
                       ? Text(row.resolved.candidates[i].brands!)
                       : null,
-                  trailing: i == row.selectedIndex
-                      ? const Icon(Icons.check)
-                      : null,
+                  trailing:
+                      i == row.selectedIndex ? const Icon(Icons.check) : null,
                   onTap: () => Navigator.of(context).pop(i),
                 ),
             ],
@@ -1545,8 +1557,7 @@ class _BulkAddScreenState extends State<BulkAddScreen> {
             overflow: TextOverflow.ellipsis,
             invalid.entries
                 .map(
-                  (entry) =>
-                      '${_rowTitle(state.rows[entry.key])}: '
+                  (entry) => '${_rowTitle(state.rows[entry.key])}: '
                       '${_quantityErrorText(context, entry.value)}',
                 )
                 .join('\n'),

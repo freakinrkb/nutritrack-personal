@@ -99,8 +99,7 @@ void main() {
       expect(result, equals(7));
       expect(calls, equals(2));
       // Backoff after the first failed attempt is 1<<0 = 1 second.
-      expect(stopwatch.elapsed,
-          greaterThan(const Duration(milliseconds: 800)));
+      expect(stopwatch.elapsed, greaterThan(const Duration(milliseconds: 800)));
     }, timeout: const Timeout(Duration(seconds: 5)));
 
     test('rethrows the original error after all attempts exhausted', () async {

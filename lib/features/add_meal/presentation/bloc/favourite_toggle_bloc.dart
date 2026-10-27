@@ -59,8 +59,8 @@ class FavouriteToggleBloc
     }, transformer: sequential());
     on<_FavouritesChangedEvent>((event, emit) => _refresh(emit));
     _changes = _getFavouriteMealsUsecase.watchFavourites().listen(
-      (_) => add(const _FavouritesChangedEvent()),
-    );
+          (_) => add(const _FavouritesChangedEvent()),
+        );
   }
 
   Future<void> _toggle(

@@ -65,9 +65,10 @@ void main() {
   }
 
   String collisions(Map<String, List<String>> byName) => [
-    for (final entry in byName.entries)
-      if (entry.value.length > 1) '"${entry.key}": ${entry.value.join(', ')}',
-  ].join('\n');
+        for (final entry in byName.entries)
+          if (entry.value.length > 1)
+            '"${entry.key}": ${entry.value.join(', ')}',
+      ].join('\n');
 
   test('the scan actually reaches the activity names', () {
     final names = activityNames();
@@ -144,9 +145,11 @@ void main() {
       final descriptions = PhysicalActivityEntity.descriptionByCode(context);
       final unnamed = [
         for (final row in rows)
-          if (!names.containsKey(row.code)) '${row.code} ${row.specificActivity}',
+          if (!names.containsKey(row.code))
+            '${row.code} ${row.specificActivity}',
       ];
-      expect(unnamed, isEmpty, reason: 'no getName entry — renders the heading');
+      expect(unnamed, isEmpty,
+          reason: 'no getName entry — renders the heading');
       final undescribed = [
         for (final row in rows)
           if (!descriptions.containsKey(row.code))

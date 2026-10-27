@@ -125,13 +125,13 @@ void main() {
     });
 
     UserEntity makeUser() => UserEntity(
-      birthday: DateTime(1990, 6, 15),
-      heightCM: 165,
-      weightKG: 70,
-      gender: UserGenderEntity.female,
-      goal: UserWeightGoalEntity.loseWeight,
-      pal: UserPALEntity.sedentary,
-    );
+          birthday: DateTime(1990, 6, 15),
+          heightCM: 165,
+          weightKG: 70,
+          gender: UserGenderEntity.female,
+          goal: UserWeightGoalEntity.loseWeight,
+          pal: UserPALEntity.sedentary,
+        );
 
     test(
       'saveOnboardingData does not resolve until the user write completes',

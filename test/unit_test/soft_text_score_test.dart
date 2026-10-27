@@ -140,18 +140,18 @@ void main() {
       MealPortionEntity(label: '1 cup', gramWeight: 100, localized: false),
     ];
     MealEntity withPortion(String name) => MealEntity(
-      code: name,
-      name: name,
-      url: null,
-      mealQuantity: null,
-      mealUnit: 'g',
-      servingQuantity: null,
-      servingUnit: 'g',
-      servingSize: null,
-      nutriments: MealNutrimentsEntity.empty(),
-      source: MealSourceEntity.fdc,
-      portions: portion,
-    );
+          code: name,
+          name: name,
+          url: null,
+          mealQuantity: null,
+          mealUnit: 'g',
+          servingQuantity: null,
+          servingUnit: 'g',
+          servingSize: null,
+          nutriments: MealNutrimentsEntity.empty(),
+          source: MealSourceEntity.fdc,
+          portions: portion,
+        );
     MealEntity ofRow(SpFoodDTO row) =>
         MealEntity.fromSpFood(row).withPortions(portion);
     MealEntity ofTranslation(Map<String, dynamic> row) {
@@ -202,7 +202,8 @@ void main() {
         final kept = rankAndTruncateFoodsByName(pool, query);
         final resolverFirst = rankForResolution([
           for (final row in pool) ofRow(row),
-        ], query).take(SPConst.maxNumberOfItems);
+        ], query)
+            .take(SPConst.maxNumberOfItems);
 
         expect(
           kept.map((r) => '${r.foodId}'),
@@ -226,7 +227,8 @@ void main() {
         final kept = rankAndTruncateTranslationRows(pool, query);
         final resolverFirst = rankForResolution([
           for (final row in pool) ofTranslation(row),
-        ], query).take(SPConst.maxNumberOfItems);
+        ], query)
+            .take(SPConst.maxNumberOfItems);
 
         expect(
           kept.map((r) => '${r[SPConst.translationFoodId]}'),

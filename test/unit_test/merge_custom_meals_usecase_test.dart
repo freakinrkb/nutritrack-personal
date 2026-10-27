@@ -86,12 +86,13 @@ void main() {
       final stamp = DateTime.now().microsecondsSinceEpoch;
       customBox = await Hive.openBox<MealDBO>('merge_custom_meals_$stamp');
       intakeBox = await Hive.openBox<IntakeDBO>('merge_intake_$stamp');
-      trackedDayBox =
-          await Hive.openBox<TrackedDayDBO>('merge_tracked_$stamp');
-      final customDs = CustomMealDataSource(FakeHiveDBProvider(customMealBox: customBox));
-      final intakeRepo = IntakeRepository(IntakeDataSource(FakeHiveDBProvider(intakeBox: intakeBox)));
-      final trackedRepo =
-          TrackedDayRepository(TrackedDayDataSource(FakeHiveDBProvider(trackedDayBox: trackedDayBox)));
+      trackedDayBox = await Hive.openBox<TrackedDayDBO>('merge_tracked_$stamp');
+      final customDs =
+          CustomMealDataSource(FakeHiveDBProvider(customMealBox: customBox));
+      final intakeRepo = IntakeRepository(
+          IntakeDataSource(FakeHiveDBProvider(intakeBox: intakeBox)));
+      final trackedRepo = TrackedDayRepository(TrackedDayDataSource(
+          FakeHiveDBProvider(trackedDayBox: trackedDayBox)));
       favouriteBox =
           await Hive.openBox<FavouriteMealDBO>('merge_favourites_$stamp');
       profileBox = await Hive.openBox<ProfileDBO>('merge_profiles_$stamp');
@@ -128,7 +129,9 @@ void main() {
       final starredAt = DateTime(2026, 10, 1, 8);
       await favouriteBox.put(
         'custom:L',
-        FavouriteMealDBO(meal: _customMeal(code: 'L', name: 'Apple (dup)'), addedAt: starredAt),
+        FavouriteMealDBO(
+            meal: _customMeal(code: 'L', name: 'Apple (dup)'),
+            addedAt: starredAt),
       );
 
       await usecase.merge(loserKey: 'L', winnerKey: 'W');
@@ -140,7 +143,8 @@ void main() {
       expect(merged.addedAt, starredAt);
     });
 
-    test('keeps one favourite, the earlier star, when both are starred', () async {
+    test('keeps one favourite, the earlier star, when both are starred',
+        () async {
       final loser = _customMeal(code: 'L', name: 'Apple (dup)');
       final winner = _customMeal(code: 'W', name: 'Apple');
       await customBox.add(loser);
@@ -149,11 +153,14 @@ void main() {
       final later = DateTime(2026, 10, 1);
       await favouriteBox.put(
         'custom:L',
-        FavouriteMealDBO(meal: _customMeal(code: 'L', name: 'Apple (dup)'), addedAt: earlier),
+        FavouriteMealDBO(
+            meal: _customMeal(code: 'L', name: 'Apple (dup)'),
+            addedAt: earlier),
       );
       await favouriteBox.put(
         'custom:W',
-        FavouriteMealDBO(meal: _customMeal(code: 'W', name: 'Apple'), addedAt: later),
+        FavouriteMealDBO(
+            meal: _customMeal(code: 'W', name: 'Apple'), addedAt: later),
       );
 
       await usecase.merge(loserKey: 'L', winnerKey: 'W');
@@ -192,8 +199,7 @@ void main() {
       expect(remainingCustom, equals({'W'}));
 
       // Every intake now snapshots the winner.
-      final rewrittenCodes =
-          intakeBox.values.map((i) => i.meal.code).toList();
+      final rewrittenCodes = intakeBox.values.map((i) => i.meal.code).toList();
       expect(rewrittenCodes, equals(['W', 'W', 'W']));
       // And keeps its original id so existing references stay valid.
       final rewrittenIds = intakeBox.values.map((i) => i.id).toSet();

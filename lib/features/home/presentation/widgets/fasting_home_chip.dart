@@ -18,8 +18,7 @@ class FastingHomeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          locator<FastingBloc>()..add(const FastingLoadRequested()),
+      create: (_) => locator<FastingBloc>()..add(const FastingLoadRequested()),
       child: const _FastingHomeChipView(),
     );
   }

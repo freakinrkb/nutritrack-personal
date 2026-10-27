@@ -150,8 +150,7 @@ class SharedMealImporter {
       // keeping a hand-entered total weight (#1194).
       final nutrition = locator<ComputeRecipeNutritionUseCase>().compute(
         recipe.ingredients,
-        totalWeightOverride:
-            totalWeightOverridden ? recipe.totalWeightG : null,
+        totalWeightOverride: totalWeightOverridden ? recipe.totalWeightG : null,
       );
       final prepared = recipe.copyWith(
         totalWeightG: nutrition.totalWeightG,

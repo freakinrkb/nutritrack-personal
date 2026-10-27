@@ -40,10 +40,12 @@ class ValueValidator {
 
   static double? parseHeightInCm(double? height, {bool isImperial = false}) {
     if (height == null) return null;
-    final belowMin =
-        isImperial ? height < Ranges.minHeightInFeet : height < Ranges.minHeight;
-    final aboveMax =
-        isImperial ? height > Ranges.maxHeightInFeet : height > Ranges.maxHeight;
+    final belowMin = isImperial
+        ? height < Ranges.minHeightInFeet
+        : height < Ranges.minHeight;
+    final aboveMax = isImperial
+        ? height > Ranges.maxHeightInFeet
+        : height > Ranges.maxHeight;
     if (belowMin || aboveMax) return null;
     return isImperial ? UnitCalc.feetToCm(height) : height;
   }
@@ -124,8 +126,7 @@ class ValueValidator {
   static int ageInYears(DateTime birthday, {DateTime? now}) {
     final today = now ?? DateTime.now();
     var age = today.year - birthday.year;
-    final hadBirthdayThisYear =
-        today.month > birthday.month ||
+    final hadBirthdayThisYear = today.month > birthday.month ||
         (today.month == birthday.month && today.day >= birthday.day);
     if (!hadBirthdayThisYear) age--;
     return age;

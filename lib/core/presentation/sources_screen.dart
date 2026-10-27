@@ -35,8 +35,7 @@ class SourcesScreen extends StatelessWidget {
         description: l10n.sourcesBmiDescription,
         sources: const [
           _SourceLink(
-            citation:
-                'World Health Organization. Body mass index (BMI), adult '
+            citation: 'World Health Organization. Body mass index (BMI), adult '
                 'classification. WHO Global Health Observatory.',
             url: URLConst.sourceBmiWhoURL,
           ),
@@ -60,8 +59,7 @@ class SourcesScreen extends StatelessWidget {
         description: l10n.sourcesActivityDescription,
         sources: const [
           _SourceLink(
-            citation:
-                'Herrmann SD, et al. (2024). 2024 Adult Compendium of '
+            citation: 'Herrmann SD, et al. (2024). 2024 Adult Compendium of '
                 'Physical Activities. Journal of Sport and Health Science.',
             url: URLConst.sourceActivityCompendium2024URL,
           ),
@@ -78,8 +76,7 @@ class SourcesScreen extends StatelessWidget {
             url: URLConst.sourceEnergyCompensationCareau2021URL,
           ),
           _SourceLink(
-            citation:
-                'Borrud LG, et al. (2010). Body composition data for '
+            citation: 'Borrud LG, et al. (2010). Body composition data for '
                 'individuals 8 years of age and older: U.S. population, '
                 '1999–2004. National Center for Health Statistics, Vital and '
                 'Health Statistics Series 11, No. 250.',
@@ -108,8 +105,7 @@ class SourcesScreen extends StatelessWidget {
             url: URLConst.sourceTransMetabolismWiik2018URL,
           ),
           _SourceLink(
-            citation:
-                'Linsenmeyer W, Drallmeier T, Thomure M (2020). Towards '
+            citation: 'Linsenmeyer W, Drallmeier T, Thomure M (2020). Towards '
                 'gender-affirming nutrition assessment: a case series of '
                 'adult transgender men with distinct nutrition '
                 'considerations. Nutrition Journal, 19:74.',
@@ -122,8 +118,7 @@ class SourcesScreen extends StatelessWidget {
         description: l10n.sourcesNutrientReferenceDescription,
         sources: const [
           _SourceLink(
-            citation:
-                'Institute of Medicine. Dietary Reference Intakes: The '
+            citation: 'Institute of Medicine. Dietary Reference Intakes: The '
                 'Essential Guide to Nutrient Requirements. Summary Report. '
                 'National Academies Press.',
             url: URLConst.sourceNutrientReferenceIomURL,
@@ -135,7 +130,8 @@ class SourcesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsSourcesLabel)),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing16, vertical: Dimens.spacing16),
+        padding: const EdgeInsets.symmetric(
+            horizontal: Dimens.spacing16, vertical: Dimens.spacing16),
         children: [
           Text(
             l10n.sourcesScreenIntro,
@@ -227,7 +223,8 @@ class _SourceCard extends StatelessWidget {
                         icon: const Icon(Icons.open_in_new_rounded, size: 18),
                         label: Text(S.of(context).sourcesOpenSourceLabel),
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Dimens.spacing8),
                           minimumSize: const Size(0, 32),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),

@@ -4,25 +4,25 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments
 import 'package:opennutritracker/features/meal_detail/util/meal_quantity_converter.dart';
 
 MealEntity meal({double? servingQuantity, double? energyKcal100}) => MealEntity(
-  code: 'test',
-  name: 'Test',
-  url: null,
-  mealQuantity: null,
-  mealUnit: null,
-  servingQuantity: servingQuantity,
-  servingUnit: null,
-  servingSize: null,
-  source: MealSourceEntity.off,
-  nutriments: MealNutrimentsEntity(
-    energyKcal100: energyKcal100,
-    carbohydrates100: null,
-    fat100: null,
-    proteins100: null,
-    sugars100: null,
-    saturatedFat100: null,
-    fiber100: null,
-  ),
-);
+      code: 'test',
+      name: 'Test',
+      url: null,
+      mealQuantity: null,
+      mealUnit: null,
+      servingQuantity: servingQuantity,
+      servingUnit: null,
+      servingSize: null,
+      source: MealSourceEntity.off,
+      nutriments: MealNutrimentsEntity(
+        energyKcal100: energyKcal100,
+        carbohydrates100: null,
+        fat100: null,
+        proteins100: null,
+        sugars100: null,
+        saturatedFat100: null,
+        fiber100: null,
+      ),
+    );
 
 void main() {
   group('convertQuantityToBaseUnit', () {

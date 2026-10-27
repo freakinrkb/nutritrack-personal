@@ -39,8 +39,10 @@ class _RecordingClient extends http.BaseClient {
   }
 }
 
-InternetAddress _v4(String s) => InternetAddress(s, type: InternetAddressType.IPv4);
-InternetAddress _v6(String s) => InternetAddress(s, type: InternetAddressType.IPv6);
+InternetAddress _v4(String s) =>
+    InternetAddress(s, type: InternetAddressType.IPv4);
+InternetAddress _v6(String s) =>
+    InternetAddress(s, type: InternetAddressType.IPv6);
 
 /// The only thing standing between the feature and plaintext health data
 /// crossing the internet.
@@ -53,9 +55,12 @@ void main() {
   group('what counts as private', () {
     test('the RFC 1918 ranges, at their edges', () {
       for (final address in [
-        '10.0.0.0', '10.255.255.255',
-        '172.16.0.0', '172.31.255.255',
-        '192.168.0.0', '192.168.255.255',
+        '10.0.0.0',
+        '10.255.255.255',
+        '172.16.0.0',
+        '172.31.255.255',
+        '192.168.0.0',
+        '192.168.255.255',
       ]) {
         expect(isPrivateDestination(_v4(address)), isTrue, reason: address);
       }
@@ -65,8 +70,13 @@ void main() {
       // 172.15 and 172.32 bracket the /12. Getting this wrong by one octet
       // is the classic version of this bug and it fails open.
       for (final address in [
-        '11.0.0.0', '172.15.255.255', '172.32.0.0', '192.167.255.255',
-        '192.169.0.0', '8.8.8.8', '1.1.1.1',
+        '11.0.0.0',
+        '172.15.255.255',
+        '172.32.0.0',
+        '192.167.255.255',
+        '192.169.0.0',
+        '8.8.8.8',
+        '1.1.1.1',
       ]) {
         expect(isPrivateDestination(_v4(address)), isFalse, reason: address);
       }
@@ -154,19 +164,24 @@ void main() {
       );
     });
 
-    test('a private v6 is honoured even when a public v4 answers too', () async {
-      // Both families are considered, and the private answer wins — the app
-      // is about to prove the claim by connecting there.
-      final guard = guardResolving([_v4('93.184.216.34'), _v6('fd00::5')]);
+    test(
+      'a private v6 is honoured even when a public v4 answers too',
+      () async {
+        // Both families are considered, and the private answer wins — the app
+        // is about to prove the claim by connecting there.
+        final guard = guardResolving([_v4('93.184.216.34'), _v6('fd00::5')]);
 
-      final approved = await guard.approve(
-        Uri.parse('http://ollama.lan:11434/v1'),
-      );
+        final approved = await guard.approve(
+          Uri.parse('http://ollama.lan:11434/v1'),
+        );
 
-      expect(approved.host, isNot('93.184.216.34'));
-      expect(InternetAddress.tryParse(approved.host)?.type,
-          InternetAddressType.IPv6);
-    });
+        expect(approved.host, isNot('93.184.216.34'));
+        expect(
+          InternetAddress.tryParse(approved.host)?.type,
+          InternetAddressType.IPv6,
+        );
+      },
+    );
 
     // A zone id is what makes a link-local address routable on a host with
     // more than one interface, and it is the case the guard was silently
@@ -199,7 +214,8 @@ void main() {
     /// literal branch; reaching the resolver *is* the bug.
     PlaintextDestinationGuard guardThatMustNotResolve() =>
         PlaintextDestinationGuard(
-          lookup: (host) async => fail('a zoned literal reached the resolver: $host'),
+          lookup: (host) async =>
+              fail('a zoned literal reached the resolver: $host'),
         );
 
     test('a zoned link-local literal is allowed, and left alone', () async {
@@ -209,9 +225,10 @@ void main() {
         return;
       }
       final url = Uri.parse('http://[fe80::1%$zone]:11434/v1/chat/completions');
-      // What the guard actually sees, and what `tryParse` answers to it.
+      // What the guard actually sees. Newer Dart releases parse the escaped
+      // form themselves, so the guard must still leave the URL untouched
+      // whether `tryParse` accepts it or not.
       expect(url.host, 'fe80::1%25$zone');
-      expect(InternetAddress.tryParse(url.host), isNull);
 
       // Returned untouched: the socket layer does its own unescaping, and
       // rewriting the host here would only cost the zone.
@@ -239,10 +256,12 @@ void main() {
       // The `25` comes off only when it directly follows the first `%`, so a
       // name still reaches the resolver exactly as it was typed.
       final seen = <String>[];
-      final guard = PlaintextDestinationGuard(lookup: (host) async {
-        seen.add(host);
-        return [_v4('192.168.1.5')];
-      });
+      final guard = PlaintextDestinationGuard(
+        lookup: (host) async {
+          seen.add(host);
+          return [_v4('192.168.1.5')];
+        },
+      );
 
       await guard.approve(Uri.parse('http://ollama.lan:11434/v1'));
 
@@ -299,20 +318,22 @@ void main() {
       expect((inner.sent! as http.Request).body, 'payload');
     });
 
-    test('a URL without a port sends the bare name, not a redundant :80',
-        () async {
-      final inner = _RecordingClient();
-      final client = GuardedPlaintextClient(
-        inner,
-        guard: PlaintextDestinationGuard(
-          lookup: (_) async => [_v4('192.168.1.5')],
-        ),
-      );
+    test(
+      'a URL without a port sends the bare name, not a redundant :80',
+      () async {
+        final inner = _RecordingClient();
+        final client = GuardedPlaintextClient(
+          inner,
+          guard: PlaintextDestinationGuard(
+            lookup: (_) async => [_v4('192.168.1.5')],
+          ),
+        );
 
-      await client.post(Uri.parse('http://ollama.lan/v1'), body: 'payload');
+        await client.post(Uri.parse('http://ollama.lan/v1'), body: 'payload');
 
-      expect(inner.sent!.headers['host'], 'ollama.lan');
-    });
+        expect(inner.sent!.headers['host'], 'ollama.lan');
+      },
+    );
 
     test('an https request reaches the socket untouched', () async {
       final inner = _RecordingClient();
@@ -363,51 +384,57 @@ void main() {
       expect(inner.sent!.followRedirects, isFalse);
     });
 
-    test('redirects are not followed on the https pass-through either', () async {
-      // `approve` waves https straight through, so the pass-through branch
-      // needs its own guarantee: an encrypted first hop says nothing about
-      // where a `Location` header points.
-      final inner = _RecordingClient();
-      final client = GuardedPlaintextClient(inner);
+    test(
+      'redirects are not followed on the https pass-through either',
+      () async {
+        // `approve` waves https straight through, so the pass-through branch
+        // needs its own guarantee: an encrypted first hop says nothing about
+        // where a `Location` header points.
+        final inner = _RecordingClient();
+        final client = GuardedPlaintextClient(inner);
 
-      await client.post(
-        Uri.parse('https://ollama.example.com/v1/chat/completions'),
-        body: 'payload',
-      );
+        await client.post(
+          Uri.parse('https://ollama.example.com/v1/chat/completions'),
+          body: 'payload',
+        );
 
-      expect(inner.sent!.followRedirects, isFalse);
-    });
+        expect(inner.sent!.followRedirects, isFalse);
+      },
+    );
 
-    test('a 30x comes back to the caller as a response, not a second hop', () async {
-      // Contract, not regression: the following happens inside `dart:io`,
-      // below this fake, so this test passes with or without the fix above.
-      // It pins what a caller sees — a 30x surfacing rather than being
-      // swallowed — while the two tests above are the ones that fail if
-      // `followRedirects` is ever turned back on.
-      final inner = _RecordingClient(
-        response: http.StreamedResponse(
-          const Stream.empty(),
-          302,
-          headers: {'location': 'http://93.184.216.34/v1/chat/completions'},
-        ),
-      );
-      final client = GuardedPlaintextClient(
-        inner,
-        guard: PlaintextDestinationGuard(
-          lookup: (_) async => [_v4('192.168.1.5')],
-        ),
-      );
+    test(
+      'a 30x comes back to the caller as a response, not a second hop',
+      () async {
+        // Contract, not regression: the following happens inside `dart:io`,
+        // below this fake, so this test passes with or without the fix above.
+        // It pins what a caller sees — a 30x surfacing rather than being
+        // swallowed — while the two tests above are the ones that fail if
+        // `followRedirects` is ever turned back on.
+        final inner = _RecordingClient(
+          response: http.StreamedResponse(
+            const Stream.empty(),
+            302,
+            headers: {'location': 'http://93.184.216.34/v1/chat/completions'},
+          ),
+        );
+        final client = GuardedPlaintextClient(
+          inner,
+          guard: PlaintextDestinationGuard(
+            lookup: (_) async => [_v4('192.168.1.5')],
+          ),
+        );
 
-      final response = await client.post(
-        Uri.parse('http://ollama.lan:11434/v1/chat/completions'),
-        body: 'payload',
-      );
+        final response = await client.post(
+          Uri.parse('http://ollama.lan:11434/v1/chat/completions'),
+          body: 'payload',
+        );
 
-      // Surfaced rather than chased. The caller sees a failed request; what
-      // it does not see is a payload delivered to 93.184.216.34.
-      expect(response.statusCode, 302);
-      expect(inner.sentCount, 1);
-    });
+        // Surfaced rather than chased. The caller sees a failed request; what
+        // it does not see is a payload delivered to 93.184.216.34.
+        expect(response.statusCode, 302);
+        expect(inner.sentCount, 1);
+      },
+    );
 
     test('the exception names the host and nothing else', () async {
       // Raised on a request that may be carrying a photograph of somebody's
@@ -472,28 +499,32 @@ void main() {
       final client = http.Client();
       addTearDown(client.close);
 
-      final response =
-          await client.get(Uri.parse('http://127.0.0.1:${server.port}/first'));
+      final response = await client.get(
+        Uri.parse('http://127.0.0.1:${server.port}/first'),
+      );
 
       expect(paths, ['/first', '/second']);
       expect(response.statusCode, 200);
     });
 
-    test('the guarded client stops at the 30x — literal pass-through',
-        () async {
-      // A private literal is waved through `approve` untouched, so this is
-      // the branch where the request object reaches the socket as the caller
-      // built it. `followRedirects` still has to have been turned off.
-      final client = GuardedPlaintextClient(http.Client());
-      addTearDown(client.close);
+    test(
+      'the guarded client stops at the 30x — literal pass-through',
+      () async {
+        // A private literal is waved through `approve` untouched, so this is
+        // the branch where the request object reaches the socket as the caller
+        // built it. `followRedirects` still has to have been turned off.
+        final client = GuardedPlaintextClient(http.Client());
+        addTearDown(client.close);
 
-      final response =
-          await client.get(Uri.parse('http://127.0.0.1:${server.port}/first'));
+        final response = await client.get(
+          Uri.parse('http://127.0.0.1:${server.port}/first'),
+        );
 
-      expect(paths, ['/first']);
-      expect(response.statusCode, 302);
-      expect(response.headers['location'], '/second');
-    });
+        expect(paths, ['/first']);
+        expect(response.statusCode, 302);
+        expect(response.headers['location'], '/second');
+      },
+    );
 
     test('the guarded client stops at the 30x — rebound path', () async {
       // The same claim on the other branch: a name pinned to its resolved
@@ -507,8 +538,9 @@ void main() {
       );
       addTearDown(client.close);
 
-      final response = await client
-          .get(Uri.parse('http://ollama.lan:${server.port}/first'));
+      final response = await client.get(
+        Uri.parse('http://ollama.lan:${server.port}/first'),
+      );
 
       expect(paths, ['/first']);
       expect(response.statusCode, 302);
@@ -531,5 +563,4 @@ void main() {
       expect(hosts.single, 'ollama.lan:${server.port}');
     });
   });
-
 }

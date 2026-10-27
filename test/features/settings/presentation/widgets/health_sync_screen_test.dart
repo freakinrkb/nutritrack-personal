@@ -97,8 +97,9 @@ Widget _wrap(Widget child) {
 /// Finds the widget carrying an accessibility identifier, which is how the
 /// screen's interactive rows are addressed.
 Finder _byIdentifier(String identifier) => find.byWidgetPredicate(
-  (widget) => widget is Semantics && widget.properties.identifier == identifier,
-);
+      (widget) =>
+          widget is Semantics && widget.properties.identifier == identifier,
+    );
 
 void main() {
   late _FakeSettingsBloc settingsBloc;
@@ -237,7 +238,8 @@ void main() {
     );
   });
 
-  testWidgets('the suggestion is offered only when it differs from the '
+  testWidgets(
+      'the suggestion is offered only when it differs from the '
       'stored credit', (tester) async {
     storeConfig(
       healthImportEnabled: true,
@@ -268,7 +270,8 @@ void main() {
     );
   });
 
-  testWidgets('Import now says how it went, even when nothing was new '
+  testWidgets(
+      'Import now says how it went, even when nothing was new '
       '(#1368)', (tester) async {
     storeConfig(healthImportEnabled: true);
     importWorkoutsUsecase.importedCount = 0;
@@ -421,8 +424,7 @@ void main() {
         expect(
           body.toLowerCase(),
           contains('stays on this device'),
-          reason:
-              'that nothing is transmitted is the claim the whole Play '
+          reason: 'that nothing is transmitted is the claim the whole Play '
               'declaration rests on',
         );
       });
@@ -432,8 +434,7 @@ void main() {
       expect(
         addendum,
         contains('body fat'),
-        reason:
-            'body fat is read as well as workouts, and is the more '
+        reason: 'body fat is read as well as workouts, and is the more '
             'sensitive of the two',
       );
       expect(
@@ -442,8 +443,7 @@ void main() {
           greaterThan(withBodyFat.indexOf(base)),
           lessThan(withBodyFat.indexOf(footer)),
         ),
-        reason:
-            'what is collected belongs before the closing guarantees, not '
+        reason: 'what is collected belongs before the closing guarantees, not '
             'after the line about turning the feature off',
       );
     });
@@ -457,8 +457,7 @@ void main() {
       expect(
         l10nEn.healthSyncPermissionDeniedLabel(healthPlatformName),
         isNot(contains('body fat')),
-        reason:
-            'body fat is not what an import needs, so it is not what a '
+        reason: 'body fat is not what an import needs, so it is not what a '
             'failed import should ask for',
       );
     });
@@ -486,8 +485,7 @@ void main() {
       expect(
         find.text(withoutBodyFat),
         findsOneWidget,
-        reason:
-            'the rendered disclosure must be base + footer, in that order, '
+        reason: 'the rendered disclosure must be base + footer, in that order, '
             'with no body-fat paragraph on a store that is not asked for it',
       );
       expect(

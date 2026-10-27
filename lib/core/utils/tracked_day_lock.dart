@@ -40,8 +40,8 @@ class ProfileStamp {
   ProfileStamp._(this._generation);
 
   factory ProfileStamp.now() => ProfileStamp._(
-    _profileSwitchInProgress ? null : _profileSwitchGeneration,
-  );
+        _profileSwitchInProgress ? null : _profileSwitchGeneration,
+      );
 
   bool get isCurrent =>
       _generation != null &&

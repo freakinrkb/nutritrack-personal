@@ -58,7 +58,7 @@ class _FakePathProvider extends PathProviderPlatform
 
 class _StubUserActivityRepository extends UserActivityRepository {
   _StubUserActivityRepository()
-    : super(UserActivityDataSource(FakeHiveDBProvider()));
+      : super(UserActivityDataSource(FakeHiveDBProvider()));
 
   @override
   Future<List<UserActivityDBO>> getAllUserActivityDBO() async => [];
@@ -66,7 +66,7 @@ class _StubUserActivityRepository extends UserActivityRepository {
 
 class _StubIntakeRepository extends IntakeRepository {
   _StubIntakeRepository(this._intakes)
-    : super(IntakeDataSource(FakeHiveDBProvider()));
+      : super(IntakeDataSource(FakeHiveDBProvider()));
 
   final List<IntakeDBO> _intakes;
 
@@ -76,7 +76,7 @@ class _StubIntakeRepository extends IntakeRepository {
 
 class _StubTrackedDayRepository extends TrackedDayRepository {
   _StubTrackedDayRepository()
-    : super(TrackedDayDataSource(FakeHiveDBProvider()));
+      : super(TrackedDayDataSource(FakeHiveDBProvider()));
 
   @override
   Future<List<TrackedDayDBO>> getAllTrackedDaysDBO() async => [];
@@ -84,7 +84,7 @@ class _StubTrackedDayRepository extends TrackedDayRepository {
 
 class _GatedTrackedDayRepository extends TrackedDayRepository {
   _GatedTrackedDayRepository(FakeHiveDBProvider db)
-    : super(TrackedDayDataSource(db));
+      : super(TrackedDayDataSource(db));
 
   final captured = Completer<void>();
   final release = Completer<void>();
@@ -123,7 +123,7 @@ class _StubWeightLogRepository extends WeightLogRepository {
 
 class _StubTemplateRepository extends CustomActivityTemplateRepository {
   _StubTemplateRepository()
-    : super(CustomActivityTemplateDataSource(FakeHiveDBProvider()));
+      : super(CustomActivityTemplateDataSource(FakeHiveDBProvider()));
 
   @override
   Future<List<CustomActivityTemplateDBO>> allTemplateDBOs() async => [];
@@ -138,11 +138,11 @@ class _StubConfigRepository extends ConfigRepository {
 
 class _StubFavouriteMealRepository extends FavouriteMealRepository {
   _StubFavouriteMealRepository()
-    : super(
-        FavouriteMealDataSource(FakeHiveDBProvider()),
-        CustomMealDataSource(FakeHiveDBProvider()),
-        RecipeDataSource(FakeHiveDBProvider()),
-      );
+      : super(
+          FavouriteMealDataSource(FakeHiveDBProvider()),
+          CustomMealDataSource(FakeHiveDBProvider()),
+          RecipeDataSource(FakeHiveDBProvider()),
+        );
 
   @override
   Future<List<FavouriteMealDBO>> getAllFavouritesDBO() async => [];
@@ -213,7 +213,8 @@ void main() {
   });
 
   for (final format in ExportFormat.values) {
-    test('${format.name} export keeps rows and their boundary together '
+    test(
+        '${format.name} export keeps rows and their boundary together '
         'when a boundary move queues after rows are captured', () async {
       Hive.init(tempRoot.path);
       registerHiveAdaptersOnce();
@@ -261,27 +262,25 @@ void main() {
       );
       final days = _GatedTrackedDayRepository(db);
       try {
-        final exporting =
-            ExportDataUsecase(
-              UserActivityRepository(UserActivityDataSource(db)),
-              IntakeRepository(IntakeDataSource(db)),
-              days,
-              _StubRecipeRepository(),
-              _StubCustomMealDataSource([]),
-              _StubWeightLogRepository(),
-              _StubTemplateRepository(),
-              ConfigRepository(configs),
-              _StubFavouriteMealRepository(),
-            ).assembleArchive(
-              format: format,
-              userActivityJsonFileName: 'user_activity.json',
-              userIntakeJsonFileName: 'user_intake.json',
-              trackedDayJsonFileName: 'user_tracked_day.json',
-              recipeJsonFileName: 'user_recipes.json',
-              weightLogJsonFileName: 'weight_log.json',
-              customActivityTemplateJsonFileName:
-                  'custom_activity_templates.json',
-            );
+        final exporting = ExportDataUsecase(
+          UserActivityRepository(UserActivityDataSource(db)),
+          IntakeRepository(IntakeDataSource(db)),
+          days,
+          _StubRecipeRepository(),
+          _StubCustomMealDataSource([]),
+          _StubWeightLogRepository(),
+          _StubTemplateRepository(),
+          ConfigRepository(configs),
+          _StubFavouriteMealRepository(),
+        ).assembleArchive(
+          format: format,
+          userActivityJsonFileName: 'user_activity.json',
+          userIntakeJsonFileName: 'user_intake.json',
+          trackedDayJsonFileName: 'user_tracked_day.json',
+          recipeJsonFileName: 'user_recipes.json',
+          weightLogJsonFileName: 'weight_log.json',
+          customActivityTemplateJsonFileName: 'custom_activity_templates.json',
+        );
         await days.captured.future;
         var moved = false;
         final moving = SetDayBoundaryUsecase(

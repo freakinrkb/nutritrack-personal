@@ -35,7 +35,8 @@ IntakeEntity _intake(MealEntity meal) => IntakeEntity(
       type: IntakeTypeEntity.breakfast,
     );
 
-UserActivityEntity _activity(String code, double duration) => UserActivityEntity(
+UserActivityEntity _activity(String code, double duration) =>
+    UserActivityEntity(
       'ua-$code',
       duration,
       duration * 5,
@@ -126,7 +127,8 @@ void main() {
         [_intake(_meal('custom-1', 'A'))],
       ).toJsonString();
 
-      expect(classifySharedPayload(mealCode), isNot(SharedPayloadKind.activity));
+      expect(
+          classifySharedPayload(mealCode), isNot(SharedPayloadKind.activity));
       expect(classifySharedPayload(mealCode), isNot(SharedPayloadKind.recipe));
     });
 
@@ -146,7 +148,8 @@ void main() {
     });
 
     test('does not cross-classify recipe as meal or activity', () {
-      final recipeCode = SharedRecipePayload.fromRecipe(_recipe()).toJsonString();
+      final recipeCode =
+          SharedRecipePayload.fromRecipe(_recipe()).toJsonString();
 
       expect(classifySharedPayload(recipeCode), isNot(SharedPayloadKind.meal));
       expect(

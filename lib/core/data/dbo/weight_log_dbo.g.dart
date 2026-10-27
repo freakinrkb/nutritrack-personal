@@ -51,10 +51,10 @@ class WeightLogDBOAdapter extends TypeAdapter<WeightLogDBO> {
 // **************************************************************************
 
 WeightLogDBO _$WeightLogDBOFromJson(Map<String, dynamic> json) => WeightLogDBO(
-  date: DateTime.parse(json['date'] as String),
-  weightKg: (json['weightKg'] as num).toDouble(),
-  note: json['note'] as String?,
-);
+      date: DateTime.parse(json['date'] as String),
+      weightKg: (json['weightKg'] as num).toDouble(),
+      note: json['note'] as String?,
+    );
 
 Map<String, dynamic> _$WeightLogDBOToJson(WeightLogDBO instance) =>
     <String, dynamic>{

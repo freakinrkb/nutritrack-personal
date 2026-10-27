@@ -80,7 +80,8 @@ class DayInfoWidget extends StatefulWidget {
     UserActivityEntity userActivityEntity,
     TrackedDayEntity? trackedDayEntity,
   ) onCopyActivity;
-  final Function(BuildContext context, IntakeEntity intake, bool usesImperialUnits)?
+  final Function(
+          BuildContext context, IntakeEntity intake, bool usesImperialUnits)?
       onEditIntake;
   final Function(BuildContext context, UserActivityEntity activity)?
       onEditActivity;
@@ -214,7 +215,8 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
                 : const SizedBox(),
             trackedDay != null
                 ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimens.spacing16),
                     child: AppCard(
                       padding: const EdgeInsets.fromLTRB(
                         Dimens.spacing20,
@@ -247,12 +249,12 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
                           ),
                           const SizedBox(height: Dimens.spacing16),
                           MacroNutrientsView(
-                            totalCarbsIntake: _allIntakes
-                                .fold(0.0, (sum, i) => sum + i.totalCarbsGram),
-                            totalFatsIntake: _allIntakes
-                                .fold(0.0, (sum, i) => sum + i.totalFatsGram),
-                            totalProteinsIntake: _allIntakes
-                                .fold(0.0, (sum, i) => sum + i.totalProteinsGram),
+                            totalCarbsIntake: _allIntakes.fold(
+                                0.0, (sum, i) => sum + i.totalCarbsGram),
+                            totalFatsIntake: _allIntakes.fold(
+                                0.0, (sum, i) => sum + i.totalFatsGram),
+                            totalProteinsIntake: _allIntakes.fold(
+                                0.0, (sum, i) => sum + i.totalProteinsGram),
                             totalCarbsGoal: trackedDay.carbsGoal ?? 0.0,
                             totalFatsGoal: trackedDay.fatGoal ?? 0.0,
                             totalProteinsGoal: trackedDay.proteinGoal ?? 0.0,
@@ -285,11 +287,10 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
                 userActivityList: widget.userActivities,
                 onItemLongPressedCallback: onActivityItemLongPressed,
                 onItemTappedCallback: widget.onEditActivity,
-                onCopyActivityCallback:
-                    _showsCurrentDay
-                        ? null
-                        : (activity) =>
-                            widget.onCopyActivity(activity, widget.trackedDayEntity),
+                onCopyActivityCallback: _showsCurrentDay
+                    ? null
+                    : (activity) => widget.onCopyActivity(
+                        activity, widget.trackedDayEntity),
               ),
             ],
             // #150 follow-up: a 0% share hides an empty section so OMAD users
@@ -311,9 +312,7 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
                 onItemLongPressedCallback: onIntakeItemLongPressed,
                 onItemTappedCallback: widget.onEditIntake,
                 onCopyIntakeCallback:
-                    _showsCurrentDay
-                        ? null
-                        : widget.onCopyIntake,
+                    _showsCurrentDay ? null : widget.onCopyIntake,
                 usesImperialUnits: widget.usesImperialUnits,
                 showMealMacros: widget.showMealMacros,
                 trackedDayEntity: trackedDay,
@@ -339,9 +338,7 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
                 usesImperialUnits: widget.usesImperialUnits,
                 showMealMacros: widget.showMealMacros,
                 onCopyIntakeCallback:
-                    _showsCurrentDay
-                        ? null
-                        : widget.onCopyIntake,
+                    _showsCurrentDay ? null : widget.onCopyIntake,
                 trackedDayEntity: trackedDay,
                 mealKcalTarget: widget.lunchKcalTarget,
                 sortType: _sortByMeal[IntakeTypeEntity.lunch],
@@ -363,9 +360,7 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
                 onItemLongPressedCallback: onIntakeItemLongPressed,
                 onItemTappedCallback: widget.onEditIntake,
                 onCopyIntakeCallback:
-                    _showsCurrentDay
-                        ? null
-                        : widget.onCopyIntake,
+                    _showsCurrentDay ? null : widget.onCopyIntake,
                 usesImperialUnits: widget.usesImperialUnits,
                 showMealMacros: widget.showMealMacros,
                 mealKcalTarget: widget.dinnerKcalTarget,
@@ -390,9 +385,7 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
                 usesImperialUnits: widget.usesImperialUnits,
                 showMealMacros: widget.showMealMacros,
                 onCopyIntakeCallback:
-                    _showsCurrentDay
-                        ? null
-                        : widget.onCopyIntake,
+                    _showsCurrentDay ? null : widget.onCopyIntake,
                 trackedDayEntity: trackedDay,
                 mealKcalTarget: widget.snackKcalTarget,
                 sortType: _sortByMeal[IntakeTypeEntity.snack],
@@ -417,8 +410,7 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
   String _getCaloriesTrackedDisplayString(
       BuildContext context, TrackedDayEntity trackedDay) {
     final actualKcal = _allIntakes.fold(0.0, (sum, i) => sum + i.totalKcal);
-    final usesKilojoules =
-        context.watch<EnergyUnitProvider>().usesKilojoules;
+    final usesKilojoules = context.watch<EnergyUnitProvider>().usesKilojoules;
     final clampedKcal = actualKcal < 0 ? 0.0 : actualKcal;
     final displayActual = usesKilojoules
         ? UnitCalc.kcalToKj(clampedKcal).toInt()
@@ -426,7 +418,8 @@ class _DayInfoWidgetState extends State<DayInfoWidget> {
     final displayGoal = usesKilojoules
         ? UnitCalc.kcalToKj(trackedDay.calorieGoal).toInt()
         : trackedDay.calorieGoal.toInt();
-    final unit = usesKilojoules ? S.of(context).kjLabel : S.of(context).kcalLabel;
+    final unit =
+        usesKilojoules ? S.of(context).kjLabel : S.of(context).kcalLabel;
     return '$displayActual/$displayGoal $unit';
   }
 

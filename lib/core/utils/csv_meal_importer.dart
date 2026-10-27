@@ -71,13 +71,14 @@ class CsvMealImporter {
     final headerCells = CsvRowParser.splitRow(lines.first)
         .map((c) => c.trim().toLowerCase())
         .toList();
-    final missingRequired = requiredColumns
-        .where((req) => !headerCells.contains(req))
-        .toList();
+    final missingRequired =
+        requiredColumns.where((req) => !headerCells.contains(req)).toList();
     if (missingRequired.isNotEmpty) {
       return CsvImportResult(
         meals: const [],
-        errors: ['Header is missing required column(s): ${missingRequired.join(', ')}'],
+        errors: [
+          'Header is missing required column(s): ${missingRequired.join(', ')}'
+        ],
       );
     }
 
@@ -92,8 +93,7 @@ class CsvMealImporter {
         continue;
       }
       if (cells.length > headerCells.length) {
-        errors.add(
-            'Row $rowNum: too many columns. If a value contains a comma '
+        errors.add('Row $rowNum: too many columns. If a value contains a comma '
             '(for example a decimal like 1,5), wrap that cell in double '
             'quotes: "1,5".');
         continue;

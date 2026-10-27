@@ -54,9 +54,7 @@ class SharedActivityPayload {
       List<UserActivityEntity> activities) {
     return SharedActivityPayload(
       version: _currentVersion,
-      items: activities
-          .map(SharedActivityItem.fromUserActivityEntity)
-          .toList(),
+      items: activities.map(SharedActivityItem.fromUserActivityEntity).toList(),
     );
   }
 

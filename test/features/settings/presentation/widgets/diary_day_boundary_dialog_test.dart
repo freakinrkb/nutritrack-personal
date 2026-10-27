@@ -47,7 +47,8 @@ void main() {
 
   tearDown(() async => locator.reset());
 
-  testWidgets('saving reloads Trends after the boundary has moved the '
+  testWidgets(
+      'saving reloads Trends after the boundary has moved the '
       'tracked-day rows (#1317)', (tester) async {
     await tester.pumpWidget(
       MaterialApp(

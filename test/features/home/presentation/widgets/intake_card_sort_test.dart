@@ -12,32 +12,32 @@ import 'package:opennutritracker/generated/l10n.dart';
 import 'package:provider/provider.dart';
 
 IntakeEntity intake({bool missingMacros = false}) => IntakeEntity(
-  id: 'test',
-  unit: 'g',
-  amount: 150,
-  type: IntakeTypeEntity.breakfast,
-  dateTime: DateTime(2026, 1, 1),
-  meal: MealEntity(
-    code: 'meal',
-    name: 'A long meal name that should still fit on a narrow screen',
-    url: null,
-    mealQuantity: '100',
-    mealUnit: 'g',
-    servingQuantity: null,
-    servingUnit: 'g',
-    servingSize: '100 g',
-    nutriments: MealNutrimentsEntity(
-      energyKcal100: 200,
-      carbohydrates100: missingMacros ? null : 20,
-      fat100: missingMacros ? null : 10,
-      proteins100: missingMacros ? null : 5,
-      sugars100: null,
-      saturatedFat100: null,
-      fiber100: null,
-    ),
-    source: MealSourceEntity.custom,
-  ),
-);
+      id: 'test',
+      unit: 'g',
+      amount: 150,
+      type: IntakeTypeEntity.breakfast,
+      dateTime: DateTime(2026, 1, 1),
+      meal: MealEntity(
+        code: 'meal',
+        name: 'A long meal name that should still fit on a narrow screen',
+        url: null,
+        mealQuantity: '100',
+        mealUnit: 'g',
+        servingQuantity: null,
+        servingUnit: 'g',
+        servingSize: '100 g',
+        nutriments: MealNutrimentsEntity(
+          energyKcal100: 200,
+          carbohydrates100: missingMacros ? null : 20,
+          fat100: missingMacros ? null : 10,
+          proteins100: missingMacros ? null : 5,
+          sugars100: null,
+          saturatedFat100: null,
+          fiber100: null,
+        ),
+        source: MealSourceEntity.custom,
+      ),
+    );
 
 Widget wrap(
   DiarySortType? sort, {
@@ -45,35 +45,36 @@ Widget wrap(
   bool missing = false,
   Locale locale = const Locale('en'),
   double scale = 1,
-}) => ChangeNotifierProvider<EnergyUnitProvider>(
-  create: (_) => EnergyUnitProvider(usesKilojoules: kj),
-  child: MaterialApp(
-    locale: locale,
-    localizationsDelegates: const [
-      S.delegate,
-      ...GlobalMaterialLocalizations.delegates,
-    ],
-    supportedLocales: S.supportedLocales,
-    home: Scaffold(
-      body: MediaQuery(
-        data: MediaQueryData(
-          size: const Size(320, 640),
-          textScaler: TextScaler.linear(scale),
-        ),
-        child: SizedBox(
-          width: 320,
-          child: IntakeCard(
-            key: const ValueKey('card'),
-            intake: intake(missingMacros: missing),
-            firstListElement: false,
-            usesImperialUnits: false,
-            sortType: sort,
+}) =>
+    ChangeNotifierProvider<EnergyUnitProvider>(
+      create: (_) => EnergyUnitProvider(usesKilojoules: kj),
+      child: MaterialApp(
+        locale: locale,
+        localizationsDelegates: const [
+          S.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: S.supportedLocales,
+        home: Scaffold(
+          body: MediaQuery(
+            data: MediaQueryData(
+              size: const Size(320, 640),
+              textScaler: TextScaler.linear(scale),
+            ),
+            child: SizedBox(
+              width: 320,
+              child: IntakeCard(
+                key: const ValueKey('card'),
+                intake: intake(missingMacros: missing),
+                firstListElement: false,
+                usesImperialUnits: false,
+                sortType: sort,
+              ),
+            ),
           ),
         ),
       ),
-    ),
-  ),
-);
+    );
 
 void main() {
   for (final (sort, label) in [

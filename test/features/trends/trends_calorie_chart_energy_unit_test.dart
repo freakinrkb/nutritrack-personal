@@ -35,13 +35,13 @@ class _FakeGetWaterIntakeUsecase extends Fake
 /// ignored so the test controls exactly what the chart plots.
 class _SeededTrendsBloc extends TrendsBloc {
   _SeededTrendsBloc(TrendsLoaded seeded)
-    : super(
-        _FakeGetTrackedDayUsecase(),
-        _FakeGetWeightLogUsecase(),
-        _FakeGetUserUsecase(),
-        _FakeGetConfigUsecase(),
-        _FakeGetWaterIntakeUsecase(),
-      ) {
+      : super(
+          _FakeGetTrackedDayUsecase(),
+          _FakeGetWeightLogUsecase(),
+          _FakeGetUserUsecase(),
+          _FakeGetConfigUsecase(),
+          _FakeGetWaterIntakeUsecase(),
+        ) {
     emit(seeded);
   }
 

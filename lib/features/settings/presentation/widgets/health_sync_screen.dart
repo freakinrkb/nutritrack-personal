@@ -119,8 +119,8 @@ class _HealthSyncScreenState extends State<HealthSyncScreen> {
   Future<void> _loadSuggestion() async {
     double? suggested;
     try {
-      final bodyFatPercent = await locator<HealthImportRepository>()
-          .getLatestBodyFatPercent();
+      final bodyFatPercent =
+          await locator<HealthImportRepository>().getLatestBodyFatPercent();
       final user = await locator<GetUserUsecase>().getUserData();
       suggested = WorkoutCompensationCalc.suggestedMultiplier(
         bodyFatPercent: bodyFatPercent,
@@ -160,8 +160,8 @@ class _HealthSyncScreenState extends State<HealthSyncScreen> {
 
     setState(() => _busy = true);
     try {
-      final granted = await locator<HealthImportRepository>()
-          .requestPermissions();
+      final granted =
+          await locator<HealthImportRepository>().requestPermissions();
       if (!mounted) return;
       if (!granted) {
         setState(() => _importEnabled = false);
@@ -336,9 +336,8 @@ class _HealthSyncScreenState extends State<HealthSyncScreen> {
                       s.healthSyncAutoImportLabel(healthPlatformName),
                     ),
                     value: _importEnabled,
-                    onChanged: _isAvailable && !_busy
-                        ? _onAutoImportChanged
-                        : null,
+                    onChanged:
+                        _isAvailable && !_busy ? _onAutoImportChanged : null,
                   ),
                 ),
                 _buildMultiplierSection(context, s, textTheme, canEdit),

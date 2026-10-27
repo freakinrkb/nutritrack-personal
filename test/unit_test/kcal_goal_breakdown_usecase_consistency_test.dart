@@ -49,7 +49,8 @@ class _FakeUserActivityRepository extends Fake
     DateTime dateTime, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => activities;
+  }) async =>
+      activities;
 }
 
 void main() {

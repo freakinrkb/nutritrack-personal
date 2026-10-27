@@ -27,6 +27,7 @@ import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_kcal_goal_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_macro_goal_usecase.dart';
+import 'package:opennutritracker/core/domain/usecase/get_tracked_day_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_user_activity_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_user_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_water_intake_usecase.dart';
@@ -167,6 +168,7 @@ void main() {
       _FakeGetMacroGoal(),
       _FakeUpdateUserActivity(),
       _FakeGetUser(),
+      GetTrackedDayUsecase(TrackedDayRepository(TrackedDayDataSource(db))),
       _FakeGetWaterIntake(),
       _FakeAddWaterIntake(),
       _FakeDeleteWaterIntake(),

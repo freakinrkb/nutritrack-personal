@@ -276,8 +276,8 @@ void main() {
 
   testWidgets('A failed lookup marks an otherwise complete total incomplete',
       (tester) async {
-    await tester.pumpWidget(
-        app(SharedMealPreviewDialog(mealType: 'Dinner', items: [
+    await tester
+        .pumpWidget(app(SharedMealPreviewDialog(mealType: 'Dinner', items: [
       SharedMealPreviewItem(meal: meal('Sardines'), amount: 90, unit: 'g'),
       const SharedMealPreviewItem(
           meal: null, amount: 100, unit: 'g', barcode: 'missing'),
@@ -297,9 +297,7 @@ void main() {
             SharedMealPreviewItem(
                 meal: meal('Steak', unit: 'g'), amount: 113.398, unit: 'oz'),
             SharedMealPreviewItem(
-                meal: meal('Milk', unit: 'ml'),
-                amount: 236.588,
-                unit: 'fl.oz'),
+                meal: meal('Milk', unit: 'ml'), amount: 236.588, unit: 'fl.oz'),
             SharedMealPreviewItem(
                 meal: meal('Crisps', unit: 'g'), amount: 60, unit: 'serving'),
             const SharedMealPreviewItem(
@@ -370,8 +368,7 @@ void main() {
   });
 
   for (final imperial in [false, true]) {
-    testWidgets(
-        'Pasted custom items keep their base unit (imperial=$imperial)',
+    testWidgets('Pasted custom items keep their base unit (imperial=$imperial)',
         (tester) async {
       SharedMealItem entered(String name, String unit, double amount) =>
           SharedMealItem.fromIntakeEntity(IntakeEntity(

@@ -288,7 +288,11 @@ class CsvDataExporter {
       final rawTags = row['tags'] ?? '';
       final tags = rawTags.isEmpty
           ? <String>[]
-          : rawTags.split('|').map((t) => t.trim()).where((t) => t.isNotEmpty).toList();
+          : rawTags
+              .split('|')
+              .map((t) => t.trim())
+              .where((t) => t.isNotEmpty)
+              .toList();
       final pa = PhysicalActivityDBO(
         row['activity_code'] ?? '',
         row['specific_activity'] ?? '',

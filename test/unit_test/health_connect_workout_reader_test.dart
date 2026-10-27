@@ -26,13 +26,16 @@ void main() {
     Object? startMillis,
     Object? endMillis,
     Object? sourceName = 'com.hevy.app',
-  }) => {
-    'uuid': uuid,
-    'activityTypeName': activityTypeName,
-    'startMillis': startMillis ?? DateTime(2026, 8, 13, 18).millisecondsSinceEpoch,
-    'endMillis': endMillis ?? DateTime(2026, 8, 13, 19).millisecondsSinceEpoch,
-    'sourceName': sourceName,
-  };
+  }) =>
+      {
+        'uuid': uuid,
+        'activityTypeName': activityTypeName,
+        'startMillis':
+            startMillis ?? DateTime(2026, 8, 13, 18).millisecondsSinceEpoch,
+        'endMillis':
+            endMillis ?? DateTime(2026, 8, 13, 19).millisecondsSinceEpoch,
+        'sourceName': sourceName,
+      };
 
   setUp(() {
     lastCall = null;

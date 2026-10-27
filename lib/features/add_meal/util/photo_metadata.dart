@@ -125,8 +125,7 @@ class PhotoMetadata {
       // in most of the rest. COM is free text. APP0 stays — it is JFIF, five
       // bytes of pixel density that some decoders look for, and it holds
       // nothing about the photographer.
-      final drop =
-          (marker > _jpegFirstApp && marker <= _jpegLastApp) ||
+      final drop = (marker > _jpegFirstApp && marker <= _jpegLastApp) ||
           marker == _jpegComment;
       if (!drop) out.add(Uint8List.sublistView(bytes, i, end));
       i = end;

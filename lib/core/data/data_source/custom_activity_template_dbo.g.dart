@@ -53,16 +53,18 @@ class CustomActivityTemplateDBOAdapter
 
 CustomActivityTemplateDBO _$CustomActivityTemplateDBOFromJson(
   Map<String, dynamic> json,
-) => CustomActivityTemplateDBO(
-  json['name'] as String,
-  (json['typicalKcal'] as num).toDouble(),
-  notes: json['notes'] as String?,
-);
+) =>
+    CustomActivityTemplateDBO(
+      json['name'] as String,
+      (json['typicalKcal'] as num).toDouble(),
+      notes: json['notes'] as String?,
+    );
 
 Map<String, dynamic> _$CustomActivityTemplateDBOToJson(
   CustomActivityTemplateDBO instance,
-) => <String, dynamic>{
-  'name': instance.name,
-  'typicalKcal': instance.typicalKcal,
-  'notes': instance.notes,
-};
+) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'typicalKcal': instance.typicalKcal,
+      'notes': instance.notes,
+    };

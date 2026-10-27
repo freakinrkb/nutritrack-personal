@@ -40,7 +40,8 @@ class DailyReminderScheduler {
   Future<void> reschedule({
     required Locale? locale,
     List<Locale>? deviceLocales,
-  }) => _serialized(() => _reschedule(locale, deviceLocales));
+  }) =>
+      _serialized(() => _reschedule(locale, deviceLocales));
 
   /// [reschedule] for callers that must not fail on it — start-up and
   /// language changes. A failure is logged, and the next refresh retries.
@@ -146,12 +147,12 @@ class DailyReminderScheduler {
   /// refresh that already read "enabled". The cancel is attempted even if
   /// saving "off" failed; either failure is rethrown.
   Future<void> stopAll() => _serialized(() async {
-    try {
-      await _configRepository.setNotificationsEnabled(false);
-    } finally {
-      await _notificationService.cancelAllScheduled();
-    }
-  });
+        try {
+          await _configRepository.setNotificationsEnabled(false);
+        } finally {
+          await _notificationService.cancelAllScheduled();
+        }
+      });
 
   /// Whether the OS holds the reminder, or [orElse] if it cannot say.
   Future<bool> _reminderPending({required bool orElse}) async {

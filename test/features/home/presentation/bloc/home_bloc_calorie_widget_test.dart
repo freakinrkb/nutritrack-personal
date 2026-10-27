@@ -7,6 +7,7 @@ import 'package:opennutritracker/core/data/data_source/config_data_source.dart';
 import 'package:opennutritracker/core/data/dbo/config_dbo.dart';
 import 'package:opennutritracker/core/data/repository/config_repository.dart';
 import 'package:opennutritracker/core/domain/entity/intake_entity.dart';
+import 'package:opennutritracker/core/domain/entity/tracked_day_entity.dart';
 import 'package:opennutritracker/core/domain/entity/user_activity_entity.dart';
 import 'package:opennutritracker/core/domain/entity/user_entity.dart';
 import 'package:opennutritracker/core/domain/entity/water_intake_entity.dart';
@@ -20,6 +21,7 @@ import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_kcal_goal_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_macro_goal_usecase.dart';
+import 'package:opennutritracker/core/domain/usecase/get_tracked_day_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_user_activity_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_user_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_water_intake_usecase.dart';
@@ -38,6 +40,11 @@ import '../../../../helpers/hive_test_setup.dart';
 
 /// Today's intake, read meal by meal. [duringLoad] runs at the first read,
 /// standing in for whatever happens while the load is still reading.
+class _UnusedGetTrackedDayUsecase extends Fake implements GetTrackedDayUsecase {
+  @override
+  Future<TrackedDayEntity?> getTrackedDay(DateTime day) async => null;
+}
+
 class _Intake extends Fake implements GetIntakeUsecase {
   final void Function() duringLoad;
 
@@ -56,19 +63,22 @@ class _Intake extends Fake implements GetIntakeUsecase {
   Future<List<IntakeEntity>> getTodayLunchIntake({
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 
   @override
   Future<List<IntakeEntity>> getTodayDinnerIntake({
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 
   @override
   Future<List<IntakeEntity>> getTodaySnackIntake({
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 }
 
 class _NoActivities extends Fake implements GetUserActivityUsecase {
@@ -76,14 +86,16 @@ class _NoActivities extends Fake implements GetUserActivityUsecase {
   Future<List<UserActivityEntity>> getTodayUserActivity({
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 }
 
 class _NoWater extends Fake implements GetWaterIntakeUsecase {
   @override
   Future<List<WaterIntakeEntity>> getTodayEntries({
     required int dayStartOffsetTotalMinutes,
-  }) async => [];
+  }) async =>
+      [];
 }
 
 class _User extends Fake implements GetUserUsecase {
@@ -98,7 +110,8 @@ class _KcalGoal extends Fake implements GetKcalGoalUsecase {
     UserEntity? userEntity,
     double? totalKcalActivitiesParam,
     double? kcalUserAdjustment,
-  }) async => 2000;
+  }) async =>
+      2000;
 }
 
 class _MacroGoal extends Fake implements GetMacroGoalUsecase {
@@ -172,6 +185,7 @@ void main() {
       _MacroGoal(),
       _UnusedUpdateUserActivityUsecase(),
       _User(),
+      _UnusedGetTrackedDayUsecase(),
       _NoWater(),
       _UnusedAddWaterIntakeUsecase(),
       _UnusedDeleteWaterIntakeUsecase(),
@@ -187,7 +201,8 @@ void main() {
     await pumpEventQueue();
   }
 
-  test('a load that crosses the day boundary stamps the widget with the day '
+  test(
+      'a load that crosses the day boundary stamps the widget with the day '
       'it read, not the one it finished in', () async {
     // Starts at 03:59:59 under a 04:00 boundary, still reading at 04:00.
     DayBoundaryCalc.clock = () => DateTime(2026, 10, 5, 3, 59, 59);
@@ -209,7 +224,8 @@ void main() {
     );
   });
 
-  test('a load that read its figures before the widget was cleared does '
+  test(
+      'a load that read its figures before the widget was cleared does '
       'not write them back', () async {
     // An empty-profile switch or a delete-all clearing the widget while
     // Home is still reading the outgoing profile's totals.
@@ -236,12 +252,17 @@ class _UnusedDeleteIntakeUsecase extends Fake implements DeleteIntakeUsecase {}
 
 class _UnusedUpdateIntakeUsecase extends Fake implements UpdateIntakeUsecase {}
 
-class _UnusedDeleteUserActivityUsecase extends Fake implements DeleteUserActivityUsecase {}
+class _UnusedDeleteUserActivityUsecase extends Fake
+    implements DeleteUserActivityUsecase {}
 
-class _UnusedAddTrackedDayUsecase extends Fake implements AddTrackedDayUsecase {}
+class _UnusedAddTrackedDayUsecase extends Fake
+    implements AddTrackedDayUsecase {}
 
-class _UnusedUpdateUserActivityUsecase extends Fake implements UpdateUserActivityUsecase {}
+class _UnusedUpdateUserActivityUsecase extends Fake
+    implements UpdateUserActivityUsecase {}
 
-class _UnusedAddWaterIntakeUsecase extends Fake implements AddWaterIntakeUsecase {}
+class _UnusedAddWaterIntakeUsecase extends Fake
+    implements AddWaterIntakeUsecase {}
 
-class _UnusedDeleteWaterIntakeUsecase extends Fake implements DeleteWaterIntakeUsecase {}
+class _UnusedDeleteWaterIntakeUsecase extends Fake
+    implements DeleteWaterIntakeUsecase {}

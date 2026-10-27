@@ -93,33 +93,33 @@ const _native = 'native';
 /// pins what the cut makes of that with the flag and without.
 class BackendPoolFixtures {
   static SpFoodDTO _dto(_Row row) => SpFoodDTO(
-    foodId: row.$1,
-    source: row.$3,
-    sourceCode: '${row.$1}',
-    name: row.$2,
-    shortTitle: deriveTitle(row.$2),
-  );
+        foodId: row.$1,
+        source: row.$3,
+        sourceCode: '${row.$1}',
+        name: row.$2,
+        shortTitle: deriveTitle(row.$2),
+      );
 
   static List<SpFoodDTO> _dtos(List<_Row> rows) => [
-    for (final row in rows) _dto(row),
-  ];
+        for (final row in rows) _dto(row),
+      ];
 
   static Map<int, int> _portionsOf(List<_Row> rows) => {
-    for (final row in rows) row.$1: row.$4,
-  };
+        for (final row in rows) row.$1: row.$4,
+      };
 
   static Map<String, dynamic> _translation(_TranslationRow row) => {
-    SPConst.translationFoodId: row.$1,
-    SPConst.translationDescription: row.$2,
-    SPConst.translationSource: row.$3,
-  };
+        SPConst.translationFoodId: row.$1,
+        SPConst.translationDescription: row.$2,
+        SPConst.translationSource: row.$3,
+      };
 
   static List<Map<String, dynamic>> _translations(List<_TranslationRow> rows) =>
       [for (final row in rows) _translation(row)];
 
   static Map<int, int> _translationPortionsOf(List<_TranslationRow> rows) => {
-    for (final row in rows) row.$1: row.$4,
-  };
+        for (final row in rows) row.$1: row.$4,
+      };
 
   /// [row] as the resolver sees it on a fresh page: the entity built from
   /// the row, carrying as many portions as [portions] says the backend
@@ -138,7 +138,8 @@ class BackendPoolFixtures {
   static List<MealEntity> freshAll(
     List<SpFoodDTO> pool,
     Map<int, int> portions,
-  ) => [for (final row in pool) fresh(row, portions)];
+  ) =>
+      [for (final row in pool) fresh(row, portions)];
 
   /// [pool] as `search_food_summary` answers it once the migration is
   /// applied: every row carrying `has_portion`, true where [portions]
@@ -148,13 +149,14 @@ class BackendPoolFixtures {
   static List<SpFoodDTO> flagged(
     List<SpFoodDTO> pool,
     Map<int, int> portions,
-  ) => [
-    for (final row in pool)
-      SpFoodDTO.fromJson({
-        ...row.toJson(),
-        SPConst.foodHasPortion: portions[row.foodId]! > 0,
-      }),
-  ];
+  ) =>
+      [
+        for (final row in pool)
+          SpFoodDTO.fromJson({
+            ...row.toJson(),
+            SPConst.foodHasPortion: portions[row.foodId]! > 0,
+          }),
+      ];
 
   /// [pool] as `search_food_translation` answers it once the migration is
   /// applied: every row carrying `has_portion`, true where [portions]
@@ -162,14 +164,15 @@ class BackendPoolFixtures {
   static List<Map<String, dynamic>> flaggedTranslations(
     List<Map<String, dynamic>> pool,
     Map<int, int> portions,
-  ) => [
-    for (final row in pool)
-      {
-        ...row,
-        SPConst.translationHasPortion:
-            portions[row[SPConst.translationFoodId] as int]! > 0,
-      },
-  ];
+  ) =>
+      [
+        for (final row in pool)
+          {
+            ...row,
+            SPConst.translationHasPortion:
+                portions[row[SPConst.translationFoodId] as int]! > 0,
+          },
+      ];
 
   static const potatoNfs = 2709382;
   static const potatoFrenchFriesNfs = 2709456;

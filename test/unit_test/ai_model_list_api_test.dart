@@ -9,11 +9,12 @@ import 'package:opennutritracker/core/utils/ai_model_list_api.dart';
 
 /// A `/v1/models` body, in the shape all four runtimes serve it.
 String _reply(List<String> ids) => jsonEncode({
-  'object': 'list',
-  'data': [
-    for (final id in ids) {'id': id, 'object': 'model', 'owned_by': 'library'},
-  ],
-});
+      'object': 'list',
+      'data': [
+        for (final id in ids)
+          {'id': id, 'object': 'model', 'owned_by': 'library'},
+      ],
+    });
 
 void main() {
   group('where to ask', () {
@@ -159,13 +160,15 @@ void main() {
         ),
       );
 
-      final result = await api.list(Uri.parse('http://127.0.0.1:8080/v1/models'));
+      final result =
+          await api.list(Uri.parse('http://127.0.0.1:8080/v1/models'));
 
       expect(result.failure, isNull);
       expect(result.ids, ['Meta-Llama-3.1-8B-Q4_K_M']);
     });
 
-    test('an empty list is an answer, and an unreachable server is not', () async {
+    test('an empty list is an answer, and an unreachable server is not',
+        () async {
       // The pair that must never collapse into one message: both produce an
       // empty picker, and they want opposite fixes.
       final empty = await AiModelListApi(
@@ -191,7 +194,8 @@ void main() {
         timeout: const Duration(milliseconds: 5),
       );
 
-      final result = await api.list(Uri.parse('http://127.0.0.1:11434/v1/models'));
+      final result =
+          await api.list(Uri.parse('http://127.0.0.1:11434/v1/models'));
 
       expect(result.failure, AiModelListFailure.unreachable);
     });
@@ -207,7 +211,8 @@ void main() {
       expect(notFound.failure, AiModelListFailure.rejected);
     });
 
-    test('a 200 that is not a model list is rejected, not read as empty', () async {
+    test('a 200 that is not a model list is rejected, not read as empty',
+        () async {
       // A router's admin page answers 200 to anything. Calling that "this
       // server lists no models" would state a fact about a machine that never
       // served a model in its life.
@@ -222,7 +227,8 @@ void main() {
       expect(result.failure, AiModelListFailure.rejected);
     });
 
-    test('entries without a usable id are skipped rather than fabricated', () async {
+    test('entries without a usable id are skipped rather than fabricated',
+        () async {
       final api = AiModelListApi(
         client: MockClient(
           (_) async => http.Response(
@@ -239,7 +245,8 @@ void main() {
         ),
       );
 
-      final result = await api.list(Uri.parse('http://127.0.0.1:11434/v1/models'));
+      final result =
+          await api.list(Uri.parse('http://127.0.0.1:11434/v1/models'));
 
       expect(result.ids, ['gemma3:4b']);
     });
@@ -256,7 +263,8 @@ void main() {
         }),
       );
 
-      await api.list(Uri.parse('http://127.0.0.1:11434/v1/models'), apiKey: 'k');
+      await api.list(Uri.parse('http://127.0.0.1:11434/v1/models'),
+          apiKey: 'k');
       await api.list(Uri.parse('http://127.0.0.1:11434/v1/models'));
 
       expect(seen[0]['authorization'], 'Bearer k');
@@ -274,7 +282,8 @@ void main() {
         ),
       );
 
-      final result = await api.list(Uri.parse('http://93.184.216.34/v1/models'));
+      final result =
+          await api.list(Uri.parse('http://93.184.216.34/v1/models'));
 
       expect(result.failure, AiModelListFailure.insecureDestination);
     });

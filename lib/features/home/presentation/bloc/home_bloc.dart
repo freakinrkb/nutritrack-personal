@@ -20,11 +20,14 @@ import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_kcal_goal_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_macro_goal_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_user_activity_usecase.dart';
+import 'package:opennutritracker/core/domain/usecase/get_tracked_day_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_user_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/update_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/update_user_activity_usecase.dart';
 import 'package:opennutritracker/core/utils/calc/calorie_goal_calc.dart';
 import 'package:opennutritracker/core/utils/calc/day_boundary_calc.dart';
+import 'package:opennutritracker/core/utils/calc/dri_reference.dart';
+import 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 import 'package:opennutritracker/core/utils/widget/calorie_widget_labels.dart';
 import 'package:opennutritracker/core/utils/widget/calorie_widget_snapshot.dart';
 import 'package:opennutritracker/core/utils/widget/calorie_widget_writer.dart';
@@ -51,6 +54,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetMacroGoalUsecase _getMacroGoalUsecase;
   final UpdateUserActivityUsecase _updateUserActivityUsecase;
   final GetUserUsecase _getUserUsecase;
+  final GetTrackedDayUsecase _getTrackedDayUsecase;
   final GetWaterIntakeUsecase _getWaterIntakeUsecase;
   final AddWaterIntakeUsecase _addWaterIntakeUsecase;
   final DeleteWaterIntakeUsecase _deleteWaterIntakeUsecase;
@@ -71,12 +75,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     this._getMacroGoalUsecase,
     this._updateUserActivityUsecase,
     this._getUserUsecase,
+    this._getTrackedDayUsecase,
     this._getWaterIntakeUsecase,
     this._addWaterIntakeUsecase,
     this._deleteWaterIntakeUsecase, {
     CalorieWidgetStore? calorieWidgetStore,
-  }) : _calorieWidgetStore = calorieWidgetStore ?? HomeWidgetCalorieStore(),
-       super(HomeInitial()) {
+  })  : _calorieWidgetStore = calorieWidgetStore ?? HomeWidgetCalorieStore(),
+        super(HomeInitial()) {
     on<LoadItemsEvent>((event, emit) async {
       emit(HomeLoadingState());
       // A profile switch or delete-all may clear the widget while this
@@ -100,15 +105,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final showMealMacros = configData.showMealMacros;
       final showActivityTracking = configData.showActivityTracking;
 
-      final breakfastIntakeList = await _getIntakeUsecase
-          .getTodayBreakfastIntake(
-            dayStartOffsetHours: dayStartOffsetHours,
-            dayStartOffsetMinutes: dayStartOffsetMinutes,
-          );
+      final breakfastIntakeList =
+          await _getIntakeUsecase.getTodayBreakfastIntake(
+        dayStartOffsetHours: dayStartOffsetHours,
+        dayStartOffsetMinutes: dayStartOffsetMinutes,
+      );
       final totalBreakfastKcal = getTotalKcal(breakfastIntakeList);
       final totalBreakfastCarbs = getTotalCarbs(breakfastIntakeList);
       final totalBreakfastFats = getTotalFats(breakfastIntakeList);
       final totalBreakfastProteins = getTotalProteins(breakfastIntakeList);
+      final totalBreakfastFiber = getTotalFiber(breakfastIntakeList);
 
       final lunchIntakeList = await _getIntakeUsecase.getTodayLunchIntake(
         dayStartOffsetHours: dayStartOffsetHours,
@@ -118,6 +124,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final totalLunchCarbs = getTotalCarbs(lunchIntakeList);
       final totalLunchFats = getTotalFats(lunchIntakeList);
       final totalLunchProteins = getTotalProteins(lunchIntakeList);
+      final totalLunchFiber = getTotalFiber(lunchIntakeList);
 
       final dinnerIntakeList = await _getIntakeUsecase.getTodayDinnerIntake(
         dayStartOffsetHours: dayStartOffsetHours,
@@ -127,6 +134,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final totalDinnerCarbs = getTotalCarbs(dinnerIntakeList);
       final totalDinnerFats = getTotalFats(dinnerIntakeList);
       final totalDinnerProteins = getTotalProteins(dinnerIntakeList);
+      final totalDinnerFiber = getTotalFiber(dinnerIntakeList);
 
       final snackIntakeList = await _getIntakeUsecase.getTodaySnackIntake(
         dayStartOffsetHours: dayStartOffsetHours,
@@ -136,36 +144,35 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final totalSnackCarbs = getTotalCarbs(snackIntakeList);
       final totalSnackFats = getTotalFats(snackIntakeList);
       final totalSnackProteins = getTotalProteins(snackIntakeList);
+      final totalSnackFiber = getTotalFiber(snackIntakeList);
 
-      final totalKcalIntake =
-          totalBreakfastKcal +
+      final totalKcalIntake = totalBreakfastKcal +
           totalLunchKcal +
           totalDinnerKcal +
           totalSnackKcal;
-      final totalCarbsIntake =
-          totalBreakfastCarbs +
+      final totalCarbsIntake = totalBreakfastCarbs +
           totalLunchCarbs +
           totalDinnerCarbs +
           totalSnackCarbs;
-      final totalFatsIntake =
-          totalBreakfastFats +
+      final totalFatsIntake = totalBreakfastFats +
           totalLunchFats +
           totalDinnerFats +
           totalSnackFats;
-      final totalProteinsIntake =
-          totalBreakfastProteins +
+      final totalProteinsIntake = totalBreakfastProteins +
           totalLunchProteins +
           totalDinnerProteins +
           totalSnackProteins;
+      final totalFiberIntake = totalBreakfastFiber +
+          totalLunchFiber +
+          totalDinnerFiber +
+          totalSnackFiber;
 
       final userActivities = await _getUserActivityUsecase.getTodayUserActivity(
         dayStartOffsetHours: dayStartOffsetHours,
         dayStartOffsetMinutes: dayStartOffsetMinutes,
       );
-      final totalKcalActivities = userActivities
-          .map((activity) => activity.burnedKcal)
-          .toList()
-          .sum;
+      final totalKcalActivities =
+          userActivities.map((activity) => activity.burnedKcal).toList().sum;
 
       final waterIntakes = await _getWaterIntakeUsecase.getTodayEntries(
         dayStartOffsetTotalMinutes: configData.dayStartOffsetTotalMinutes,
@@ -187,6 +194,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final totalProteinsGoal = await _getMacroGoalUsecase.getProteinsGoal(
         totalKcalGoal,
       );
+      // Fiber follows the same precedence as the Diary panel: today's tracked
+      // override, then the profile's durable target, then this user's IOM
+      // reference, then the panel's gender-neutral fallback.
+      final trackedDay = await _getTrackedDayUsecase.getTrackedDay(loadDay);
+      final totalFiberGoal = trackedDay?.fibreGoal ??
+          configData.nutrientGoal(NutrientPanelKeys.fiber) ??
+          getReferenceFor(
+            nutrient: NutrientPanelKeys.fiber,
+            user: user,
+          )?.amount ??
+          30.0;
 
       final totalKcalLeft = CalorieGoalCalc.getDailyKcalLeft(
         totalKcalGoal,
@@ -224,6 +242,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           totalFatsGoal: totalFatsGoal,
           totalProteinsGoal: totalProteinsGoal,
           totalProteinsIntake: totalProteinsIntake,
+          totalFiberGoal: totalFiberGoal,
+          totalFiberIntake: totalFiberIntake,
           breakfastIntakeList: breakfastIntakeList,
           lunchIntakeList: lunchIntakeList,
           dinnerIntakeList: dinnerIntakeList,
@@ -306,6 +326,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   double getTotalProteins(List<IntakeEntity> intakeList) =>
       intakeList.map((intake) => intake.totalProteinsGram).toList().sum;
 
+  double getTotalFiber(List<IntakeEntity> intakeList) =>
+      intakeList.map((intake) => intake.totalFiberGram).toList().sum;
+
   void saveConfigData(bool acceptedDisclaimer) async {
     _addConfigUsecase.setConfigDisclaimer(acceptedDisclaimer);
   }
@@ -350,8 +373,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             oldIntakeObject.totalCarbsGram - newIntakeObject.totalCarbsGram,
         fatTracked:
             oldIntakeObject.totalFatsGram - newIntakeObject.totalFatsGram,
-        proteinTracked:
-            oldIntakeObject.totalProteinsGram -
+        proteinTracked: oldIntakeObject.totalProteinsGram -
             newIntakeObject.totalProteinsGram,
       );
     } else if (newIntakeObject.amount > oldIntakeObject.amount) {
@@ -366,8 +388,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             newIntakeObject.totalCarbsGram - oldIntakeObject.totalCarbsGram,
         fatTracked:
             newIntakeObject.totalFatsGram - oldIntakeObject.totalFatsGram,
-        proteinTracked:
-            newIntakeObject.totalProteinsGram -
+        proteinTracked: newIntakeObject.totalProteinsGram -
             oldIntakeObject.totalProteinsGram,
       );
     }

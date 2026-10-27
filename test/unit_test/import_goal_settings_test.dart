@@ -47,6 +47,7 @@ import 'package:opennutritracker/core/domain/usecase/get_kcal_goal_usecase.dart'
 import 'package:opennutritracker/core/domain/usecase/get_macro_goal_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_tracked_day_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/set_day_boundary_usecase.dart';
+import 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 import 'package:opennutritracker/core/utils/extensions.dart';
 import 'package:opennutritracker/features/settings/domain/export_import_failure.dart';
 import 'package:opennutritracker/features/settings/domain/goal_settings_backup.dart';
@@ -121,19 +122,20 @@ class _UnusedImportRecipesJson extends Fake
 
 /// A valid `goal_settings.json`, as the exporter writes it.
 Map<String, dynamic> _goalsJson() => {
-  'version': 1,
-  'kcalAdjustment': -300.0,
-  'carbGoalPct': 0.4,
-  'proteinGoalPct': 0.3,
-  'fatGoalPct': 0.3,
-  'mealKcalSharesPct': {
-    'breakfast': 25,
-    'lunch': 35,
-    'dinner': 30,
-    'snack': 10,
-  },
-  'dailyWaterGoalMl': 2600,
-};
+      'version': 2,
+      'kcalAdjustment': -300.0,
+      'carbGoalPct': 0.4,
+      'proteinGoalPct': 0.3,
+      'fatGoalPct': 0.3,
+      'mealKcalSharesPct': {
+        'breakfast': 25,
+        'lunch': 35,
+        'dinner': 30,
+        'snack': 10,
+      },
+      'dailyWaterGoalMl': 2600,
+      'nutrientGoals': {'fiber': 32.0, 'iron': 12.0},
+    };
 
 /// Restoring a backup after a reset or reinstall must bring the goal
 /// settings back along with the diary (#1363).
@@ -297,8 +299,8 @@ void main() {
   });
 
   void writeArchive(Archive archive) => File(
-    '${tempDir.path}/backup.zip',
-  ).writeAsBytesSync(ZipEncoder().encode(archive));
+        '${tempDir.path}/backup.zip',
+      ).writeAsBytesSync(ZipEncoder().encode(archive));
 
   /// A bundle with empty required entries plus [extra].
   void writeZip(Map<String, String> extra) {
@@ -317,14 +319,14 @@ void main() {
   }
 
   Future<bool> importJson() => importer.importData(
-    ExportImportBloc.userActivityJsonFileName,
-    ExportImportBloc.userIntakeJsonFileName,
-    ExportImportBloc.trackedDayJsonFileName,
-    ExportImportBloc.recipeJsonFileName,
-    ExportImportBloc.weightLogJsonFileName,
-    ExportImportBloc.customActivityTemplateJsonFileName,
-    goalSettingsJsonFileName: ExportImportBloc.goalSettingsJsonFileName,
-  );
+        ExportImportBloc.userActivityJsonFileName,
+        ExportImportBloc.userIntakeJsonFileName,
+        ExportImportBloc.trackedDayJsonFileName,
+        ExportImportBloc.recipeJsonFileName,
+        ExportImportBloc.weightLogJsonFileName,
+        ExportImportBloc.customActivityTemplateJsonFileName,
+        goalSettingsJsonFileName: ExportImportBloc.goalSettingsJsonFileName,
+      );
 
   Future<void> setCustomGoals() async {
     await config.setConfigKcalAdjustment(250);
@@ -338,6 +340,7 @@ void main() {
       'snack': 10,
     });
     await config.setConfigDailyWaterGoalMl(3100);
+    await config.setNutrientGoals({'fiber': 35.0, 'iron': 11.5});
   }
 
   Future<Map<String, Object?>> goals() async {
@@ -349,10 +352,12 @@ void main() {
       'fatGoalPct': c.userFatGoalPct,
       'mealKcalSharesPct': c.mealKcalSharesPct,
       'dailyWaterGoalMl': c.dailyWaterGoalMl,
+      'nutrientGoals': c.nutrientGoals,
     };
   }
 
-  test('a JSON export carries the goal settings, and importing it after a '
+  test(
+      'a JSON export carries the goal settings, and importing it after a '
       'profile reset restores them', () async {
     await setCustomGoals();
     final before = await goals();
@@ -407,7 +412,8 @@ void main() {
     expect(archive.findFile(ExportImportBloc.goalSettingsJsonFileName), isNull);
   });
 
-  test('an archive from before #1363, without goal settings, imports as '
+  test(
+      'an archive from before #1363, without goal settings, imports as '
       'before and leaves the device goals alone', () async {
     await setCustomGoals();
     final before = await goals();
@@ -443,7 +449,37 @@ void main() {
     },
   );
 
-  test('goal settings from a newer format are skipped and the rest of the '
+  test('a version-1 file leaves durable nutrient goals alone', () async {
+    await config.setNutrientGoals({NutrientPanelKeys.fiber: 44});
+    final v1 = {..._goalsJson(), 'version': 1}..remove('nutrientGoals');
+    writeZip({ExportImportBloc.goalSettingsJsonFileName: jsonEncode(v1)});
+
+    expect(await importJson(), isTrue);
+
+    expect((await config.getConfig()).nutrientGoals, {
+      NutrientPanelKeys.fiber: 44.0,
+    });
+  });
+
+  test(
+    'a version-2 file with null goals clears durable nutrient goals',
+    () async {
+      await config.setNutrientGoals({NutrientPanelKeys.fiber: 44});
+      writeZip({
+        ExportImportBloc.goalSettingsJsonFileName: jsonEncode({
+          ..._goalsJson(),
+          'nutrientGoals': null,
+        }),
+      });
+
+      expect(await importJson(), isTrue);
+
+      expect((await config.getConfig()).nutrientGoals, isNull);
+    },
+  );
+
+  test(
+      'goal settings from a newer format are skipped and the rest of the '
       'archive still imports', () async {
     await setCustomGoals();
     final before = await goals();
@@ -459,26 +495,27 @@ void main() {
     expect(await goals(), before);
   });
 
-  group('invalid goal settings reject the archive before anything is '
+  group(
+      'invalid goal settings reject the archive before anything is '
       'written', () {
     Matcher wrongFormat() => throwsA(
-      isA<ExportImportFailure>().having(
-        (f) => f.reason,
-        'reason',
-        ExportImportFailureReason.unreadableOrWrongFormat,
-      ),
-    );
+          isA<ExportImportFailure>().having(
+            (f) => f.reason,
+            'reason',
+            ExportImportFailureReason.unreadableOrWrongFormat,
+          ),
+        );
 
     String snapshot() => jsonEncode({
-      'appConfig': appConfigBox.toMap().map(
-        (k, v) => MapEntry('$k', v.toJson()),
-      ),
-      'profileConfig': profileConfigBox.toMap().map(
-        (k, v) => MapEntry('$k', v.toJson()),
-      ),
-      'intakes': intakeBox.values.map((i) => i.toJson()).toList(),
-      'trackedDays': trackedDayBox.values.map((d) => d.toJson()).toList(),
-    });
+          'appConfig': appConfigBox.toMap().map(
+                (k, v) => MapEntry('$k', v.toJson()),
+              ),
+          'profileConfig': profileConfigBox.toMap().map(
+                (k, v) => MapEntry('$k', v.toJson()),
+              ),
+          'intakes': intakeBox.values.map((i) => i.toJson()).toList(),
+          'trackedDays': trackedDayBox.values.map((d) => d.toJson()).toList(),
+        });
 
     final cases = <String, String>{
       'not JSON': '{"version": 1,',
@@ -527,6 +564,18 @@ void main() {
         ..._goalsJson(),
         'dailyWaterGoalMl': 2600.5,
       }),
+      'unknown nutrient goal': jsonEncode({
+        ..._goalsJson(),
+        'nutrientGoals': {'not_a_nutrient': 4},
+      }),
+      'negative nutrient goal': jsonEncode({
+        ..._goalsJson(),
+        'nutrientGoals': {'fiber': -1},
+      }),
+      'nutrient goals are not an object': jsonEncode({
+        ..._goalsJson(),
+        'nutrientGoals': [32],
+      }),
     };
     final intake = jsonEncode([
       {
@@ -553,7 +602,8 @@ void main() {
       },
     ]);
 
-    test('the same archive with valid goal settings imports, so each case '
+    test(
+        'the same archive with valid goal settings imports, so each case '
         'below fails on its goal settings alone', () async {
       writeZip({
         ExportImportBloc.userIntakeJsonFileName: intake,
@@ -604,7 +654,8 @@ void main() {
     }
   });
 
-  group("after an import, today's tracked day follows the restored goals, "
+  group(
+      "after an import, today's tracked day follows the restored goals, "
       'as Home does', () {
     late DateTime today;
 
@@ -631,15 +682,16 @@ void main() {
     }
 
     TrackedDayDBO staleToday() => TrackedDayDBO(
-      day: today,
-      calorieGoal: 2744,
-      caloriesTracked: 640,
-      carbsGoal: 343,
-      fatGoal: 91,
-      proteinGoal: 137,
-    );
+          day: today,
+          calorieGoal: 2744,
+          caloriesTracked: 640,
+          carbsGoal: 343,
+          fatGoal: 91,
+          proteinGoal: 137,
+        );
 
-    test('a device row for today is recomputed once the goal settings are '
+    test(
+        'a device row for today is recomputed once the goal settings are '
         'restored', () async {
       await trackedDayBox.put(today.toParsedDay(), staleToday());
       writeZip({
@@ -653,7 +705,8 @@ void main() {
       expect(trackedDayBox.get(today.toParsedDay())!.caloriesTracked, 640);
     });
 
-    test('a row for today carried in the backup, computed for the old '
+    test(
+        'a row for today carried in the backup, computed for the old '
         'profile, is recomputed for this one', () async {
       writeZip({
         ExportImportBloc.trackedDayJsonFileName: jsonEncode([
@@ -697,7 +750,8 @@ void main() {
   });
 
   group('GoalSettingsBackup.fromConfigDBO', () {
-    test('writes a corrupt stored value as null, so its own export is never '
+    test(
+        'writes a corrupt stored value as null, so its own export is never '
         'rejected on import', () {
       final stored = ConfigDBO.empty()
         ..userKcalAdjustment = 200
@@ -705,7 +759,12 @@ void main() {
         ..userProteinGoalPct = 0.6
         ..userFatGoalPct = 0.6
         ..mealKcalSharesPct = {'breakfast': 100}
-        ..dailyWaterGoalMl = 20;
+        ..dailyWaterGoalMl = 20
+        ..nutrientGoals = {
+          'fiber': double.nan,
+          'iron': -2,
+          'not_a_nutrient': 4,
+        };
 
       final backup = GoalSettingsBackup.fromConfigDBO(stored);
       final reread = GoalSettingsBackup.fromJson(
@@ -718,9 +777,11 @@ void main() {
       expect(reread.fatGoalPct, isNull);
       expect(reread.mealKcalSharesPct, isNull);
       expect(reread.dailyWaterGoalMl, isNull);
+      expect(reread.nutrientGoals, isNull);
     });
 
-    test('writes a non-finite stored kcal adjustment or macro as null, so '
+    test(
+        'writes a non-finite stored kcal adjustment or macro as null, so '
         'the backup still encodes', () {
       for (final bad in [double.nan, double.infinity]) {
         final kcalStored = ConfigDBO.empty()..userKcalAdjustment = bad;
@@ -755,6 +816,7 @@ void main() {
         'fatGoalPct',
         'mealKcalSharesPct',
         'dailyWaterGoalMl',
+        'nutrientGoals',
       });
     });
   });

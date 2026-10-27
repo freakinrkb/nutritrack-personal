@@ -22,8 +22,7 @@ class ActivityDetailBottomSheet extends StatefulWidget {
     BuildContext, {
     String? templateName,
     bool saveAsTemplate,
-  })
-  onAddButtonPressed;
+  }) onAddButtonPressed;
   final PhysicalActivityEntity activityEntity;
   final TextEditingController quantityTextController;
   final ActivityDetailBloc activityDetailBloc;
@@ -115,8 +114,7 @@ class _ActivityDetailBottomSheetState extends State<ActivityDetailBottomSheet> {
                         leading: const Icon(Icons.bookmark_rounded),
                         title: Text(template.name),
                         subtitle: Text('${tileValue.toInt()} $tileUnit'),
-                        onTap: () =>
-                            Navigator.of(listContext).pop(template),
+                        onTap: () => Navigator.of(listContext).pop(template),
                       );
                     },
                   ),
@@ -126,9 +124,8 @@ class _ActivityDetailBottomSheetState extends State<ActivityDetailBottomSheet> {
     );
 
     if (picked != null && mounted) {
-      final usesKj =
-          Provider.of<EnergyUnitProvider>(context, listen: false)
-              .usesKilojoules;
+      final usesKj = Provider.of<EnergyUnitProvider>(context, listen: false)
+          .usesKilojoules;
       final displayValue =
           usesKj ? UnitCalc.kcalToKj(picked.typicalKcal) : picked.typicalKcal;
       setState(() {
@@ -194,7 +191,10 @@ class _ActivityDetailBottomSheetState extends State<ActivityDetailBottomSheet> {
               topRight: Radius.circular(Dimens.radiusXL),
             ),
             boxShadow: [
-              BoxShadow(color: palette.shadow, blurRadius: 18, offset: const Offset(0, -6)),
+              BoxShadow(
+                  color: palette.shadow,
+                  blurRadius: 18,
+                  offset: const Offset(0, -6)),
             ],
           ),
           // SafeArea(top: false) — keeps the sticky bottom Add button above
@@ -218,7 +218,8 @@ class _ActivityDetailBottomSheetState extends State<ActivityDetailBottomSheet> {
                           children: [
                             Expanded(
                               child: Semantics(
-                                identifier: 'activity-detail-template-name-input',
+                                identifier:
+                                    'activity-detail-template-name-input',
                                 container: true,
                                 child: TextFormField(
                                   controller: _nameController,

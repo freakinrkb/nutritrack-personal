@@ -70,26 +70,26 @@ class _FakeRemoteSearchCache extends Fake
 class _FakeContext extends Fake implements BuildContext {}
 
 MealEntity _offMeal(double kcal) => MealEntity(
-  code: '0080457761112',
-  name: 'Crisps',
-  url: null,
-  mealQuantity: '100',
-  mealUnit: 'g',
-  servingQuantity: 30,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: MealNutrimentsEntity(
-    energyKcal100: kcal,
-    carbohydrates100: null,
-    fat100: null,
-    proteins100: null,
-    sugars100: null,
-    saturatedFat100: null,
-    fiber100: null,
-  ),
-  source: MealSourceEntity.off,
-  detailed: true,
-);
+      code: '0080457761112',
+      name: 'Crisps',
+      url: null,
+      mealQuantity: '100',
+      mealUnit: 'g',
+      servingQuantity: 30,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: MealNutrimentsEntity(
+        energyKcal100: kcal,
+        carbohydrates100: null,
+        fat100: null,
+        proteins100: null,
+        sugars100: null,
+        saturatedFat100: null,
+        fiber100: null,
+      ),
+      source: MealSourceEntity.off,
+      detailed: true,
+    );
 
 /// #1307: logging an Open Food Facts food fetches the product again in the
 /// background. A favourite on it takes the fresh record, as a live scan
@@ -106,15 +106,15 @@ void main() {
   tearDown(() => favourites.dispose());
 
   MealDetailBloc build(MealEntity fresh) => MealDetailBloc(
-    _FakeAddIntakeUsecase(),
-    _FakeAddTrackedDayUsecase(),
-    _FakeGetKcalGoalUsecase(),
-    _FakeGetMacroGoalUsecase(),
-    _FakeGetTrackedDayUsecase(),
-    _FakeProductsRepository(fresh),
-    cache,
-    favourites: favourites.toggle,
-  );
+        _FakeAddIntakeUsecase(),
+        _FakeAddTrackedDayUsecase(),
+        _FakeGetKcalGoalUsecase(),
+        _FakeGetMacroGoalUsecase(),
+        _FakeGetTrackedDayUsecase(),
+        _FakeProductsRepository(fresh),
+        cache,
+        favourites: favourites.toggle,
+      );
 
   Future<void> log(MealDetailBloc bloc, MealEntity meal) async {
     await bloc.addIntake(
@@ -132,7 +132,8 @@ void main() {
     }
   }
 
-  test('a starred food logged from its stored snapshot takes the fresh '
+  test(
+      'a starred food logged from its stored snapshot takes the fresh '
       'record', () async {
     final starred = _offMeal(100);
     favourites.add(starred);

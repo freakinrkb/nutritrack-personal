@@ -56,18 +56,9 @@ void main() {
     test('LoadRecipesEvent emits Loaded with most-recently-updated first',
         () async {
       useCase.recipes = [
-        _recipe(
-            id: 'a',
-            name: 'Old',
-            updatedAt: DateTime.utc(2024, 1, 1)),
-        _recipe(
-            id: 'b',
-            name: 'New',
-            updatedAt: DateTime.utc(2025, 6, 1)),
-        _recipe(
-            id: 'c',
-            name: 'Middle',
-            updatedAt: DateTime.utc(2024, 8, 1)),
+        _recipe(id: 'a', name: 'Old', updatedAt: DateTime.utc(2024, 1, 1)),
+        _recipe(id: 'b', name: 'New', updatedAt: DateTime.utc(2025, 6, 1)),
+        _recipe(id: 'c', name: 'Middle', updatedAt: DateTime.utc(2024, 8, 1)),
       ];
 
       bloc.add(const LoadRecipesEvent());

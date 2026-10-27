@@ -31,27 +31,27 @@ Widget _wrapWithMaterial(Widget child) {
 class _FakeGetIntakeUsecase implements GetIntakeUsecase {
   @override
   Future<List<IntakeEntity>> getRecentIntake() async => [
-    for (var i = 0; i < 2; i++)
-      IntakeEntity(
-        id: 'recent-$i',
-        unit: 'g',
-        amount: 100,
-        type: IntakeTypeEntity.lunch,
-        meal: MealEntity(
-          code: 'recent-$i',
-          name: 'Recent $i',
-          url: null,
-          mealQuantity: '100',
-          mealUnit: 'g',
-          servingQuantity: null,
-          servingUnit: null,
-          servingSize: null,
-          nutriments: MealNutrimentsEntity.empty(),
-          source: MealSourceEntity.custom,
-        ),
-        dateTime: DateTime(2026, 1, 1),
-      ),
-  ];
+        for (var i = 0; i < 2; i++)
+          IntakeEntity(
+            id: 'recent-$i',
+            unit: 'g',
+            amount: 100,
+            type: IntakeTypeEntity.lunch,
+            meal: MealEntity(
+              code: 'recent-$i',
+              name: 'Recent $i',
+              url: null,
+              mealQuantity: '100',
+              mealUnit: 'g',
+              servingQuantity: null,
+              servingUnit: null,
+              servingSize: null,
+              nutriments: MealNutrimentsEntity.empty(),
+              source: MealSourceEntity.custom,
+            ),
+            dateTime: DateTime(2026, 1, 1),
+          ),
+      ];
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -59,8 +59,9 @@ class _FakeGetIntakeUsecase implements GetIntakeUsecase {
 }
 
 Finder _withIdentifier(String identifier) => find.byWidgetPredicate(
-  (widget) => widget is Semantics && widget.properties.identifier == identifier,
-);
+      (widget) =>
+          widget is Semantics && widget.properties.identifier == identifier,
+    );
 
 void main() {
   testWidgets(

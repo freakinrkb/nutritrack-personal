@@ -188,7 +188,9 @@ void main() {
       expect(result.perHundredG.energyKcal100, closeTo(222.22, 0.01));
     });
 
-    test('null nutrient field treated as 0 in sum, but null preserved when ALL ingredients null', () {
+    test(
+        'null nutrient field treated as 0 in sum, but null preserved when ALL ingredients null',
+        () {
       // ingredient A has iron, B has null iron
       // → recipe iron = (5 mg × 50 g + 0 × 50 g) × 100 / 100 = 2.5 mg
       final a = _meal(code: 'a', nutriments: _nutr(kcal: 100, iron: 5));
@@ -226,7 +228,8 @@ void main() {
       expect(result.perHundredG.energyKcal100, isNull);
     });
 
-    test('full-nutrient coverage: every MealNutrimentsEntity field aggregates', () {
+    test('full-nutrient coverage: every MealNutrimentsEntity field aggregates',
+        () {
       // Three ingredients each populating all 24 fields with the same value v.
       // The weighted-mean of identical values is the same value back —
       // ensures every field is summed (not just kcal/carbs/fat/protein).

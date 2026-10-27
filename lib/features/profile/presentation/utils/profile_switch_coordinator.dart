@@ -11,6 +11,7 @@ import 'package:opennutritracker/features/diary/presentation/bloc/diary_bloc.dar
 import 'package:opennutritracker/features/home/presentation/bloc/home_bloc.dart';
 import 'package:opennutritracker/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:opennutritracker/features/recipes/presentation/bloc/recipes_bloc.dart';
+import 'package:opennutritracker/features/routines/presentation/bloc/routines_bloc.dart';
 import 'package:opennutritracker/features/settings/presentation/bloc/custom_meals_bloc.dart';
 import 'package:opennutritracker/features/settings/presentation/bloc/settings_bloc.dart';
 
@@ -55,10 +56,9 @@ class ProfileSwitchCoordinator {
 
     if (hasUserData) {
       reloadTabBlocs();
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        NavigationOptions.mainRoute,
-        (route) => false,
-      );
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(NavigationOptions.mainRoute, (route) => false);
     } else {
       Navigator.of(context).pushNamedAndRemoveUntil(
         NavigationOptions.onboardingRoute,
@@ -87,5 +87,6 @@ class ProfileSwitchCoordinator {
     locator<RecipesBloc>().add(LoadRecipesEvent());
     locator<CustomMealsBloc>().add(LoadCustomMealsEvent());
     locator<SettingsBloc>().add(LoadSettingsEvent());
+    locator<RoutinesBloc>().add(const LoadRoutinesEvent());
   }
 }

@@ -60,7 +60,8 @@ class _FakeGetKcalGoalUsecase extends Fake implements GetKcalGoalUsecase {
     UserEntity? userEntity,
     double? totalKcalActivitiesParam,
     double? kcalUserAdjustment,
-  }) async => 2000;
+  }) async =>
+      2000;
 }
 
 class _FakeGetMacroGoalUsecase extends Fake implements GetMacroGoalUsecase {
@@ -87,22 +88,23 @@ class _FakeSetDayBoundaryUsecase extends Fake
     implements SetDayBoundaryUsecase {}
 
 SettingsBloc _bloc(AddTrackedDayUsecase addTrackedDayUsecase) => SettingsBloc(
-  _FakeGetConfigUsecase(),
-  _FakeAddConfigUsecase(),
-  addTrackedDayUsecase,
-  _FakeGetKcalGoalUsecase(),
-  _FakeGetMacroGoalUsecase(),
-  _FakeRemoteSearchCacheDataSource(),
-  _FakeGetTrackedDayUsecase(),
-  _FakeSetDayBoundaryUsecase(),
-);
+      _FakeGetConfigUsecase(),
+      _FakeAddConfigUsecase(),
+      addTrackedDayUsecase,
+      _FakeGetKcalGoalUsecase(),
+      _FakeGetMacroGoalUsecase(),
+      _FakeRemoteSearchCacheDataSource(),
+      _FakeGetTrackedDayUsecase(),
+      _FakeSetDayBoundaryUsecase(),
+    );
 
 void main() {
   final day = DateTime(2026, 10, 14);
 
   // #1348: saving goals on a day without a diary entry used to write
   // nothing, so follow-up writes such as the nutrient goals had no row.
-  test('updateTrackedDay creates the tracked day from the current goals '
+  test(
+      'updateTrackedDay creates the tracked day from the current goals '
       'when none exists', () async {
     final addTrackedDayUsecase = _FakeAddTrackedDayUsecase(existing: false);
     final bloc = _bloc(addTrackedDayUsecase);

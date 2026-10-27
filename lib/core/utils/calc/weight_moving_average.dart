@@ -49,8 +49,7 @@ class WeightMovingAverage {
     int minSamples = 2,
   }) {
     assert(minSamples >= 1, 'minSamples must be positive');
-    final sorted = entries.toList()
-      ..sort((a, b) => a.date.compareTo(b.date));
+    final sorted = entries.toList()..sort((a, b) => a.date.compareTo(b.date));
     if (sorted.isEmpty) return const [];
 
     final points = <WeightMovingAveragePoint>[];

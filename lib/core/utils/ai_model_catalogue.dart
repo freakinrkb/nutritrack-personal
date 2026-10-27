@@ -195,11 +195,11 @@ abstract final class AiModelCatalogue {
   /// pulled whatever they pulled — so there is no curated list, and #738
   /// settled that the model is fetched from the server instead.
   static List<AiModel> forProvider(AiProvider provider) => switch (provider) {
-    AiProvider.anthropic => anthropic,
-    AiProvider.openrouter => openrouter,
-    AiProvider.openai => openai,
-    AiProvider.ownServer => const [],
-  };
+        AiProvider.anthropic => anthropic,
+        AiProvider.openrouter => openrouter,
+        AiProvider.openai => openai,
+        AiProvider.ownServer => const [],
+      };
 
   /// Null where there is no curated list to take a first element from.
   ///

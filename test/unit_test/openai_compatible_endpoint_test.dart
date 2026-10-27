@@ -18,25 +18,25 @@ void main() {
   final endpoint = Uri.parse('http://192.168.1.5:11434/v1/chat/completions');
 
   String replyWith(String query) => jsonEncode({
-    'choices': [
-      {
-        'message': {
-          'tool_calls': [
-            {
-              'function': {
-                'name': mealItemsToolName,
-                'arguments': jsonEncode({
-                  'items': [
-                    {'query': query},
-                  ],
-                }),
-              },
+        'choices': [
+          {
+            'message': {
+              'tool_calls': [
+                {
+                  'function': {
+                    'name': mealItemsToolName,
+                    'arguments': jsonEncode({
+                      'items': [
+                        {'query': query},
+                      ],
+                    }),
+                  },
+                },
+              ],
             },
-          ],
-        },
-      },
-    ],
-  });
+          },
+        ],
+      });
 
   OpenAiCompatibleMealItemsApi apiFor(
     http.Client client, {
@@ -45,22 +45,23 @@ void main() {
     MealInterpreterFailure Function(int)? failureFor,
     MealInterpreterFailure? timeoutFailure,
     Duration timeout = OpenAiCompatibleMealItemsApi.defaultTimeout,
-  }) => OpenAiCompatibleMealItemsApi(
-    client,
-    apiKey,
-    model: 'gemma3:4b',
-    endpoint: endpoint,
-    toolChoice: toolChoice,
-    failureFor:
-        failureFor ?? OpenAiCompatibleMealItemsApi.openRouterFailureFor,
-    timeoutFailure: timeoutFailure ?? MealInterpreterFailure.transient,
-    timeout: timeout,
-  );
+  }) =>
+      OpenAiCompatibleMealItemsApi(
+        client,
+        apiKey,
+        model: 'gemma3:4b',
+        endpoint: endpoint,
+        toolChoice: toolChoice,
+        failureFor:
+            failureFor ?? OpenAiCompatibleMealItemsApi.openRouterFailureFor,
+        timeoutFailure: timeoutFailure ?? MealInterpreterFailure.transient,
+        timeout: timeout,
+      );
 
   Future<void> send(OpenAiCompatibleMealItemsApi api) => api.requestItems(
-    content: const MealTextContent('two eggs'),
-    system: 'system',
-  );
+        content: const MealTextContent('two eggs'),
+        system: 'system',
+      );
 
   test('posts to the endpoint it was given, not a compiled-in one', () async {
     final client = FakeClient(body: replyWith('eggs'));
@@ -205,7 +206,8 @@ void main() {
     );
   });
 
-  group('running out of time is not the same fact as losing the connection', () {
+  group('running out of time is not the same fact as losing the connection',
+      () {
     // #774. Both used to arrive here as "request failed" and leave as
     // `transient`, whose advice is to check the network — measured against a
     // real Ollama, that sent the user to debug a connection that was working

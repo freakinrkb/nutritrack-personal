@@ -80,17 +80,17 @@ class _Device {
       (tag: osTag, readFailed: false);
 
   Future<String?> launch() => reconcileAppLocale(
-    savedLocaleCode: saved,
-    systemLocaleTag: osTag,
-    systemTagReadFailed: false,
-    localeSyncSeeded: seeded,
-    supportedLocales: _supported,
-    persistSelectedLocale: (code) async => saved = code,
-    pushToSystem: _push,
-    readSystemTag: () async => (tag: osTag, readFailed: false),
-    markLocaleSyncSeeded: () async => seeded = true,
-    clearLocaleSyncSeeded: () async => seeded = false,
-  );
+        savedLocaleCode: saved,
+        systemLocaleTag: osTag,
+        systemTagReadFailed: false,
+        localeSyncSeeded: seeded,
+        supportedLocales: _supported,
+        persistSelectedLocale: (code) async => saved = code,
+        pushToSystem: _push,
+        readSystemTag: () async => (tag: osTag, readFailed: false),
+        markLocaleSyncSeeded: () async => seeded = true,
+        clearLocaleSyncSeeded: () async => seeded = false,
+      );
 }
 
 Future<String?> _reconcile(
@@ -99,26 +99,26 @@ Future<String?> _reconcile(
   String? system,
   bool seeded = false,
   bool readFailed = false,
-}) => reconcileAppLocale(
-  savedLocaleCode: saved,
-  systemLocaleTag: system,
-  systemTagReadFailed: readFailed,
-  localeSyncSeeded: seeded,
-  supportedLocales: _supported,
-  persistSelectedLocale: recorder.persist,
-  pushToSystem: recorder.push,
-  readSystemTag: recorder.readBack,
-  markLocaleSyncSeeded: recorder.markSeeded,
-  clearLocaleSyncSeeded: recorder.clearSeeded,
-);
+}) =>
+    reconcileAppLocale(
+      savedLocaleCode: saved,
+      systemLocaleTag: system,
+      systemTagReadFailed: readFailed,
+      localeSyncSeeded: seeded,
+      supportedLocales: _supported,
+      persistSelectedLocale: recorder.persist,
+      pushToSystem: recorder.push,
+      readSystemTag: recorder.readBack,
+      markLocaleSyncSeeded: recorder.markSeeded,
+      clearLocaleSyncSeeded: recorder.clearSeeded,
+    );
 
 void main() {
   group('reconcileAppLocale', () {
     test('the system override wins and is saved', () async {
       final recorder = _Recorder();
 
-      final result =
-          await _reconcile(recorder, saved: 'de', system: 'pl');
+      final result = await _reconcile(recorder, saved: 'de', system: 'pl');
 
       expect(result, 'pl');
       expect(recorder.persisted, ['pl'],
@@ -169,8 +169,7 @@ void main() {
       expect(
         recorder.seededMarks,
         1,
-        reason:
-            'seeded means the OS was SEEN holding a value — here via the '
+        reason: 'seeded means the OS was SEEN holding a value — here via the '
             'read-back of the push, not the attempt itself',
       );
     });
@@ -326,15 +325,13 @@ void main() {
       expect(
         recorder.pushed,
         isEmpty,
-        reason:
-            'overwriting an OS-level choice we merely cannot render '
+        reason: 'overwriting an OS-level choice we merely cannot render '
             'is a stronger action than ignoring it',
       );
       expect(
         recorder.seededMarks,
         1,
-        reason:
-            'the OS demonstrably holds an override, so its later absence '
+        reason: 'the OS demonstrably holds an override, so its later absence '
             'must read as the user clearing it — not as never-seeded, which '
             'would re-push the saved code over their System default',
       );

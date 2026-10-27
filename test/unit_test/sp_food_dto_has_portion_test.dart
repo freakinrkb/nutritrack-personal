@@ -7,13 +7,13 @@ import 'package:opennutritracker/features/add_meal/data/dto/sp/sp_food_dto.dart'
 /// `2026-09-13_food_summary_has_portion` migration is applied —
 /// `has_portion`.
 Map<String, dynamic> row({bool sendsFlag = false, bool? hasPortion}) => {
-  SPConst.foodId: 2707829,
-  SPConst.foodSource: 'fdc_survey',
-  SPConst.foodSourceCode: '2707829',
-  SPConst.foodName: 'Muffin, NFS',
-  SPConst.foodShortTitle: 'Muffin',
-  if (sendsFlag) SPConst.foodHasPortion: hasPortion,
-};
+      SPConst.foodId: 2707829,
+      SPConst.foodSource: 'fdc_survey',
+      SPConst.foodSourceCode: '2707829',
+      SPConst.foodName: 'Muffin, NFS',
+      SPConst.foodShortTitle: 'Muffin',
+      if (sendsFlag) SPConst.foodHasPortion: hasPortion,
+    };
 
 void main() {
   group('SpFoodDTO.hasPortion (#1190)', () {

@@ -31,7 +31,7 @@ WeightLogEntity _entry(DateTime date, double weightKg) =>
 /// on a day's length.
 List<WeightLogEntity> _dailyEntries(DateTime first, DateTime last) {
   final entries = <WeightLogEntity>[];
-  for (var i = 0; ; i++) {
+  for (var i = 0;; i++) {
     final day = DateTime(first.year, first.month, first.day + i);
     if (day.isAfter(last)) break;
     entries.add(_entry(day, 80 + (i % 3) * 0.5));
@@ -46,9 +46,9 @@ int _hoursIn(DateTime day) =>
 
 String? _skipUnless(DateTime day, int hours, String what) =>
     _hoursIn(day) == hours
-    ? null
-    : 'no $what on $day in zone ${day.timeZoneName}; '
-          'run `just test_dst` (TZ=Europe/Berlin)';
+        ? null
+        : 'no $what on $day in zone ${day.timeZoneName}; '
+            'run `just test_dst` (TZ=Europe/Berlin)';
 
 Future<LineChartData> _pumpChart(
   WidgetTester tester, {

@@ -5,15 +5,15 @@ import 'package:opennutritracker/core/presentation/widgets/error_dialog.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  home: Scaffold(body: child),
-);
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      home: Scaffold(body: child),
+    );
 
 void main() {
   testWidgets('Retry carries the identifier the caller gives it', (

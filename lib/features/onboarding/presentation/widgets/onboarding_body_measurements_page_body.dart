@@ -22,8 +22,7 @@ class OnboardingBodyMeasurementsPageBody extends StatefulWidget {
     bool heightImperial,
     BodyWeightUnit bodyWeightUnit,
     bool foodImperial,
-  )
-  setButtonContent;
+  ) setButtonContent;
 
   /// Already-stored height in centimetres (always metric in the parent's
   /// userSelection model). The widget converts to feet for display when
@@ -145,9 +144,8 @@ class _OnboardingBodyMeasurementsPageBodyState
 
     final initialWeightKg = widget.initialWeightKg;
     if (initialWeightKg != null && !_isWeightSt) {
-      final displayWeight = _isWeightLb
-          ? UnitCalc.kgToLbs(initialWeightKg)
-          : initialWeightKg;
+      final displayWeight =
+          _isWeightLb ? UnitCalc.kgToLbs(initialWeightKg) : initialWeightKg;
       _parsedWeight = initialWeightKg;
       _weightController.text = _formatRestoredNumber(displayWeight);
     }
@@ -352,12 +350,12 @@ class _OnboardingBodyMeasurementsPageBodyState
   }
 
   String _formatKg(double kg) => formatBodyWeight(
-    kg,
-    _bodyWeightUnit,
-    kgLabel: S.of(context).kgLabel,
-    lbLabel: S.of(context).lbsLabel,
-    stLabel: S.of(context).stLabel,
-  );
+        kg,
+        _bodyWeightUnit,
+        kgLabel: S.of(context).kgLabel,
+        lbLabel: S.of(context).lbsLabel,
+        stLabel: S.of(context).stLabel,
+      );
 
   /// Fills the optional target field with the suggested weight. The stones
   /// input seeds itself from `initialKg`, so it is rebuilt via its key to
@@ -423,8 +421,8 @@ class _OnboardingBodyMeasurementsPageBodyState
           Text(
             S.of(context).onboardingHealthyRangeSource,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
           const SizedBox(height: 8.0),
           // A Wrap, so the citation link drops onto its own line instead of
@@ -487,9 +485,8 @@ class _OnboardingBodyMeasurementsPageBodyState
   void _reseedWeightControllersForUnitChange() {
     if (_isWeightSt) return;
     if (_parsedWeight != null) {
-      final displayWeight = _isWeightLb
-          ? UnitCalc.kgToLbs(_parsedWeight!)
-          : _parsedWeight!;
+      final displayWeight =
+          _isWeightLb ? UnitCalc.kgToLbs(_parsedWeight!) : _parsedWeight!;
       _weightController.text = _formatRestoredNumber(displayWeight);
     }
     if (_parsedTargetWeight != null) {
@@ -763,8 +760,7 @@ class _OnboardingBodyMeasurementsPageBodyState
                       initialKg:
                           _parsedTargetWeight ?? widget.initialTargetWeightKg,
                       unit: BodyWeightUnit.st,
-                      errorText:
-                          _showTargetError &&
+                      errorText: _showTargetError &&
                               _targetHasInput &&
                               _parsedTargetWeight == null
                           ? S.of(context).onboardingWrongWeightLabel
@@ -808,9 +804,8 @@ class _OnboardingBodyMeasurementsPageBodyState
                           labelText: _isWeightLb
                               ? S.of(context).lbsLabel
                               : S.of(context).kgLabel,
-                          hintText: S
-                              .of(context)
-                              .onboardingTargetWeightHintOptional,
+                          hintText:
+                              S.of(context).onboardingTargetWeightHintOptional,
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),

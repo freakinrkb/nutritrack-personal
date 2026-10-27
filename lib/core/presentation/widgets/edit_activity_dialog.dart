@@ -45,9 +45,8 @@ class _EditActivityDialogState extends State<EditActivityDialog> {
       final storedKcal = _isCustom
           ? (widget.activityEntity.userKcal ?? widget.activityEntity.burnedKcal)
           : widget.activityEntity.duration;
-      final displayValue = (_isCustom && usesKj)
-          ? UnitCalc.kcalToKj(storedKcal)
-          : storedKcal;
+      final displayValue =
+          (_isCustom && usesKj) ? UnitCalc.kcalToKj(storedKcal) : storedKcal;
       _quantityController.text = displayValue.toInt().toString();
     }
 
@@ -82,9 +81,8 @@ class _EditActivityDialogState extends State<EditActivityDialog> {
           onPressed: () {
             final parsed = double.tryParse(_quantityController.text);
             if (parsed != null && parsed > 0) {
-              final result = (_isCustom && usesKj)
-                  ? UnitCalc.kjToKcal(parsed)
-                  : parsed;
+              final result =
+                  (_isCustom && usesKj) ? UnitCalc.kjToKcal(parsed) : parsed;
               Navigator.of(context).pop(result);
             }
           },

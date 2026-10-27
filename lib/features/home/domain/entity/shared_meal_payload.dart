@@ -128,9 +128,8 @@ class SharedMealItem {
     num? atNum(int i) => a.length > i ? a[i] as num? : null;
     String? atStr(int i) => a.length > i ? a[i] as String? : null;
     final sourceStr = atStr(13);
-    final source = sourceStr == 'fdc'
-        ? MealSourceEntity.fdc
-        : MealSourceEntity.custom;
+    final source =
+        sourceStr == 'fdc' ? MealSourceEntity.fdc : MealSourceEntity.custom;
     return SharedMealItem(
       name: a[0] as String?,
       brands: a[1] as String?,

@@ -98,8 +98,7 @@ void main() {
     });
 
     test('quoted fields with embedded commas are preserved', () {
-      const csv =
-          'name,kcal_per_100g\n"Granola, oats and nuts",450';
+      const csv = 'name,kcal_per_100g\n"Granola, oats and nuts",450';
 
       final result = CsvMealImporter.parse(csv);
 
@@ -254,7 +253,8 @@ void main() {
       expect(result.errors[1], contains('serving_size'));
     });
 
-    test('old CSV without serving_size column still parses (backward-compat)', () {
+    test('old CSV without serving_size column still parses (backward-compat)',
+        () {
       // The header set predating issue #420. Importers in the wild that
       // omit the new column must keep working.
       const csv = 'name,brands,barcode,kcal_per_100g,carbs_per_100g,'

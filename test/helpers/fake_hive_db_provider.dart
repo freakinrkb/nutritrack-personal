@@ -4,6 +4,8 @@ import 'package:opennutritracker/core/data/data_source/user_activity_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/config_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/favourite_meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/fasting_session_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_checkin_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/intake_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/profile_dbo.dart';
@@ -33,6 +35,8 @@ class FakeHiveDBProvider extends HiveDBProvider {
   final Box<WaterIntakeDBO>? _waterIntakeBox;
   final Box<FastingSessionDBO>? _fastingBox;
   final Box<FavouriteMealDBO>? _favouriteMealBox;
+  final Box<HabitDBO>? _habitBox;
+  final Box<HabitCheckinDBO>? _habitCheckinBox;
   final Box<ProfileDBO>? _profileBox;
 
   /// The profile the injected boxes belong to.
@@ -60,6 +64,8 @@ class FakeHiveDBProvider extends HiveDBProvider {
     Box<WaterIntakeDBO>? waterIntakeBox,
     Box<FastingSessionDBO>? fastingBox,
     Box<FavouriteMealDBO>? favouriteMealBox,
+    Box<HabitDBO>? habitBox,
+    Box<HabitCheckinDBO>? habitCheckinBox,
     Box<ProfileDBO>? profileBox,
   })  : _configBox = configBox,
         _appConfigBox = appConfigBox ?? configBox,
@@ -75,6 +81,8 @@ class FakeHiveDBProvider extends HiveDBProvider {
         _waterIntakeBox = waterIntakeBox,
         _fastingBox = fastingBox,
         _favouriteMealBox = favouriteMealBox,
+        _habitBox = habitBox,
+        _habitCheckinBox = habitCheckinBox,
         _profileBox = profileBox;
 
   T _require<T>(T? box) {
@@ -113,6 +121,10 @@ class FakeHiveDBProvider extends HiveDBProvider {
   Box<FastingSessionDBO> get fastingBox => _require(_fastingBox);
   @override
   Box<FavouriteMealDBO> get favouriteMealBox => _require(_favouriteMealBox);
+  @override
+  Box<HabitDBO> get habitBox => _require(_habitBox);
+  @override
+  Box<HabitCheckinDBO> get habitCheckinBox => _require(_habitCheckinBox);
   @override
   Box<ProfileDBO> get profileBox => _require(_profileBox);
 }

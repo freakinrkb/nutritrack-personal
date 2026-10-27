@@ -62,17 +62,18 @@ TrackedDayDBO _row(
   DateTime day, {
   required double goal,
   required double kcal,
-}) => TrackedDayDBO(
-  day: day,
-  calorieGoal: goal,
-  caloriesTracked: kcal,
-  carbsGoal: 250,
-  carbsTracked: kcal / 5,
-  fatGoal: 70,
-  fatTracked: kcal / 100,
-  proteinGoal: 100,
-  proteinTracked: kcal * 3 / 100,
-);
+}) =>
+    TrackedDayDBO(
+      day: day,
+      calorieGoal: goal,
+      caloriesTracked: kcal,
+      carbsGoal: 250,
+      carbsTracked: kcal / 5,
+      fatGoal: 70,
+      fatTracked: kcal / 100,
+      proteinGoal: 100,
+      proteinTracked: kcal * 3 / 100,
+    );
 
 void main() {
   var boxTag = 0;
@@ -86,9 +87,9 @@ void main() {
     DayBoundaryCalc.clock = () => DateTime(2026, 10, 5, 12);
     final tag = boxTag++;
     Future<Box<T>> open<T>(String name) => Hive.openBox<T>(
-      'calendar_activity_edit_${name}_$tag',
-      bytes: Uint8List(0),
-    );
+          'calendar_activity_edit_${name}_$tag',
+          bytes: Uint8List(0),
+        );
     trackedDayBox = await open<TrackedDayDBO>('day');
     final db = FakeHiveDBProvider(
       configBox: await open<ConfigDBO>('config'),

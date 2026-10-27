@@ -246,7 +246,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Alla dagboksposter som använder det här livsmedlet tas också bort.",
+  "customMealsDeleteConfirmContent": "Tidigare dagboksregistreringar från den här egna måltiden sparas.",
   "customMealsDeleteConfirmTitle": "Radera eget livsmedel?",
   "customMealsEmptyLabel": "Inga egna livsmedel har sparats ännu.",
   "dailyKcalAdjustmentLabel": "Daglig justering i kcal:",

@@ -129,12 +129,8 @@ class _ImportCustomFoodDataDialogState
                     refreshScreens();
                     locator<RecipesBloc>().add(const LoadRecipesEvent());
                     final summary = state.skipped == 0
-                        ? S
-                            .of(context)
-                            .csvImportSuccessLabel(state.imported)
-                        : S
-                            .of(context)
-                            .csvImportPartialLabel(
+                        ? S.of(context).csvImportSuccessLabel(state.imported)
+                        : S.of(context).csvImportPartialLabel(
                               state.imported,
                               state.skipped,
                             );
@@ -213,8 +209,7 @@ class _ImportCustomFoodDataDialogState
         child: Text(S.of(context).importMealsCsvAction),
       ),
       TextButton(
-        onPressed: () =>
-            _exportImportBloc.add(DownloadSampleRecipesCsvEvent()),
+        onPressed: () => _exportImportBloc.add(DownloadSampleRecipesCsvEvent()),
         child: Text(S.of(context).downloadSampleRecipesCsvAction),
       ),
       TextButton(
@@ -249,9 +244,7 @@ class _ImportCustomFoodDataDialogState
   Widget _buildCsvResult(BuildContext context, CsvImportResultState state) {
     final summary = state.skipped == 0
         ? S.of(context).csvImportSuccessLabel(state.imported)
-        : S
-            .of(context)
-            .csvImportPartialLabel(state.imported, state.skipped);
+        : S.of(context).csvImportPartialLabel(state.imported, state.skipped);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

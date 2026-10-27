@@ -38,12 +38,13 @@ class LogUserActivityUsecase {
   Future<void> logActivity(
     UserActivityEntity activity, {
     required DateTime day,
-  }) => withTrackedDayLock(() async {
-    // Held across both writes, so no reconciliation or boundary move
-    // counts the activity before its day's goal has it (#1317).
-    await _addUserActivityUsecase.addUserActivity(activity);
-    await _increaseDayGoals(day, activity.burnedKcal);
-  });
+  }) =>
+      withTrackedDayLock(() async {
+        // Held across both writes, so no reconciliation or boundary move
+        // counts the activity before its day's goal has it (#1317).
+        await _addUserActivityUsecase.addUserActivity(activity);
+        await _increaseDayGoals(day, activity.burnedKcal);
+      });
 
   Future<void> _increaseDayGoals(DateTime day, double caloriesBurned) async {
     final hasTrackedDay = await _addTrackedDayUsecase.hasTrackedDay(day);

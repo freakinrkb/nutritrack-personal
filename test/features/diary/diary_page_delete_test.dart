@@ -321,7 +321,8 @@ void main() {
     expect(rowOf(today)!.caloriesTracked, 500);
   });
 
-  testWidgets('deleting the entries of a past day without a row leaves '
+  testWidgets(
+      'deleting the entries of a past day without a row leaves '
       'today\'s row alone', (tester) async {
     await setUpDiary(yesterdayHasRow: false);
     await openYesterday(tester);
@@ -351,8 +352,8 @@ void main() {
     /// Midnight passes and the Diary reloads, as a resume does: it
     /// follows "today" on to tomorrow, which lists nothing.
     Future<void> passMidnight(WidgetTester tester) async {
-      DayBoundaryCalc.clock = () =>
-          DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 30);
+      DayBoundaryCalc.clock =
+          () => DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 30);
       locator<DiaryBloc>().add(const LoadDiaryYearEvent());
       await settle(tester);
       expect(find.text('Toast'), findsNothing, reason: 'followed today');

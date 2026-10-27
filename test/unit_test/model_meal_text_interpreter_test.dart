@@ -45,18 +45,18 @@ class FakeClient extends http.BaseClient {
 
 /// A well-formed Messages reply carrying one forced tool call.
 String toolReply(List<Map<String, dynamic>> items) => jsonEncode({
-  'id': 'msg_1',
-  'type': 'message',
-  'role': 'assistant',
-  'content': [
-    {
-      'type': 'tool_use',
-      'id': 'tu_1',
-      'name': 'log_meal_items',
-      'input': {'items': items},
-    },
-  ],
-});
+      'id': 'msg_1',
+      'type': 'message',
+      'role': 'assistant',
+      'content': [
+        {
+          'type': 'tool_use',
+          'id': 'tu_1',
+          'name': 'log_meal_items',
+          'input': {'items': items},
+        },
+      ],
+    });
 
 /// The interpreter over the Anthropic wire format. The prompt is
 /// provider-neutral, so these tests pin the Anthropic request shape; the
@@ -64,9 +64,10 @@ String toolReply(List<Map<String, dynamic>> items) => jsonEncode({
 ModelMealTextInterpreter interpreterWith(
   FakeClient client, {
   Duration timeout = AnthropicMealItemsApi.defaultTimeout,
-}) => ModelMealTextInterpreter(
-  AnthropicMealItemsApi(client, () => 'test-key', timeout: timeout),
-);
+}) =>
+    ModelMealTextInterpreter(
+      AnthropicMealItemsApi(client, () => 'test-key', timeout: timeout),
+    );
 
 void main() {
   group('the request', () {
@@ -126,10 +127,8 @@ void main() {
 
       final schema =
           (client.sentBody!['tools'] as List).single as Map<String, dynamic>;
-      final itemProps =
-          (((schema['input_schema'] as Map)['properties'] as Map)['items']
-                  as Map)['items']
-              as Map;
+      final itemProps = (((schema['input_schema'] as Map)['properties']
+          as Map)['items'] as Map)['items'] as Map;
 
       // `portion` joined the set in #864. It is a lookup key rather than a
       // measurement — the model names a portion, the gram weight comes from
@@ -218,11 +217,8 @@ void main() {
 
       final schema =
           (client.sentBody!['tools'] as List).single as Map<String, dynamic>;
-      final unitEnum =
-          ((((schema['input_schema'] as Map)['properties'] as Map)['items']
-                      as Map)['items']
-                  as Map)['properties']
-              as Map;
+      final unitEnum = ((((schema['input_schema'] as Map)['properties']
+          as Map)['items'] as Map)['items'] as Map)['properties'] as Map;
       // Every entry must be one `validateParsedMealItems` can normalize or
       // pass through; offering a unit the app cannot convert is what made
       // the model map a litre onto `ml` and keep the number.

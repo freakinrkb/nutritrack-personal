@@ -246,7 +246,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Az összes, ezt az étkezést tartalmazó naplóbejegyzés is törlésre kerül.",
+  "customMealsDeleteConfirmContent": "A korábbi, ehhez az egyéni étkezéshez rögzített naplóbejegyzések megmaradnak.",
   "customMealsDeleteConfirmTitle": "Törli az egyéni étkezést?",
   "customMealsEmptyLabel": "Még nincs elmentett egyéni étkezés.",
   "dailyKcalAdjustmentLabel": "Napi kalória beállítás:",

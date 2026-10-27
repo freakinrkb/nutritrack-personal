@@ -32,12 +32,12 @@ class _Config extends Fake implements GetConfigUsecase {
 
   @override
   Future<ConfigEntity> getConfig() async => ConfigEntity(
-    true,
-    true,
-    false,
-    AppThemeEntity.system,
-    dayStartOffsetHours: dayStartOffsetHours,
-  );
+        true,
+        true,
+        false,
+        AppThemeEntity.system,
+        dayStartOffsetHours: dayStartOffsetHours,
+      );
 }
 
 class _NoTrackedDays extends Fake implements GetTrackedDayUsecase {
@@ -45,7 +45,8 @@ class _NoTrackedDays extends Fake implements GetTrackedDayUsecase {
   Future<List<TrackedDayEntity>> getTrackedDaysByRange(
     DateTime start,
     DateTime end,
-  ) async => [];
+  ) async =>
+      [];
 }
 
 /// Records which days the page asks for; the day view itself stays on

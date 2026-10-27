@@ -292,14 +292,14 @@ class _AddMealScreenState extends State<AddMealScreen> {
 
   Widget _buildSourceChips(BuildContext context, AppPalette palette) {
     Widget chip(_SearchSource source, String label) => Padding(
-      padding: const EdgeInsets.only(right: Dimens.spacing8),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: _source == source,
-        showCheckmark: false,
-        onSelected: (_) => _selectSource(source),
-      ),
-    );
+          padding: const EdgeInsets.only(right: Dimens.spacing8),
+          child: ChoiceChip(
+            label: Text(label),
+            selected: _source == source,
+            showCheckmark: false,
+            onSelected: (_) => _selectSource(source),
+          ),
+        );
     return Align(
       alignment: Alignment.centerLeft,
       child: SingleChildScrollView(
@@ -324,16 +324,16 @@ class _AddMealScreenState extends State<AddMealScreen> {
   }
 
   Widget _resultsHeader(BuildContext context, AppPalette palette) => Container(
-    padding: const EdgeInsets.symmetric(vertical: Dimens.spacing4),
-    alignment: Alignment.centerLeft,
-    child: Text(
-      S.of(context).searchResultsLabel,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w700,
-        color: palette.textMuted,
-      ),
-    ),
-  );
+        padding: const EdgeInsets.symmetric(vertical: Dimens.spacing4),
+        alignment: Alignment.centerLeft,
+        child: Text(
+          S.of(context).searchResultsLabel,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: palette.textMuted,
+              ),
+        ),
+      );
 
   /// True while the results carried by [state] lag behind [query]: the
   /// search for the current input is still debouncing or in flight. Empty
@@ -406,10 +406,10 @@ class _AddMealScreenState extends State<AddMealScreen> {
                           (fs is FoodLoadedState && fs.remoteSourceFailed);
                       final VoidCallback retryFailed =
                           productsFailed && foodFailed
-                          ? _onAllSourcesRefreshButtonPressed
-                          : (productsFailed
-                                ? _onProductsRefreshButtonPressed
-                                : _onFoodRefreshButtonPressed);
+                              ? _onAllSourcesRefreshButtonPressed
+                              : (productsFailed
+                                  ? _onProductsRefreshButtonPressed
+                                  : _onFoodRefreshButtonPressed);
                       final products = ps is ProductsLoadedState
                           ? ps.products
                           : const <MealEntity>[];
@@ -420,8 +420,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
                       final imperial = ps is ProductsLoadedState
                           ? ps.usesImperialUnits
                           : (fs is FoodLoadedState
-                                ? fs.usesImperialUnits
-                                : false);
+                              ? fs.usesImperialUnits
+                              : false);
                       if (merged.isEmpty) {
                         if (ps is ProductsInitial && fs is FoodInitial) {
                           return const DefaultsResultsWidget();
@@ -433,8 +433,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                           // which would overflow and push Retry off screen.
                           return SingleChildScrollView(
                             child: ErrorDialog(
-                              errorText:
-                                  S.of(context).errorFetchingProductData,
+                              errorText: S.of(context).errorFetchingProductData,
                               onRefreshPressed:
                                   _onAllSourcesRefreshButtonPressed,
                               retryIdentifier: 'search-all-retry',
@@ -530,8 +529,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
                               onScanBarcode: _onBarcodeIconPressed,
                               onCreateCustomFood: () =>
                                   _onCustomAddButtonPressed(
-                                    state.usesImperialUnits,
-                                  ),
+                                state.usesImperialUnits,
+                              ),
                             ),
                     );
                   }
@@ -540,8 +539,7 @@ class _AddMealScreenState extends State<AddMealScreen> {
                       identifier: 'add-meal-products-list',
                       container: true,
                       child: ListView.builder(
-                        itemCount:
-                            state.products.length +
+                        itemCount: state.products.length +
                             (state.remoteSourceEmpty ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == state.products.length) {
@@ -590,8 +588,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
                               onScanBarcode: _onBarcodeIconPressed,
                               onCreateCustomFood: () =>
                                   _onCustomAddButtonPressed(
-                                    state.usesImperialUnits,
-                                  ),
+                                state.usesImperialUnits,
+                              ),
                             ),
                     );
                   }
@@ -600,8 +598,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
                       identifier: 'add-meal-food-list',
                       container: true,
                       child: ListView.builder(
-                        itemCount:
-                          state.food.length + (state.remoteSourceEmpty ? 1 : 0),
+                        itemCount: state.food.length +
+                            (state.remoteSourceEmpty ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == state.food.length) {
                             return const NoResultsWidget();
@@ -673,8 +671,8 @@ class _AddMealScreenState extends State<AddMealScreen> {
                 // once the query is long enough to actually search.
                 onSearchAll:
                     _stickOnRecent && query.trim().length >= minQueryLength
-                    ? _onSearchAllPressed
-                    : null,
+                        ? _onSearchAllPressed
+                        : null,
               );
             } else if (state is RecentMealFailedState) {
               return ErrorDialog(

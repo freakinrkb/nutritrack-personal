@@ -149,12 +149,11 @@ class ImportWorkoutsUsecase {
     if (!config.healthImportEnabled) return 0;
 
     final to = clock();
-    final from =
-        (config.healthLastImportAt ??
-                to.subtract(
-                  const Duration(days: ConfigEntity.healthImportBackfillDays),
-                ))
-            .subtract(overlapTolerance);
+    final from = (config.healthLastImportAt ??
+            to.subtract(
+              const Duration(days: ConfigEntity.healthImportBackfillDays),
+            ))
+        .subtract(overlapTolerance);
 
     final workouts = await _healthImportRepository.getWorkouts(
       from: from,

@@ -154,17 +154,18 @@ Future<void> applyInAppLocaleChoice({
   required Future<({String? tag, bool readFailed})> Function() readSystemTag,
   required Future<void> Function() markLocaleSyncSeeded,
   required Future<void> Function() clearLocaleSyncSeeded,
-}) => lock.run(() async {
-  await persistSelectedLocale(localeCode);
-  applyToApp();
-  await pushInAppLocaleChoice(
-    localeCode: localeCode,
-    pushToSystem: pushToSystem,
-    readSystemTag: readSystemTag,
-    markLocaleSyncSeeded: markLocaleSyncSeeded,
-    clearLocaleSyncSeeded: clearLocaleSyncSeeded,
-  );
-});
+}) =>
+    lock.run(() async {
+      await persistSelectedLocale(localeCode);
+      applyToApp();
+      await pushInAppLocaleChoice(
+        localeCode: localeCode,
+        pushToSystem: pushToSystem,
+        readSystemTag: readSystemTag,
+        markLocaleSyncSeeded: markLocaleSyncSeeded,
+        clearLocaleSyncSeeded: clearLocaleSyncSeeded,
+      );
+    });
 
 /// The supported language code behind a platform language tag, or null when
 /// there is no tag or the app does not ship that language.

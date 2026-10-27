@@ -55,64 +55,67 @@ String toolReply(
   List<Map<String, dynamic>> items, {
   String name = mealItemsToolName,
   String? servedBy,
-}) => jsonEncode({
-  'id': 'gen_1',
-  // Present only when the router reported one. It is absent on cache hits
-  // and on failures that never reached the router, so the client has to cope
-  // with a reply that carries no routing information at all.
-  if (servedBy != null)
-    'openrouter_metadata': {
-      'requested': 'anthropic/claude-haiku-4.5',
-      'strategy': 'direct',
-      'attempt': 1,
-      'endpoints': {
-        'total': 1,
-        'available': [
-          {
-            'provider': servedBy,
-            'model': 'anthropic/claude-haiku-4.5',
-            'selected': true,
+}) =>
+    jsonEncode({
+      'id': 'gen_1',
+      // Present only when the router reported one. It is absent on cache hits
+      // and on failures that never reached the router, so the client has to cope
+      // with a reply that carries no routing information at all.
+      if (servedBy != null)
+        'openrouter_metadata': {
+          'requested': 'anthropic/claude-haiku-4.5',
+          'strategy': 'direct',
+          'attempt': 1,
+          'endpoints': {
+            'total': 1,
+            'available': [
+              {
+                'provider': servedBy,
+                'model': 'anthropic/claude-haiku-4.5',
+                'selected': true,
+              },
+            ],
           },
-        ],
-      },
-    },
-  'choices': [
-    {
-      'finish_reason': 'tool_calls',
-      'message': {
-        'role': 'assistant',
-        'tool_calls': [
-          {
-            'id': 'call_1',
-            'type': 'function',
-            'function': {
-              'name': name,
-              'arguments': jsonEncode({'items': items}),
-            },
+        },
+      'choices': [
+        {
+          'finish_reason': 'tool_calls',
+          'message': {
+            'role': 'assistant',
+            'tool_calls': [
+              {
+                'id': 'call_1',
+                'type': 'function',
+                'function': {
+                  'name': name,
+                  'arguments': jsonEncode({'items': items}),
+                },
+              },
+            ],
           },
-        ],
-      },
-    },
-  ],
-});
+        },
+      ],
+    });
 
 OpenAiCompatibleMealItemsApi apiWith(
   FakeClient client, {
   String model = 'anthropic/claude-haiku-4.5',
   List<String>? providers,
   Duration timeout = OpenAiCompatibleMealItemsApi.defaultTimeout,
-}) => OpenAiCompatibleMealItemsApi.openRouter(
-  client,
-  () => 'test-key',
-  model: model,
-  providers: providers,
-  timeout: timeout,
-);
+}) =>
+    OpenAiCompatibleMealItemsApi.openRouter(
+      client,
+      () => 'test-key',
+      model: model,
+      providers: providers,
+      timeout: timeout,
+    );
 
 Future<MealTextParseResult> request(
   OpenAiCompatibleMealItemsApi api, {
   MealContent content = const MealTextContent('toast'),
-}) => api.requestItems(content: content, system: 'system prompt');
+}) =>
+    api.requestItems(content: content, system: 'system prompt');
 
 /// Everything the client logged while [body] ran.
 ///
@@ -403,7 +406,8 @@ void main() {
       expect(itemProps['additionalProperties'], isFalse);
     });
 
-    test('does not ask for strict mode, which the schema cannot satisfy', () async {
+    test('does not ask for strict mode, which the schema cannot satisfy',
+        () async {
       // OpenAI's strict mode requires every property to appear in
       // `required`, and rejects the whole request otherwise — measured, a
       // 400 on every openai/* call including text-only ones. `quantity` and
@@ -658,12 +662,11 @@ void main() {
       await expectLater(
         request(apiWith(client)),
         throwsA(
-          isA<MealInterpreterException>()
-              .having(
-                (e) => e.failure,
-                'failure',
-                MealInterpreterFailure.unsupported,
-              ),
+          isA<MealInterpreterException>().having(
+            (e) => e.failure,
+            'failure',
+            MealInterpreterFailure.unsupported,
+          ),
         ),
       );
     });
@@ -689,12 +692,11 @@ void main() {
       await expectLater(
         request(apiWith(client)),
         throwsA(
-          isA<MealInterpreterException>()
-              .having(
-                (e) => e.failure,
-                'failure',
-                MealInterpreterFailure.rejected,
-              ),
+          isA<MealInterpreterException>().having(
+            (e) => e.failure,
+            'failure',
+            MealInterpreterFailure.rejected,
+          ),
         ),
       );
     });

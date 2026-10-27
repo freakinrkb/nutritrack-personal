@@ -239,8 +239,8 @@ class OnboardingOverviewPageBody extends StatelessWidget {
   }) {
     final style = emphasised
         ? Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          )
+              fontWeight: FontWeight.w600,
+            )
         : Theme.of(context).textTheme.bodySmall;
     return Row(
       children: [

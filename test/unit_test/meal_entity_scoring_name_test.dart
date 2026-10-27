@@ -13,19 +13,20 @@ import '../fixture/backend_sibling_fixtures.dart';
 MealEntity meal(
   String? name, {
   MealSourceEntity source = MealSourceEntity.fdc,
-}) => MealEntity(
-  code: name ?? 'nameless',
-  name: name,
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: MealNutrimentsEntity.empty(),
-  source: source,
-  backendSource: source == MealSourceEntity.fdc ? 'fdc_survey' : null,
-);
+}) =>
+    MealEntity(
+      code: name ?? 'nameless',
+      name: name,
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: MealNutrimentsEntity.empty(),
+      source: source,
+      backendSource: source == MealSourceEntity.fdc ? 'fdc_survey' : null,
+    );
 
 /// `MealEntity.scoringName` (#1164): the title the scorers match a backend
 /// record on is derived from its name, not carried from the backend or
@@ -235,9 +236,8 @@ void main() {
       // Through the export's own encoding, so a nested object is a map
       // the way an import sees it — and with no title key in it.
       final fresh = BackendSiblingFixtures.riceCookedNfs;
-      final exported =
-          jsonDecode(jsonEncode(MealDBO.fromMealEntity(fresh)))
-              as Map<String, dynamic>;
+      final exported = jsonDecode(jsonEncode(MealDBO.fromMealEntity(fresh)))
+          as Map<String, dynamic>;
       final imported = MealEntity.fromMealDBO(MealDBO.fromJson(exported));
 
       expect(exported.keys, isNot(contains('searchTitle')));

@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
@@ -59,8 +58,8 @@ class SpFoodDataSource {
   /// therefore captured once per attempt and the attempt is repeated when
   /// it no longer holds; a second change during the retry is left alone.
   String? _foodLocale() => SPConst.translationLocaleOf(
-    SupportedLanguage.fromCode(AppLocale.localeName),
-  );
+        SupportedLanguage.fromCode(AppLocale.localeName),
+      );
 
   /// The twenty rows the app keeps of the backend's hundred for
   /// [searchString], cut by the resolver's rule (see
@@ -81,7 +80,7 @@ class SpFoodDataSource {
           return const <SpFoodDTO>[];
         }
 
-        for (var attempt = 0; ; attempt++) {
+        for (var attempt = 0;; attempt++) {
           final locale = _foodLocale();
           final results = await _searchInLocale(
             locale,
@@ -499,12 +498,13 @@ List<SpFoodDTO> rankAndTruncateFoodsByName(
   List<SpFoodDTO> foods,
   String searchString, {
   bool forResolution = false,
-}) => _rankAndTruncate(
-  foods,
-  searchString,
-  describe: (food) => food.name,
-  hasPortion: forResolution ? (food) => food.hasPortion : (_) => null,
-);
+}) =>
+    _rankAndTruncate(
+      foods,
+      searchString,
+      describe: (food) => food.name,
+      hasPortion: forResolution ? (food) => food.hasPortion : (_) => null,
+    );
 
 /// Same idea as [rankAndTruncateFoodsByName], but for raw `food_translation`
 /// rows — ranked by [SPConst.translationDescription] — before they're mapped
@@ -525,17 +525,18 @@ List<Map<String, dynamic>> rankAndTruncateTranslationRows(
   List<Map<String, dynamic>> rows,
   String searchString, {
   bool forResolution = false,
-}) => _rankAndTruncate(
-  rows,
-  searchString,
-  describe: (row) => row[SPConst.translationDescription] as String?,
-  hasPortion: forResolution
-      ? (row) {
-          final flag = row[SPConst.translationHasPortion];
-          return flag is bool ? flag : null;
-        }
-      : (_) => null,
-);
+}) =>
+    _rankAndTruncate(
+      rows,
+      searchString,
+      describe: (row) => row[SPConst.translationDescription] as String?,
+      hasPortion: forResolution
+          ? (row) {
+              final flag = row[SPConst.translationHasPortion];
+              return flag is bool ? flag : null;
+            }
+          : (_) => null,
+    );
 
 /// [items] by the score of their description — [describe], as its title
 /// plus the qualifiers [searchString] names, less [noPortionsPenalty]

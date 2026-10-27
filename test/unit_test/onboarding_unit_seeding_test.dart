@@ -45,12 +45,12 @@ void main() {
   /// The freshly-installed shape: the three split unit fields are null and
   /// the legacy flag has never been set either.
   ConfigDBO freshConfig() => ConfigDBO(
-    false,
-    false,
-    false,
-    AppThemeDBO.system,
-    usesImperialUnits: null,
-  );
+        false,
+        false,
+        false,
+        AppThemeDBO.system,
+        usesImperialUnits: null,
+      );
 
   Future<OnboardingBloc> loadedBloc(ConfigDBO config) async {
     final configRepo = _FakeConfigRepository(config);

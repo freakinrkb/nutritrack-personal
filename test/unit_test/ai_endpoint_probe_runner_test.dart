@@ -66,7 +66,8 @@ class _MemoryStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => store.remove(key);
+  }) async =>
+      store.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -108,13 +109,15 @@ class _FakeProber implements AiEndpointProber {
   Future<AiCapability> probeText(
     AiSelection selection, {
     String? localeCode,
-  }) async => result.text;
+  }) async =>
+      result.text;
 
   @override
   Future<AiCapability> probePhoto(
     AiSelection selection, {
     String? localeCode,
-  }) async => result.photo;
+  }) async =>
+      result.photo;
 }
 
 void main() {
@@ -240,7 +243,8 @@ void main() {
 
     expect(prober.calls, 0);
     expect(result.text, AiCapability.unknown);
-    expect(backing.store.keys.where((k) => k.startsWith('AiProbeTag')), isEmpty);
+    expect(
+        backing.store.keys.where((k) => k.startsWith('AiProbeTag')), isEmpty);
   });
 
   test('a probe that throws does not escape, and does not jam', () async {

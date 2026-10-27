@@ -98,8 +98,9 @@ class IntakeRepository {
   Future<int> moveCustomMealInEveryProfile({
     required String fromMealKey,
     required MealDBO toMeal,
-  }) => _intakeDataSource.moveCustomMealInEveryProfile(
-    fromMealKey: fromMealKey,
-    toMeal: toMeal,
-  );
+  }) =>
+      _intakeDataSource.moveCustomMealInEveryProfile(
+        fromMealKey: fromMealKey,
+        toMeal: toMeal,
+      );
 }

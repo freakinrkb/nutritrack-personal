@@ -114,8 +114,8 @@ void main() {
     });
 
     ConfigDataSource sourceFor(Box<ConfigDBO> profileBox) => ConfigDataSource(
-      FakeHiveDBProvider(configBox: profileBox, appConfigBox: appBox),
-    );
+          FakeHiveDBProvider(configBox: profileBox, appConfigBox: appBox),
+        );
 
     test('a second profile is not notified again', () async {
       // The policy describes what the app does, not what one profile does.

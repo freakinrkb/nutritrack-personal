@@ -158,9 +158,9 @@ class _CreditText extends StatelessWidget {
             child: Text(
               'Photo: ${credit.name} / Unsplash',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: palette.onSurfaceVariant,
-                decoration: TextDecoration.underline,
-              ),
+                    color: palette.onSurfaceVariant,
+                    decoration: TextDecoration.underline,
+                  ),
             ),
           ),
         ),

@@ -3,17 +3,17 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dar
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
 
 MealEntity _meal({String? servingSize, double? servingQuantity}) => MealEntity(
-  code: '123',
-  name: 'Bread',
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: servingQuantity,
-  servingUnit: 'g',
-  servingSize: servingSize,
-  source: MealSourceEntity.fdc,
-  nutriments: MealNutrimentsEntity.empty(),
-);
+      code: '123',
+      name: 'Bread',
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: servingQuantity,
+      servingUnit: 'g',
+      servingSize: servingSize,
+      source: MealSourceEntity.fdc,
+      nutriments: MealNutrimentsEntity.empty(),
+    );
 
 void main() {
   group('MealEntity.withServingLabel (#864)', () {

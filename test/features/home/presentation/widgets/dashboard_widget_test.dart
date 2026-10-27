@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../fixture/user_entity_fixtures.dart';
 
-class _FakeBreakdownUsecase extends Fake implements GetKcalGoalBreakdownUsecase {
+class _FakeBreakdownUsecase extends Fake
+    implements GetKcalGoalBreakdownUsecase {
   final KcalGoalBreakdownEntity breakdown;
 
   _FakeBreakdownUsecase(this.breakdown);
@@ -45,10 +46,12 @@ void main() {
     // The gauge navigates to KcalGoalInfoScreen, which pulls its usecase
     // from the locator when none is injected.
     locator.registerSingleton<GetKcalGoalBreakdownUsecase>(
-      _FakeBreakdownUsecase(KcalGoalBreakdownEntity.compute(
-        user: UserEntityFixtures.youngSedentaryMaleWantingToMaintainWeight,
-        totalKcalActivities: 0,
-      )),
+      _FakeBreakdownUsecase(
+        KcalGoalBreakdownEntity.compute(
+          user: UserEntityFixtures.youngSedentaryMaleWantingToMaintainWeight,
+          totalKcalActivities: 0,
+        ),
+      ),
     );
   });
 
@@ -68,8 +71,17 @@ void main() {
       totalCarbsGoal: 375,
       totalFatsGoal: 69,
       totalProteinsGoal: 93,
+      totalFiberIntake: 18,
+      totalFiberGoal: 30,
     );
   }
+
+  testWidgets('shows today\'s fiber progress against its goal', (tester) async {
+    await tester.pumpWidget(_wrap(dashboardWidget(totalKcalLeft: 1900)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('18/30 g'), findsOneWidget);
+  });
 
   testWidgets(
     'kcal gauge uses the error color when intake exceeds the daily goal',

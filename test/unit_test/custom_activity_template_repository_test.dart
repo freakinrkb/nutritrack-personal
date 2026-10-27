@@ -35,7 +35,8 @@ void main() {
       );
       await box.clear();
       final repo = CustomActivityTemplateRepository(
-        CustomActivityTemplateDataSource(FakeHiveDBProvider(customActivityTemplateBox: box)),
+        CustomActivityTemplateDataSource(
+            FakeHiveDBProvider(customActivityTemplateBox: box)),
       );
 
       await repo.addTemplate(
@@ -74,7 +75,8 @@ void main() {
       );
       await box.clear();
       final repo = CustomActivityTemplateRepository(
-        CustomActivityTemplateDataSource(FakeHiveDBProvider(customActivityTemplateBox: box)),
+        CustomActivityTemplateDataSource(
+            FakeHiveDBProvider(customActivityTemplateBox: box)),
       );
 
       await repo.addTemplate(
@@ -101,7 +103,8 @@ void main() {
       );
       await box.clear();
       final repo = CustomActivityTemplateRepository(
-        CustomActivityTemplateDataSource(FakeHiveDBProvider(customActivityTemplateBox: box)),
+        CustomActivityTemplateDataSource(
+            FakeHiveDBProvider(customActivityTemplateBox: box)),
       );
 
       await repo.addTemplate(
@@ -132,7 +135,8 @@ void main() {
       );
       await box.clear();
       final repo = CustomActivityTemplateRepository(
-        CustomActivityTemplateDataSource(FakeHiveDBProvider(customActivityTemplateBox: box)),
+        CustomActivityTemplateDataSource(
+            FakeHiveDBProvider(customActivityTemplateBox: box)),
       );
 
       final imported = [
@@ -154,8 +158,7 @@ void main() {
       expect(templates[1].name, equals('Evening bike commute'));
     });
 
-    test('a template round-trips through JSON without losing fields',
-        () async {
+    test('a template round-trips through JSON without losing fields', () async {
       // The export/import bundle serialises templates as JSON. This
       // pins down that the JSON shape lines up with what fromJson
       // reads back, so the zip a user emails themselves between

@@ -20,10 +20,10 @@ class FavouriteMealRepository {
   );
 
   static String keyOf(MealEntity meal) => FavouriteMealDBO.keyFor(
-    MealSourceDBO.fromMealSourceEntity(meal.source),
-    meal.code,
-    meal.name,
-  );
+        MealSourceDBO.fromMealSourceEntity(meal.source),
+        meal.code,
+        meal.name,
+      );
 
   Future<bool> isFavourite(MealEntity meal) async =>
       _favouriteMealDataSource.isFavourite(keyOf(meal));
@@ -153,9 +153,9 @@ class FavouriteMealRepository {
   /// or a custom meal or recipe edited in its library, which the list reads
   /// in place of its snapshot.
   Stream<void> watchFavourites() => _favouriteMealDataSource.watch().mergeAll([
-    _customMealDataSource.watch(),
-    _recipeDataSource.watch(),
-  ]);
+        _customMealDataSource.watch(),
+        _recipeDataSource.watch(),
+      ]);
 }
 
 /// The custom meals and recipes a load resolves favourites against, each

@@ -18,14 +18,15 @@ import '../../../../helpers/test_l10n.dart';
 void main() {
   UserEntity user({
     UserWeightGoalEntity goal = UserWeightGoalEntity.loseWeight,
-  }) => UserEntity(
-    birthday: DateTime(1990, 6, 15),
-    heightCM: 180,
-    weightKG: 80,
-    gender: UserGenderEntity.male,
-    goal: goal,
-    pal: UserPALEntity.lowActive,
-  );
+  }) =>
+      UserEntity(
+        birthday: DateTime(1990, 6, 15),
+        heightCM: 180,
+        weightKG: 80,
+        gender: UserGenderEntity.male,
+        goal: goal,
+        pal: UserPALEntity.lowActive,
+      );
 
   KcalGoalBreakdownEntity breakdownFor(UserEntity entity) =>
       KcalGoalBreakdownEntity.compute(user: entity, totalKcalActivities: 0);

@@ -33,7 +33,8 @@ void main() {
       expect(isNutrimentsConsistent(n), isTrue);
     });
 
-    test('fails when sugars exceed carbs by more than the rounding tolerance', () {
+    test('fails when sugars exceed carbs by more than the rounding tolerance',
+        () {
       // The reporter's flagship example: a value where sugar is reported as
       // many times its parent carbohydrate value. Drop it.
       final n = _nutriments(carbs: 10, sugars: 80);
@@ -42,7 +43,8 @@ void main() {
       expect(result.failureReason, 'sugars_exceed_carbs');
     });
 
-    test('still passes when sugars exceed carbs only within rounding tolerance', () {
+    test('still passes when sugars exceed carbs only within rounding tolerance',
+        () {
       // Sources round to 0.1g or 1g; a sugar value that nudges 0.5g above
       // its parent carb total is a rounding artefact, not corruption.
       final n = _nutriments(carbs: 5.0, sugars: 5.5);
@@ -64,7 +66,8 @@ void main() {
     });
   });
 
-  group('isNutrimentsConsistent — rule 3: macros sum to <= 100g per 100g basis', () {
+  group('isNutrimentsConsistent — rule 3: macros sum to <= 100g per 100g basis',
+      () {
     test('passes for a normal high-protein item', () {
       // Lean chicken breast: ~31g protein, ~3.6g fat, 0g carbs per 100g.
       final n = _nutriments(carbs: 0, fat: 3.6, proteins: 31, saturatedFat: 1);
@@ -89,10 +92,13 @@ void main() {
         FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalKcalId, amount: 52),
         FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalCarbsId, amount: 13.8),
         FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalFatId, amount: 0.2),
-        FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalProteinsId, amount: 0.3),
+        FDCFoodNutrimentDTO(
+            nutrientId: FDCConst.fdcTotalProteinsId, amount: 0.3),
         FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalSugarId, amount: 10.4),
-        FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalSaturatedFatId, amount: 0),
-        FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalDietaryFiberId, amount: 2.4),
+        FDCFoodNutrimentDTO(
+            nutrientId: FDCConst.fdcTotalSaturatedFatId, amount: 0),
+        FDCFoodNutrimentDTO(
+            nutrientId: FDCConst.fdcTotalDietaryFiberId, amount: 2.4),
       ]);
       expect(isNutrimentsConsistent(n), isTrue);
     });
@@ -106,7 +112,8 @@ void main() {
         FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalFatId, amount: 100),
         FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalProteinsId, amount: 0),
         FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalSugarId, amount: 0),
-        FDCFoodNutrimentDTO(nutrientId: FDCConst.fdcTotalSaturatedFatId, amount: 13.8),
+        FDCFoodNutrimentDTO(
+            nutrientId: FDCConst.fdcTotalSaturatedFatId, amount: 13.8),
       ]);
       expect(isNutrimentsConsistent(n), isTrue);
     });

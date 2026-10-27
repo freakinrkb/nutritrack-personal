@@ -76,9 +76,8 @@ void main() {
   ];
   final arb = {
     for (final locale in locales)
-      locale:
-          jsonDecode(File('lib/l10n/intl_$locale.arb').readAsStringSync())
-              as Map<String, dynamic>,
+      locale: jsonDecode(File('lib/l10n/intl_$locale.arb').readAsStringSync())
+          as Map<String, dynamic>,
   };
 
   /// The shipped locales that carry every one of [keys]: where a check that
@@ -147,7 +146,8 @@ void main() {
     expect(checked, greaterThan(0), reason: 'the check ran on no pair at all');
   });
 
-  test('every translation of the broker disclosure gained the new sentence', () {
+  test('every translation of the broker disclosure gained the new sentence',
+      () {
     // Counted, not measured by length. Length was the first attempt and a
     // mutation walked straight through it: the German paragraph is far longer
     // than its Anthropic sibling with or without the appended sentence,
@@ -170,8 +170,7 @@ void main() {
       expect(
         sentences(arb[locale]!['aiAssistDisclosureOpenRouter'] as String),
         expected,
-        reason:
-            '$locale: the last sentence is the serving vendor\'s own '
+        reason: '$locale: the last sentence is the serving vendor\'s own '
             'retention, and it is the only thing standing between an OpenAI '
             'row on this list and telling that user less than the direct path '
             'tells them',
@@ -213,8 +212,7 @@ void main() {
         expect(
           value,
           isNot(contains(company)),
-          reason:
-              '$locale names $company for a machine the app knows nothing '
+          reason: '$locale names $company for a machine the app knows nothing '
               'about',
         );
       }
@@ -300,8 +298,7 @@ void main() {
       expect(
         destination,
         isNot(contains('local')),
-        reason:
-            'a destination cell reading "$destination" claims the data '
+        reason: 'a destination cell reading "$destination" claims the data '
             'does not leave, and it does',
       );
     }
@@ -431,8 +428,7 @@ void main() {
       expect(
         rendered(locale, 'aiAssistProbeTextFailedLabel'),
         isNot(rendered(locale, 'aiAssistProbePhotoFailedLabel')),
-        reason:
-            '$locale: a failed photo and a failed text mean different '
+        reason: '$locale: a failed photo and a failed text mean different '
             'things — one hides the camera, the other turns nothing off',
       );
     }

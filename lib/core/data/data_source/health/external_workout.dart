@@ -34,7 +34,6 @@ class ExternalWorkout {
   });
 
   @override
-  String toString() =>
-      'ExternalWorkout($id, $activityTypeName, $start-$end, '
+  String toString() => 'ExternalWorkout($id, $activityTypeName, $start-$end, '
       '${energyBurnedKcal}kcal, from $sourceAppName)';
 }

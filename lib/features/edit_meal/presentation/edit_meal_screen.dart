@@ -171,8 +171,7 @@ class _EditMealScreenState extends State<EditMealScreen> {
         _mealEntity.nutriments.sodium100.toStringOrEmpty();
     _calciumTextController.text =
         _mealEntity.nutriments.calcium100.toStringOrEmpty();
-    _ironTextController.text =
-        _mealEntity.nutriments.iron100.toStringOrEmpty();
+    _ironTextController.text = _mealEntity.nutriments.iron100.toStringOrEmpty();
     _potassiumTextController.text =
         _mealEntity.nutriments.potassium100.toStringOrEmpty();
     _magnesiumTextController.text =
@@ -253,17 +252,22 @@ class _EditMealScreenState extends State<EditMealScreen> {
             S.of(context).editMealLabel,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.w800),
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(Dimens.spacing16, 0, Dimens.spacing16, 0),
+              padding: const EdgeInsets.fromLTRB(
+                  Dimens.spacing16, 0, Dimens.spacing16, 0),
               child: Semantics(
                 identifier: 'edit-meal-save',
                 child: FilledButton(
                   onPressed: () => _onSavePressed(_usesImperialUnits),
                   style: FilledButton.styleFrom(
-                    shape: const RoundedRectangleBorder(borderRadius: Dimens.borderRadiusM),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: Dimens.borderRadiusM),
                   ),
                   child: Text(S.of(context).buttonSaveLabel),
                 ),
@@ -302,9 +306,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
     }
     final current = double.tryParse(_kcalTextController.text);
     if (current != null) {
-      final converted = usesKj
-          ? UnitCalc.kcalToKj(current)
-          : UnitCalc.kjToKcal(current);
+      final converted =
+          usesKj ? UnitCalc.kcalToKj(current) : UnitCalc.kjToKcal(current);
       _kcalTextController.text =
           double.parse(converted.toStringAsFixed(1)).toStringOrEmpty();
     }
@@ -334,7 +337,9 @@ class _EditMealScreenState extends State<EditMealScreen> {
     final unitSuffix = _massUnitSuffix(context);
     final String advancedHelper = _isTotal
         ? S.of(context).mealNutrientsTotalLabel
-        : S.of(context).mealNutrientsPerQtyLabel(_getDisplayQuantity(), unitSuffix);
+        : S
+            .of(context)
+            .mealNutrientsPerQtyLabel(_getDisplayQuantity(), unitSuffix);
     final String energyHelper = isSimple
         ? S.of(context).customMealFormSimpleFieldHelper(energyUnitSuffix)
         : advancedHelper;
@@ -411,7 +416,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
           controller: _nameTextController,
           decoration: InputDecoration(
             labelText: S.of(context).mealNameLabel,
-            border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
+            border:
+                const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
           ),
           keyboardType: TextInputType.text,
         ),
@@ -420,7 +426,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
           controller: _brandsTextController,
           decoration: InputDecoration(
             labelText: S.of(context).mealBrandsLabel,
-            border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
+            border:
+                const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
           ),
           keyboardType: TextInputType.text,
         ),
@@ -435,7 +442,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
             decoration: InputDecoration(
               labelText: S.of(context).customMealBarcodeLabel,
               hintText: S.of(context).customMealBarcodeHint,
-              border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
+              border:
+                  const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
               suffixIcon: Semantics(
                 identifier: 'edit-meal-barcode-scan',
                 child: IconButton(
@@ -474,7 +482,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
             inputFormatters: CustomTextInputFormatter.doubleOnly(),
             decoration: InputDecoration(
               labelText: '${S.of(context).mealSizeLabel} ($unitSuffix)',
-              border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
+              border:
+                  const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
@@ -483,8 +492,10 @@ class _EditMealScreenState extends State<EditMealScreen> {
             controller: _servingQuantityTextController,
             inputFormatters: CustomTextInputFormatter.doubleOnly(),
             decoration: InputDecoration(
-              labelText: '${S.of(context).servingSizeLabelMetric} ($unitSuffix)',
-              border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
+              labelText:
+                  '${S.of(context).servingSizeLabelMetric} ($unitSuffix)',
+              border:
+                  const OutlineInputBorder(borderRadius: Dimens.borderRadiusM),
             ),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
@@ -494,7 +505,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
             inputFormatters: CustomTextInputFormatter.doubleOnly(),
             decoration: InputDecoration(
                 labelText: '${S.of(context).baseQuantityLabel} ($unitSuffix)',
-                border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
+                border: const OutlineInputBorder(
+                    borderRadius: Dimens.borderRadiusM)),
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
           const SizedBox(height: 48),
@@ -526,10 +538,10 @@ class _EditMealScreenState extends State<EditMealScreen> {
           controller: _kcalTextController,
           inputFormatters: CustomTextInputFormatter.doubleOnly(),
           decoration: InputDecoration(
-              labelText:
-                  '${S.of(context).mealEnergyLabel} ($energyUnitSuffix)',
+              labelText: '${S.of(context).mealEnergyLabel} ($energyUnitSuffix)',
               helperText: energyHelper,
-              border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
+              border:
+                  const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
         const SizedBox(height: 16),
@@ -539,7 +551,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
           decoration: InputDecoration(
               labelText: S.of(context).mealCarbsLabel,
               helperText: macroHelper,
-              border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
+              border:
+                  const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
         const SizedBox(height: 16),
@@ -549,7 +562,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
           decoration: InputDecoration(
               labelText: S.of(context).mealFatLabel,
               helperText: macroHelper,
-              border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
+              border:
+                  const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
         const SizedBox(height: 16),
@@ -559,35 +573,49 @@ class _EditMealScreenState extends State<EditMealScreen> {
           decoration: InputDecoration(
               labelText: S.of(context).mealProteinLabel,
               helperText: macroHelper,
-              border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
+              border:
+                  const OutlineInputBorder(borderRadius: Dimens.borderRadiusM)),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
         ),
         if (!isSimple) ...[
           const SizedBox(height: 32),
           Text(
             S.of(context).micronutrientsLabel,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
-          _buildMicroField(_fiberTextController, S.of(context).fiberLabel, 'g', perQtyHelper),
+          _buildMicroField(_fiberTextController, S.of(context).fiberLabel, 'g',
+              perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_saturatedFatTextController, S.of(context).saturatedFatLabel, 'g', perQtyHelper),
+          _buildMicroField(_saturatedFatTextController,
+              S.of(context).saturatedFatLabel, 'g', perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_sugarsTextController, S.of(context).sugarLabel, 'g', perQtyHelper),
+          _buildMicroField(_sugarsTextController, S.of(context).sugarLabel, 'g',
+              perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_sodiumTextController, S.of(context).sodiumLabel, 'mg', perQtyHelper),
+          _buildMicroField(_sodiumTextController, S.of(context).sodiumLabel,
+              'mg', perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_calciumTextController, S.of(context).calciumLabel, 'mg', perQtyHelper),
+          _buildMicroField(_calciumTextController, S.of(context).calciumLabel,
+              'mg', perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_ironTextController, S.of(context).ironLabel, 'mg', perQtyHelper),
+          _buildMicroField(
+              _ironTextController, S.of(context).ironLabel, 'mg', perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_potassiumTextController, S.of(context).potassiumLabel, 'mg', perQtyHelper),
+          _buildMicroField(_potassiumTextController,
+              S.of(context).potassiumLabel, 'mg', perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_magnesiumTextController, S.of(context).magnesiumLabel, 'mg', perQtyHelper),
+          _buildMicroField(_magnesiumTextController,
+              S.of(context).magnesiumLabel, 'mg', perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_vitaminDTextController, S.of(context).vitaminDLabel, 'µg', perQtyHelper),
+          _buildMicroField(_vitaminDTextController, S.of(context).vitaminDLabel,
+              'µg', perQtyHelper),
           const SizedBox(height: 16),
-          _buildMicroField(_vitaminB12TextController, S.of(context).vitaminB12Label, 'µg', perQtyHelper),
+          _buildMicroField(_vitaminB12TextController,
+              S.of(context).vitaminB12Label, 'µg', perQtyHelper),
         ],
         if (!_editOnly) ...[
           const SizedBox(height: 24),
@@ -965,7 +993,8 @@ class _EditMealScreenState extends State<EditMealScreen> {
     setState(() {
       _barcodeTextController.text = result;
     });
-    log.fine('Barcode text controller after set: ${_barcodeTextController.text}');
+    log.fine(
+        'Barcode text controller after set: ${_barcodeTextController.text}');
   }
 
   Widget _buildRemoteMealImage() {

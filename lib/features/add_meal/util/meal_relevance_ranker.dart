@@ -59,7 +59,10 @@ double scoreMealRelevance(MealEntity meal, String query) {
 /// sources (e.g. a not-yet-deduplicated OFF/Supabase pair) can compare equal
 /// and would otherwise collide onto the same map key.
 List<MealEntity> rankMealsByRelevance(List<MealEntity> meals, String query) {
-  final decorated = [for (final meal in meals) (meal: meal, score: scoreMealRelevance(meal, query))];
+  final decorated = [
+    for (final meal in meals)
+      (meal: meal, score: scoreMealRelevance(meal, query))
+  ];
   mergeSort(decorated, compare: (a, b) => b.score.compareTo(a.score));
   return [for (final entry in decorated) entry.meal];
 }
@@ -86,15 +89,20 @@ List<MealEntity> rankMealsByRelevance(List<MealEntity> meals, String query) {
 /// away, even if a remote result happens to share a name, and backend
 /// (FDC/BLS/...) records are never merged with anything — see the note on
 /// [_nearDuplicateKey] for why (#1164).
-List<MealEntity> mergeAndRankMeals(List<MealEntity> a, List<MealEntity> b, String query) {
+List<MealEntity> mergeAndRankMeals(
+    List<MealEntity> a, List<MealEntity> b, String query) {
   final own = <MealEntity>[];
   final rest = <MealEntity>[];
   for (final meal in _deduplicateAcrossSources([...a, ...b])) {
-    final isOwn = meal.source == MealSourceEntity.custom || meal.source == MealSourceEntity.recipe;
+    final isOwn = meal.source == MealSourceEntity.custom ||
+        meal.source == MealSourceEntity.recipe;
     (isOwn ? own : rest).add(meal);
   }
   final collapsedRest = _collapseNearDuplicates(rest, query);
-  return [...rankMealsByRelevance(own, query), ...rankMealsByRelevance(collapsedRest, query)];
+  return [
+    ...rankMealsByRelevance(own, query),
+    ...rankMealsByRelevance(collapsedRest, query)
+  ];
 }
 
 /// Same dedup key as `SearchProductsUseCase._deduplicateMeals` (source +
@@ -178,7 +186,8 @@ String _nearDuplicateKey(MealEntity meal) {
   // would otherwise collapse every unrelated nameless meal into one.
   // meal.code is nullable: fall back to identityHashCode so two distinct
   // nameless meals without codes don't share the same key.
-  if (name.isEmpty) return 'noname:${meal.source.name}:${meal.code ?? identityHashCode(meal)}';
+  if (name.isEmpty)
+    return 'noname:${meal.source.name}:${meal.code ?? identityHashCode(meal)}';
   final brand = _normalize(meal.brands);
   return brand.isEmpty ? name : '$name|$brand';
 }
@@ -232,10 +241,13 @@ double _textScore(
   return (overlap + containsBonus + prefixBonus).clamp(0.0, 0.9);
 }
 
-String _normalize(String? text) => text?.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ') ?? '';
+String _normalize(String? text) =>
+    text?.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ') ?? '';
 
-Set<String> _tokenize(String normalizedText) =>
-    normalizedText.split(RegExp(r'[^\p{L}\p{N}]+', unicode: true)).where((token) => token.isNotEmpty).toSet();
+Set<String> _tokenize(String normalizedText) => normalizedText
+    .split(RegExp(r'[^\p{L}\p{N}]+', unicode: true))
+    .where((token) => token.isNotEmpty)
+    .toSet();
 
 /// 2 * |intersection| / (|a| + |b|), the standard token-set similarity
 /// measure — cheap to compute and, unlike edit distance, order-independent

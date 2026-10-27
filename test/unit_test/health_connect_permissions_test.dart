@@ -267,8 +267,7 @@ void main() {
         expect(
           healthIn(mergedManifest.readAsStringSync()).kept,
           {'READ_EXERCISE', 'READ_TOTAL_CALORIES_BURNED'},
-          reason:
-              '${mergedManifest.path} ships a health permission set the '
+          reason: '${mergedManifest.path} ships a health permission set the '
               'repo did not declare, and one the plugin check did not '
               'predict. Find what contributed it — it need not be a Flutter '
               'plugin — and either drop it or get the Play Console '

@@ -99,17 +99,19 @@ class _FakeSearch implements SearchProductsUseCase {
   Future<SearchProductsResult> searchOFFProductsByString(
     String searchString, {
     bool skipRemote = false,
-  }) async => SearchProductsResult(
-    meals: results[searchString] ?? const [],
-    remoteSourceEmpty: false,
-  );
+  }) async =>
+      SearchProductsResult(
+        meals: results[searchString] ?? const [],
+        remoteSourceEmpty: false,
+      );
 
   @override
   Future<SearchProductsResult> searchFDCFoodByString(
     String searchString, {
     bool skipRemote = false,
     bool forResolution = false,
-  }) async => const SearchProductsResult(meals: [], remoteSourceEmpty: false);
+  }) async =>
+      const SearchProductsResult(meals: [], remoteSourceEmpty: false);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -122,28 +124,29 @@ MealEntity _meal(
   String? mealUnit,
   String? brands,
   List<MealPortionEntity> portions = const [],
-}) => MealEntity(
-  code: name,
-  name: name,
-  brands: brands,
-  url: null,
-  mealQuantity: null,
-  mealUnit: mealUnit,
-  servingQuantity: servingQuantity,
-  servingUnit: null,
-  servingSize: servingSize,
-  portions: portions,
-  source: MealSourceEntity.off,
-  nutriments: const MealNutrimentsEntity(
-    energyKcal100: 100,
-    carbohydrates100: 0,
-    fat100: 0,
-    proteins100: 0,
-    sugars100: null,
-    saturatedFat100: null,
-    fiber100: null,
-  ),
-);
+}) =>
+    MealEntity(
+      code: name,
+      name: name,
+      brands: brands,
+      url: null,
+      mealQuantity: null,
+      mealUnit: mealUnit,
+      servingQuantity: servingQuantity,
+      servingUnit: null,
+      servingSize: servingSize,
+      portions: portions,
+      source: MealSourceEntity.off,
+      nutriments: const MealNutrimentsEntity(
+        energyKcal100: 100,
+        carbohydrates100: 0,
+        fat100: 0,
+        proteins100: 0,
+        sugars100: null,
+        saturatedFat100: null,
+        fiber100: null,
+      ),
+    );
 
 final getIt = GetIt.instance;
 
@@ -240,13 +243,13 @@ Future<BulkAddBloc> _registerWithFailingReader(
 /// answering for it, which is how the "every failure kind behaves the same"
 /// promise of #852 stays true rather than staying written down.
 MealInterpreterFailure _throwsFor(MealTextModelFailure kind) => switch (kind) {
-  MealTextModelFailure.auth => MealInterpreterFailure.auth,
-  MealTextModelFailure.unsupported => MealInterpreterFailure.unsupported,
-  MealTextModelFailure.billing => MealInterpreterFailure.billing,
-  MealTextModelFailure.timeout => MealInterpreterFailure.timeout,
-  MealTextModelFailure.insecureDestination =>
-    MealInterpreterFailure.insecureDestination,
-};
+      MealTextModelFailure.auth => MealInterpreterFailure.auth,
+      MealTextModelFailure.unsupported => MealInterpreterFailure.unsupported,
+      MealTextModelFailure.billing => MealInterpreterFailure.billing,
+      MealTextModelFailure.timeout => MealInterpreterFailure.timeout,
+      MealTextModelFailure.insecureDestination =>
+        MealInterpreterFailure.insecureDestination,
+    };
 
 /// Whether the photo failure [error] is one the AI settings dialog answers.
 ///
@@ -259,15 +262,17 @@ MealInterpreterFailure _throwsFor(MealTextModelFailure kind) => switch (kind) {
 /// the camera permission, a different photograph, the connection, and the
 /// provider's own billing page.
 bool _offersSettings(BulkAddPhotoError error) => switch (error) {
-  BulkAddPhotoError.unavailable ||
-  BulkAddPhotoError.auth ||
-  BulkAddPhotoError.unsupported ||
-  BulkAddPhotoError.insecureDestination => true,
-  BulkAddPhotoError.transient ||
-  BulkAddPhotoError.camera ||
-  BulkAddPhotoError.unreadable ||
-  BulkAddPhotoError.billing => false,
-};
+      BulkAddPhotoError.unavailable ||
+      BulkAddPhotoError.auth ||
+      BulkAddPhotoError.unsupported ||
+      BulkAddPhotoError.insecureDestination =>
+        true,
+      BulkAddPhotoError.transient ||
+      BulkAddPhotoError.camera ||
+      BulkAddPhotoError.unreadable ||
+      BulkAddPhotoError.billing =>
+        false,
+    };
 
 /// Puts the screen in front of the photo failure [error], without a picker
 /// and without a model: the bloc takes the failure as an event, which is how
@@ -413,7 +418,7 @@ class _MapStorage implements FlutterSecureStorage {
   /// means "configured and agreed to"; the ones about the agreement itself
   /// pass their own value.
   _MapStorage(Map<String, String> values)
-    : values = {'AiTermsAcceptedTag': 'true', ...values};
+      : values = {'AiTermsAcceptedTag': 'true', ...values};
 
   @override
   Future<String?> read({
@@ -424,7 +429,8 @@ class _MapStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => values[key];
+  }) async =>
+      values[key];
 
   /// Writes land, rather than vanishing into [noSuchMethod].
   ///
@@ -460,7 +466,8 @@ class _MapStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => values.remove(key);
+  }) async =>
+      values.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -490,52 +497,53 @@ Widget _app({
   bool imperial = false,
   Locale? locale,
   List<RouteSettings>? pushed,
-}) => ChangeNotifierProvider<EnergyUnitProvider>(
-  create: (_) => EnergyUnitProvider(usesKilojoules: false),
-  child: MaterialApp(
-    localizationsDelegates: const [
-      S.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: S.supportedLocales,
-    locale: locale,
-    navigatorObservers: [if (pushed != null) _PushRecorder(pushed)],
-    initialRoute: NavigationOptions.mainRoute,
-    onGenerateRoute: (settings) {
-      if (settings.name == NavigationOptions.mainRoute) {
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) => const Scaffold(body: SizedBox()),
-        );
-      }
-      // A stand-in for the settings screen, which needs a locator graph
-      // of its own. It keeps the arguments the caller passed — those are
-      // what carries the request to open the AI dialog (#852), and
-      // rewriting them here, as the branch below has to for the screen
-      // under test, would hide the thing being asserted.
-      if (settings.name == NavigationOptions.settingsRoute) {
-        return MaterialPageRoute<void>(
-          settings: settings,
-          builder: (_) =>
-              const Scaffold(key: Key('settings-stub'), body: SizedBox()),
-        );
-      }
-      return MaterialPageRoute<void>(
-        settings: RouteSettings(
-          name: settings.name,
-          arguments: BulkAddScreenArguments(
-            IntakeTypeEntity.breakfast,
-            DateTime(2026, 8, 10),
-            imperial,
-          ),
-        ),
-        builder: (_) => const BulkAddScreen(),
-      );
-    },
-  ),
-);
+}) =>
+    ChangeNotifierProvider<EnergyUnitProvider>(
+      create: (_) => EnergyUnitProvider(usesKilojoules: false),
+      child: MaterialApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.supportedLocales,
+        locale: locale,
+        navigatorObservers: [if (pushed != null) _PushRecorder(pushed)],
+        initialRoute: NavigationOptions.mainRoute,
+        onGenerateRoute: (settings) {
+          if (settings.name == NavigationOptions.mainRoute) {
+            return MaterialPageRoute<void>(
+              settings: settings,
+              builder: (_) => const Scaffold(body: SizedBox()),
+            );
+          }
+          // A stand-in for the settings screen, which needs a locator graph
+          // of its own. It keeps the arguments the caller passed — those are
+          // what carries the request to open the AI dialog (#852), and
+          // rewriting them here, as the branch below has to for the screen
+          // under test, would hide the thing being asserted.
+          if (settings.name == NavigationOptions.settingsRoute) {
+            return MaterialPageRoute<void>(
+              settings: settings,
+              builder: (_) =>
+                  const Scaffold(key: Key('settings-stub'), body: SizedBox()),
+            );
+          }
+          return MaterialPageRoute<void>(
+            settings: RouteSettings(
+              name: settings.name,
+              arguments: BulkAddScreenArguments(
+                IntakeTypeEntity.breakfast,
+                DateTime(2026, 8, 10),
+                imperial,
+              ),
+            ),
+            builder: (_) => const BulkAddScreen(),
+          );
+        },
+      ),
+    );
 
 /// Pushes the screen, types [text] and taps Search, then settles.
 Future<void> _parse(WidgetTester tester, String text) async {
@@ -770,12 +778,12 @@ void main() {
       ),
       textDirection: TextDirection.ltr,
       textScaler: const TextScaler.linear(2.0),
-    )..layout()).width;
+    )..layout())
+        .width;
     expect(
       tester.getSize(dropdown).width,
       greaterThanOrEqualTo(needed),
-      reason:
-          'the unit dropdown is narrower than the unit it has to show, '
+      reason: 'the unit dropdown is narrower than the unit it has to show, '
           'and a clipped unit reads as a different one',
     );
   });
@@ -963,7 +971,8 @@ void main() {
       ),
       textDirection: TextDirection.ltr,
       textScaler: const TextScaler.linear(2.0),
-    )..layout()).width;
+    )..layout())
+        .width;
 
     expect(
       tester.getSize(field).width,
@@ -1024,15 +1033,12 @@ void main() {
       reason: 'something on this screen does not fit the space it is given',
     );
 
-    final input = tester
-        .getSize(find.bySemanticsIdentifier('bulk-add-input'))
-        .height;
-    final submit = tester
-        .getSize(find.bySemanticsIdentifier('bulk-add-submit'))
-        .height;
-    final parse = tester
-        .getSize(find.bySemanticsIdentifier('bulk-add-parse'))
-        .height;
+    final input =
+        tester.getSize(find.bySemanticsIdentifier('bulk-add-input')).height;
+    final submit =
+        tester.getSize(find.bySemanticsIdentifier('bulk-add-submit')).height;
+    final parse =
+        tester.getSize(find.bySemanticsIdentifier('bulk-add-parse')).height;
 
     expect(
       input,
@@ -1127,8 +1133,7 @@ void main() {
           'openAiAssist',
           isTrue,
         ),
-        reason:
-            'a notice about the model that drops the user at the top of '
+        reason: 'a notice about the model that drops the user at the top of '
             'Settings has sent them hunting for the fix',
       );
       expect(tester.takeException(), isNull);
@@ -1251,8 +1256,7 @@ void main() {
     expect(
       notice.didExceedMaxLines,
       isFalse,
-      reason:
-          'the German string is ellipsised — it must stay inside the '
+      reason: 'the German string is ellipsised — it must stay inside the '
           'three-line cap, which is about 80 characters at this size',
     );
     expect(tester.takeException(), isNull);
@@ -1379,8 +1383,7 @@ void main() {
           expect(
             action,
             findsNothing,
-            reason:
-                '${error.name} is not fixed in Settings, and a button that '
+            reason: '${error.name} is not fixed in Settings, and a button that '
                 'sends the user there is a wrong instruction, not a spare one',
           );
           return;
@@ -1504,8 +1507,7 @@ void main() {
     expect(
       (scrollBox.center.dy - regionBox.center.dy).abs(),
       lessThan(1.0),
-      reason:
-          'a short message stays centred in its region, not pinned to '
+      reason: 'a short message stays centred in its region, not pinned to '
           'the top of the scroll viewport',
     );
   });
@@ -2380,8 +2382,7 @@ void main() {
       expect(
         camera,
         findsOneWidget,
-        reason:
-            'the answers are re-resolved when settings pops, so the camera '
+        reason: 'the answers are re-resolved when settings pops, so the camera '
             'appears without leaving and re-entering the screen',
       );
       // And the line inviting them to set one up has done its job.
@@ -2448,9 +2449,11 @@ void main() {
     /// Nothing configured, so the discovery hint is on screen and the route
     /// out of it is the one this exercises.
     Future<
-      ({_MapStorage stored, _GatedProber prober, AiEndpointProbeRunner runner})
-    >
-    arrange(WidgetTester tester, AiCapability photo) async {
+        ({
+          _MapStorage stored,
+          _GatedProber prober,
+          AiEndpointProbeRunner runner
+        })> arrange(WidgetTester tester, AiCapability photo) async {
       await _register(const {});
       getIt.unregister<AiCredentialStorage>();
       final stored = _MapStorage(const {});
@@ -2700,7 +2703,8 @@ class _StubPhotoReader implements ReadMealPhotoUseCase {
   Future<MealPhotoReadResult> read(
     MealPhoto photo, {
     String? localeCode,
-  }) async => reading;
+  }) async =>
+      reading;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -2718,7 +2722,8 @@ class _EmptyStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => null;
+  }) async =>
+      null;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

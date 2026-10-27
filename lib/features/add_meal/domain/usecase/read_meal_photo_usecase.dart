@@ -86,7 +86,7 @@ class ReadMealPhotoUseCase {
   /// because the credential is read per call and should not be captured for
   /// the lifetime of a singleton.
   final MealPhotoInterpreter Function(AiSelection selection)
-  _interpreterFactory;
+      _interpreterFactory;
 
   ReadMealPhotoUseCase(this._credentials, this._interpreterFactory);
 
@@ -122,7 +122,8 @@ class ReadMealPhotoUseCase {
         // advice for one — a cold Ollama can spend the whole budget loading
         // the model. #774.
         MealInterpreterFailure.timeout ||
-        MealInterpreterFailure.transient => MealPhotoFailure.transient,
+        MealInterpreterFailure.transient =>
+          MealPhotoFailure.transient,
       });
     } catch (e, stackTrace) {
       // An interpreter that throws something unexpected is a bug. Report it

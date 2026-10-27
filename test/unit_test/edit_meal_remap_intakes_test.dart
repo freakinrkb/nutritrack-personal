@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:opennutritracker/core/data/data_source/custom_meal_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/intake_data_source.dart';
-import 'package:opennutritracker/core/data/data_source/recipe_data_source.dart';
 import 'package:opennutritracker/core/data/data_source/tracked_day_data_source.dart';
 import 'package:opennutritracker/core/data/dbo/intake_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/intake_type_dbo.dart';
@@ -14,12 +13,9 @@ import 'package:opennutritracker/core/data/dbo/tracked_day_dbo.dart';
 import 'package:opennutritracker/core/data/repository/config_repository.dart';
 import 'package:opennutritracker/core/data/repository/favourite_meal_repository.dart';
 import 'package:opennutritracker/core/data/repository/intake_repository.dart';
-import 'package:opennutritracker/core/data/repository/recipe_repository.dart';
 import 'package:opennutritracker/core/data/repository/tracked_day_repository.dart';
 import 'package:opennutritracker/core/domain/usecase/add_tracked_day_usecase.dart';
-import 'package:opennutritracker/core/domain/usecase/delete_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/get_config_usecase.dart';
-import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/merge_custom_meals_usecase.dart';
 import 'package:opennutritracker/core/utils/hive_db_provider.dart';
 import 'package:opennutritracker/core/utils/tracked_day_lock.dart';
@@ -35,7 +31,8 @@ import '../helpers/hive_test_setup.dart';
 /// name when it has none — as it was when they were logged. An edit that
 /// changes that identity moves the entries already logged to the new one,
 /// in every profile, so they stay linked to the meal and deleting it
-/// removes them too (#1417).
+/// keeps them linked to the meal. Deleting the meal then removes only the
+/// saved meal, never the diary history (#1417).
 void main() {
   final day = DateTime(2026, 10, 1);
 
@@ -102,40 +99,42 @@ void main() {
     required String name,
     double kcal = 89,
     MealSourceEntity source = MealSourceEntity.custom,
-  }) => MealEntity(
-    code: code,
-    name: name,
-    url: null,
-    mealQuantity: '100',
-    mealUnit: 'g',
-    servingQuantity: 100,
-    servingUnit: 'g',
-    servingSize: '',
-    nutriments: MealNutrimentsEntity(
-      energyKcal100: kcal,
-      carbohydrates100: 23,
-      fat100: 0.3,
-      proteins100: 1.1,
-      sugars100: null,
-      saturatedFat100: null,
-      fiber100: null,
-    ),
-    source: source,
-  );
+  }) =>
+      MealEntity(
+        code: code,
+        name: name,
+        url: null,
+        mealQuantity: '100',
+        mealUnit: 'g',
+        servingQuantity: 100,
+        servingUnit: 'g',
+        servingSize: '',
+        nutriments: MealNutrimentsEntity(
+          energyKcal100: kcal,
+          carbohydrates100: 23,
+          fat100: 0.3,
+          proteins100: 1.1,
+          sugars100: null,
+          saturatedFat100: null,
+          fiber100: null,
+        ),
+        source: source,
+      );
 
   IntakeDBO intakeOf(String id, MealEntity meal) => IntakeDBO(
-    id: id,
-    unit: 'g',
-    amount: 100,
-    type: IntakeTypeDBO.breakfast,
-    meal: MealDBO.fromMealEntity(meal),
-    dateTime: day,
-  );
+        id: id,
+        unit: 'g',
+        amount: 100,
+        type: IntakeTypeDBO.breakfast,
+        meal: MealDBO.fromMealEntity(meal),
+        dateTime: day,
+      );
 
   IntakeDBO storedIntake(Box<IntakeDBO> box, String id) =>
       box.values.singleWhere((intake) => intake.id == id);
 
-  test('renaming a meal without a barcode renames its past diary entries, '
+  test(
+      'renaming a meal without a barcode renames its past diary entries, '
       'and keeps what they logged', () async {
     final banana = customMeal(code: null, name: 'Banana');
     final apple = customMeal(code: null, name: 'Apple');
@@ -225,8 +224,9 @@ void main() {
     expect(db.closedScopedBoxes, [(HiveDBProvider.intakeBoxName, '_partner')]);
   });
 
-  test('deleting the edited meal removes the entries logged before the '
-      'edit, and their calories', () async {
+  test(
+      'deleting the edited meal keeps entries logged before the edit, '
+      'and their day totals', () async {
     final oats = customMeal(code: 'uuid-oats', name: 'Oats', kcal: 370);
     await customMealBox.add(MealDBO.fromMealEntity(oats));
     await intakeBox.addAll([intakeOf('o1', oats), intakeOf('o2', oats)]);
@@ -235,6 +235,12 @@ void main() {
     );
     await addTrackedDay.addNewTrackedDay(day, 2000, 250, 70, 100);
     await addTrackedDay.addDayCaloriesTracked(day, 740);
+    await addTrackedDay.addDayMacrosTracked(
+      day,
+      carbsTracked: 46,
+      fatTracked: 0.6,
+      proteinTracked: 2.2,
+    );
 
     final edited = customMeal(code: '4006381333931', name: 'Oats', kcal: 370);
     await bloc.saveCustomMeal(edited, previous: oats);
@@ -244,12 +250,6 @@ void main() {
     final intakeRepository = IntakeRepository(IntakeDataSource(db));
     final customMealsBloc = CustomMealsBloc(
       CustomMealDataSource(db),
-      GetIntakeUsecase(
-        intakeRepository,
-        RecipeRepository(RecipeDataSource(db)),
-      ),
-      DeleteIntakeUsecase(intakeRepository),
-      addTrackedDay,
       MergeCustomMealsUseCase(
         CustomMealDataSource(db),
         intakeRepository,
@@ -265,8 +265,16 @@ void main() {
     );
 
     expect(customMealBox.isEmpty, isTrue);
-    expect(intakeBox.isEmpty, isTrue);
-    expect(trackedDayBox.values.single.caloriesTracked, 0);
+    expect(intakeBox.length, 2);
+    expect(
+      intakeBox.values.map((intake) => intake.meal.name),
+      everyElement('Oats'),
+    );
+    final dayAfterDelete = trackedDayBox.values.single;
+    expect(dayAfterDelete.caloriesTracked, 740);
+    expect(dayAfterDelete.carbsTracked, 46);
+    expect(dayAfterDelete.fatTracked, 0.6);
+    expect(dayAfterDelete.proteinTracked, 2.2);
   });
 
   test('an edit that keeps the barcode leaves past entries alone', () async {
@@ -296,7 +304,8 @@ void main() {
     expect(db.openedScopedBoxes, isEmpty);
   });
 
-  test('creating a meal from the new-meal placeholder moves nothing, '
+  test(
+      'creating a meal from the new-meal placeholder moves nothing, '
       'and opens no other profile', () async {
     // "New custom meal" opens the editor on `MealEntity.empty()`, whose fresh
     // id was never saved: no entry can be logged under it.
@@ -311,7 +320,8 @@ void main() {
     expect(db.openedScopedBoxes, isEmpty);
   });
 
-  test('a Save retried after the move failed leaves one meal, with every '
+  test(
+      'a Save retried after the move failed leaves one meal, with every '
       'entry on it', () async {
     final oats = customMeal(code: '4006381333931', name: 'Oats');
     await customMealBox.add(MealDBO.fromMealEntity(oats));
@@ -319,19 +329,19 @@ void main() {
     await otherIntakeBox.add(intakeOf('theirs', oats));
 
     MealEntity clearBarcode() => bloc.createNewMealEntity(
-      oats,
-      'Oats',
-      '',
-      '100',
-      '100',
-      '100',
-      'g',
-      '89',
-      '23',
-      '0.3',
-      '1.1',
-      barcodeOverride: '',
-    );
+          oats,
+          'Oats',
+          '',
+          '100',
+          '100',
+          '100',
+          'g',
+          '89',
+          '23',
+          '0.3',
+          '1.1',
+          barcodeOverride: '',
+        );
 
     db.failNextScopedOpen = true;
     await expectLater(
@@ -348,7 +358,8 @@ void main() {
     expect(storedIntake(otherIntakeBox, 'theirs').meal.code, retried.code);
   });
 
-  test('a Save that fails leaves every entry where it was, so leaving the '
+  test(
+      'a Save that fails leaves every entry where it was, so leaving the '
       'editor orphans none', () async {
     final oats = customMeal(code: 'uuid-oats', name: 'Oats');
     await customMealBox.add(MealDBO.fromMealEntity(oats));
@@ -418,9 +429,9 @@ class _ProfilesHiveDBProvider extends FakeHiveDBProvider {
     super.customMealBox,
     super.intakeBox,
     super.trackedDayBox,
-  }) : _profiles = profiles,
-       scopedIntakeBoxes = Map.of(scopedIntakeBoxes),
-       super(activeProfileId: 'me');
+  })  : _profiles = profiles,
+        scopedIntakeBoxes = Map.of(scopedIntakeBoxes),
+        super(activeProfileId: 'me');
 
   @override
   Box<ProfileDBO> get profileBox => _profiles;

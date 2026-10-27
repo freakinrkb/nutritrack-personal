@@ -47,7 +47,8 @@ class QuickWaterWidget extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.water_drop_rounded, size: 18, color: palette.protein),
+                Icon(Icons.water_drop_rounded,
+                    size: 18, color: palette.protein),
                 const SizedBox(width: Dimens.spacing8),
                 Text(
                   label,

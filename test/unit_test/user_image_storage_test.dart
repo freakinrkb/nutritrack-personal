@@ -8,7 +8,8 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 /// Stub for `getApplicationDocumentsDirectory` that points at a temp dir we
 /// create per-test. Keeps the round-trip honest about the filesystem layout
 /// without poisoning the developer's real documents directory.
-class _FakePathProvider extends PathProviderPlatform with MockPlatformInterfaceMixin {
+class _FakePathProvider extends PathProviderPlatform
+    with MockPlatformInterfaceMixin {
   _FakePathProvider(this.documentsPath);
 
   final String documentsPath;
@@ -34,8 +35,7 @@ void main() {
   });
 
   group('UserImageStorage', () {
-    test('relativePathFor builds a slug under the right subdir with .webp',
-        () {
+    test('relativePathFor builds a slug under the right subdir with .webp', () {
       expect(
         UserImageStorage.relativePathFor(UserImageKind.recipe, 'abc'),
         'recipe_images/abc.webp',
@@ -58,8 +58,8 @@ void main() {
       // through — the entire point of the sanitiser is to keep
       // imported zips from escaping the images directory via `..` or
       // absolute prefixes.
-      expect(UserImageStorage.sanitizeRelative('recipe_images/../x.webp'),
-          isNull);
+      expect(
+          UserImageStorage.sanitizeRelative('recipe_images/../x.webp'), isNull);
       expect(UserImageStorage.sanitizeRelative('elsewhere/x.webp'), isNull);
       expect(UserImageStorage.sanitizeRelative('x.webp'), isNull);
       expect(UserImageStorage.sanitizeRelative('recipe_images/'), isNull);
@@ -67,8 +67,7 @@ void main() {
     });
 
     test('absolutePath composes against the documents directory', () async {
-      final abs =
-          await UserImageStorage.absolutePath('recipe_images/r1.webp');
+      final abs = await UserImageStorage.absolutePath('recipe_images/r1.webp');
       expect(abs, '${tempRoot.path}/recipe_images/r1.webp');
       final absMeal =
           await UserImageStorage.absolutePath('meal_images/m1.webp');

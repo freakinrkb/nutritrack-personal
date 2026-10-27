@@ -58,9 +58,8 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
 
   @override
   void didChangeDependencies() {
-    final args =
-        ModalRoute.of(context)?.settings.arguments
-            as ActivityDetailScreenArguments;
+    final args = ModalRoute.of(context)?.settings.arguments
+        as ActivityDetailScreenArguments;
     activityEntity = args.activityEntity;
     _day = args.day;
     super.didChangeDependencies();
@@ -136,7 +135,9 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                   child: top > barsHeight - offset && top < barsHeight + offset
                       ? Text(
                           activityEntity.getName(context),
-                          style: Theme.of(context).textTheme.titleLarge
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.onSurface,
                               ),

@@ -10,7 +10,15 @@ void main() {
     });
 
     test('round-trip lbs → kg → lbs is exact for whole-pound weights', () {
-      for (final lbs in const [100.0, 120.0, 150.0, 165.0, 180.0, 200.0, 250.0]) {
+      for (final lbs in const [
+        100.0,
+        120.0,
+        150.0,
+        165.0,
+        180.0,
+        200.0,
+        250.0
+      ]) {
         final kg = UnitCalc.lbsToKg(lbs);
         final roundTrip = UnitCalc.kgToLbs(kg);
         expect(roundTrip, equals(lbs),
@@ -177,11 +185,14 @@ void main() {
         final (stones, pounds) = UnitCalc.kgToStLb(kg);
         final back = UnitCalc.stLbToKg(stones, pounds);
         expect(back, closeTo(kg, 0.05),
-            reason: '$kg kg -> $stones st $pounds lb -> $back kg exceeded tolerance');
+            reason:
+                '$kg kg -> $stones st $pounds lb -> $back kg exceeded tolerance');
       }
     });
 
-    test('rollover: a weight whose pound remainder rounds to 14.0 increments stones', () {
+    test(
+        'rollover: a weight whose pound remainder rounds to 14.0 increments stones',
+        () {
       // 2 stone = 12.70058 kg. A tiny amount below the next full stone keeps
       // the pounds remainder very close to 14.0; the rollover guard should
       // bump stones to 3 and set pounds to 0.0 rather than showing "2 st 14.0 lb".

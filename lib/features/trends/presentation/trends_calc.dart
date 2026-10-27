@@ -17,7 +17,8 @@
   var longest = 0;
   var run = 0;
   for (var i = 0; i <= total; i++) {
-    final day = DateTime(windowStart.year, windowStart.month, windowStart.day + i);
+    final day =
+        DateTime(windowStart.year, windowStart.month, windowStart.day + i);
     if (onTrackDays.contains(day)) {
       run++;
       if (run > longest) longest = run;

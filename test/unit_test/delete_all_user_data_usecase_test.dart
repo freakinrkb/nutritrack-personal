@@ -7,6 +7,8 @@ import 'package:opennutritracker/core/data/data_source/user_activity_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/config_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/fasting_session_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/favourite_meal_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_checkin_dbo.dart';
+import 'package:opennutritracker/core/data/dbo/habit_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/intake_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/meal_dbo.dart';
 import 'package:opennutritracker/core/data/dbo/tracked_day_dbo.dart';
@@ -46,7 +48,8 @@ class _MemoryStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => store[key];
+  }) async =>
+      store[key];
 
   @override
   Future<void> write({
@@ -75,7 +78,8 @@ class _MemoryStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => store.remove(key);
+  }) async =>
+      store.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -128,16 +132,16 @@ class _RecordingWidgetStore implements CalorieWidgetStore {
 
 /// A tracked-day row with no entries' totals, only a goal.
 TrackedDayDBO _row(DateTime day, {double calorieGoal = 2000}) => TrackedDayDBO(
-  day: day,
-  calorieGoal: calorieGoal,
-  caloriesTracked: 0,
-  carbsGoal: 250,
-  carbsTracked: 0,
-  fatGoal: 70,
-  fatTracked: 0,
-  proteinGoal: 100,
-  proteinTracked: 0,
-);
+      day: day,
+      calorieGoal: calorieGoal,
+      caloriesTracked: 0,
+      carbsGoal: 250,
+      carbsTracked: 0,
+      fatGoal: 70,
+      fatTracked: 0,
+      proteinGoal: 100,
+      proteinTracked: 0,
+    );
 
 class _TestHiveDBProvider extends HiveDBProvider {
   final Box<ConfigDBO> config;
@@ -149,6 +153,8 @@ class _TestHiveDBProvider extends HiveDBProvider {
   final Box<WaterIntakeDBO> water;
   final Box<FastingSessionDBO> fasting;
   final Box<FavouriteMealDBO> favourites;
+  final Box<HabitDBO> habits;
+  final Box<HabitCheckinDBO> habitCheckins;
   final Box<ConfigDBO> sharedAppConfig;
 
   _TestHiveDBProvider({
@@ -161,6 +167,8 @@ class _TestHiveDBProvider extends HiveDBProvider {
     required this.water,
     required this.fasting,
     required this.favourites,
+    required this.habits,
+    required this.habitCheckins,
     required this.sharedAppConfig,
   });
 
@@ -182,6 +190,10 @@ class _TestHiveDBProvider extends HiveDBProvider {
   Box<FastingSessionDBO> get fastingBox => fasting;
   @override
   Box<FavouriteMealDBO> get favouriteMealBox => favourites;
+  @override
+  Box<HabitDBO> get habitBox => habits;
+  @override
+  Box<HabitCheckinDBO> get habitCheckinBox => habitCheckins;
   @override
   Box<ConfigDBO> get appConfigBox => sharedAppConfig;
 }
@@ -217,6 +229,10 @@ void main() {
       fasting: await Hive.openBox<FastingSessionDBO>('wipe_fasting_$tag'),
       favourites: favouriteBox = await Hive.openBox<FavouriteMealDBO>(
         'wipe_favourites_$tag',
+      ),
+      habits: await Hive.openBox<HabitDBO>('wipe_habits_$tag'),
+      habitCheckins: await Hive.openBox<HabitCheckinDBO>(
+        'wipe_habit_checkins_$tag',
       ),
       sharedAppConfig: appConfigBox,
     );
@@ -307,7 +323,8 @@ void main() {
     expect(provider.trackedDay.isEmpty, isTrue);
   });
 
-  test('a profile reset, re-onboarded under a kept 04:00 boundary, does not '
+  test(
+      'a profile reset, re-onboarded under a kept 04:00 boundary, does not '
       'credit an activity before the boundary twice on activation', () async {
     // #1317. The boundary is app-wide, so the reset keeps it, and the
     // reset profile's rows are keyed by it from the first entry on.
@@ -358,6 +375,32 @@ void main() {
     await sut.deleteAll();
 
     expect(favouriteBox.isEmpty, isTrue);
+  });
+
+  test('clears routines and their check-in history', () async {
+    await provider.habits.put(
+      'walk',
+      HabitDBO(
+        id: 'walk',
+        name: 'Walk after lunch',
+        sortOrder: 0,
+        createdAt: DateTime(2026, 10, 1),
+      ),
+    );
+    await provider.habitCheckins.put(
+      'walk|2026-10-04',
+      HabitCheckinDBO(
+        habitId: 'walk',
+        dayKey: '2026-10-04',
+        status: HabitCheckinDBO.doneStatus,
+        recordedAt: DateTime(2026, 10, 4),
+      ),
+    );
+
+    await sut.deleteAll();
+
+    expect(provider.habits.isEmpty, isTrue);
+    expect(provider.habitCheckins.isEmpty, isTrue);
   });
 
   test('clears the home-screen widget', () async {

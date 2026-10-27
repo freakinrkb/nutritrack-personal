@@ -2,9 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:opennutritracker/core/data/data_source/custom_meal_data_source.dart';
 import 'package:opennutritracker/core/data/repository/favourite_meal_repository.dart';
-import 'package:opennutritracker/core/domain/usecase/add_tracked_day_usecase.dart';
-import 'package:opennutritracker/core/domain/usecase/delete_intake_usecase.dart';
-import 'package:opennutritracker/core/domain/usecase/get_intake_usecase.dart';
 import 'package:opennutritracker/core/domain/usecase/merge_custom_meals_usecase.dart';
 import 'package:opennutritracker/core/utils/tracked_day_lock.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
@@ -16,17 +13,11 @@ class CustomMealsBloc extends Bloc<CustomMealsEvent, CustomMealsState> {
   final log = Logger('CustomMealsBloc');
 
   final CustomMealDataSource _customMealDataSource;
-  final GetIntakeUsecase _getIntakeUsecase;
-  final DeleteIntakeUsecase _deleteIntakeUsecase;
-  final AddTrackedDayUsecase _addTrackedDayUsecase;
   final MergeCustomMealsUseCase _mergeCustomMealsUseCase;
   final FavouriteMealRepository _favouriteMealRepository; // #1307
 
   CustomMealsBloc(
     this._customMealDataSource,
-    this._getIntakeUsecase,
-    this._deleteIntakeUsecase,
-    this._addTrackedDayUsecase,
     this._mergeCustomMealsUseCase,
     this._favouriteMealRepository,
   ) : super(CustomMealsInitial()) {
@@ -47,37 +38,15 @@ class CustomMealsBloc extends Bloc<CustomMealsEvent, CustomMealsState> {
     on<DeleteCustomMealEvent>((event, emit) async {
       emit(CustomMealsLoadingState());
       try {
-        final deleted = await withTrackedDayLockOnProfile(() async {
-          // A starred meal stays on Favourites as its snapshot; bring that
-          // up to the version being deleted first.
-          await _favouriteMealRepository.keepLatestCustomMealSnapshot(
-            event.mealKey,
-          );
-          await _customMealDataSource.deleteCustomMeal(event.mealKey);
-
-          final allCustom = await _getIntakeUsecase.getCustomMealIntakes();
-          final toDelete = allCustom
-              .where(
-                (intake) =>
-                    (intake.meal.code ?? intake.meal.name) == event.mealKey,
-              )
-              .toList();
-          for (final intake in toDelete) {
-            await _deleteIntakeUsecase.deleteIntake(intake);
-            await _addTrackedDayUsecase.removeDayCaloriesTracked(
-              intake.dateTime,
-              intake.totalKcal,
-            );
-            await _addTrackedDayUsecase.removeDayMacrosTracked(
-              intake.dateTime,
-              carbsTracked: intake.totalCarbsGram,
-              fatTracked: intake.totalFatsGram,
-              proteinTracked: intake.totalProteinsGram,
-            );
-          }
-          return true;
-        });
-        if (deleted != true) return;
+        // A starred meal stays on Favourites as its snapshot; bring that
+        // up to the version being deleted first.
+        await _favouriteMealRepository.keepLatestCustomMealSnapshot(
+          event.mealKey,
+        );
+        // Delete only the saved meal. Diary entries embed their own snapshot
+        // and are history: they must survive, with their day totals, exactly
+        // as a deleted recipe's entries do.
+        await _customMealDataSource.deleteCustomMeal(event.mealKey);
         add(LoadCustomMealsEvent());
       } catch (error) {
         log.severe(error);

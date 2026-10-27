@@ -106,9 +106,8 @@ class CsvRecipeImporter {
     final headerCells = CsvRowParser.splitRow(lines.first)
         .map((c) => c.trim().toLowerCase())
         .toList();
-    final missingRequired = requiredColumns
-        .where((req) => !headerCells.contains(req))
-        .toList();
+    final missingRequired =
+        requiredColumns.where((req) => !headerCells.contains(req)).toList();
     if (missingRequired.isNotEmpty) {
       return CsvRecipeImportResult(
         recipes: const [],
@@ -131,8 +130,7 @@ class CsvRecipeImporter {
         continue;
       }
       if (cells.length > headerCells.length) {
-        errors.add(
-            'Row $rowNum: too many columns. If a value contains a comma '
+        errors.add('Row $rowNum: too many columns. If a value contains a comma '
             '(for example a decimal like 1,5), wrap that cell in double '
             'quotes: "1,5".');
         continue;
@@ -174,10 +172,9 @@ class CsvRecipeImporter {
       );
 
       // Recipe-level fields: take the first non-empty value seen per group.
-      group.description ??=
-          row[_kRecipeDescription]?.isNotEmpty == true
-              ? row[_kRecipeDescription]
-              : null;
+      group.description ??= row[_kRecipeDescription]?.isNotEmpty == true
+          ? row[_kRecipeDescription]
+          : null;
       group.servingsCount ??= _parseIntOrNull(row[_kRecipeServings]);
       // Only the first non-empty `recipe_total_weight_g` per recipe wins,
       // matching the "first non-empty value wins" rule for every other
@@ -224,11 +221,13 @@ class CsvRecipeImporter {
         servingSize: null,
         nutriments: MealNutrimentsEntity(
           energyKcal100: kcal,
-          carbohydrates100: CsvRowParser.parseDoubleOrNull(row[_kIngredientCarbs]),
+          carbohydrates100:
+              CsvRowParser.parseDoubleOrNull(row[_kIngredientCarbs]),
           fat100: CsvRowParser.parseDoubleOrNull(row[_kIngredientFat]),
           proteins100: CsvRowParser.parseDoubleOrNull(row[_kIngredientProtein]),
           sugars100: CsvRowParser.parseDoubleOrNull(row[_kIngredientSugars]),
-          saturatedFat100: CsvRowParser.parseDoubleOrNull(row[_kIngredientSatFat]),
+          saturatedFat100:
+              CsvRowParser.parseDoubleOrNull(row[_kIngredientSatFat]),
           fiber100: CsvRowParser.parseDoubleOrNull(row[_kIngredientFiber]),
         ),
         source: MealSourceEntity.custom,
@@ -320,6 +319,7 @@ class _RecipeGroup {
   String? description;
   int? servingsCount;
   double? totalWeightOverride;
+
   /// Sticky flag set the first time a row supplies a malformed
   /// `recipe_total_weight_g` for this recipe. Once set, later rows in the
   /// same group cannot supply a good value, and the group is dropped at

@@ -132,9 +132,10 @@ class DayBoundaryCalc {
     DateTime moment,
     int? offsetTotalMinutes, {
     bool clockReading = false,
-  }) => !clockReading && isDayLabel(moment)
-      ? moment
-      : logicalDayOfMinutes(moment, offsetTotalMinutes);
+  }) =>
+      !clockReading && isDayLabel(moment)
+          ? moment
+          : logicalDayOfMinutes(moment, offsetTotalMinutes);
 
   /// The date of [dayLabelOf] as `yyyy-MM-dd`, the key of the tracked-day
   /// row holding [moment]'s entry, without building the label: a local

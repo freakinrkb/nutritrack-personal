@@ -74,7 +74,8 @@ class ActivityCard extends StatelessWidget {
                     children: [
                       AutoSizeText(
                         activityEntity.physicalActivityEntity.getName(context),
-                        style: textTheme.titleSmall?.copyWith(color: palette.textStrong),
+                        style: textTheme.titleSmall
+                            ?.copyWith(color: palette.textStrong),
                         maxLines: 1,
                         minFontSize: 11,
                         overflow: TextOverflow.ellipsis,
@@ -82,7 +83,8 @@ class ActivityCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         '${activityEntity.duration.toInt()} ${S.of(context).minuteShortLabel}',
-                        style: textTheme.bodySmall?.copyWith(color: palette.textMuted),
+                        style: textTheme.bodySmall
+                            ?.copyWith(color: palette.textMuted),
                       ),
                     ],
                   ),
@@ -108,7 +110,8 @@ class ActivityCard extends StatelessWidget {
       data: activityEntity,
       onDragStarted: () => onItemDragCallback!.call(true),
       onDragEnd: (_) => onItemDragCallback!.call(false),
-      onDraggableCanceled: (velocity, offset) => onItemDragCallback!.call(false),
+      onDraggableCanceled: (velocity, offset) =>
+          onItemDragCallback!.call(false),
       feedback: Material(
         color: Colors.transparent,
         child: SizedBox(

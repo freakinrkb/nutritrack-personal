@@ -85,15 +85,14 @@ const mealItemsToolSchema = {
             'type': 'string',
             'description':
                 'How the food was portioned, as one English word whatever '
-                'language the user wrote in — slice, piece, cup, '
-                'tablespoon, teaspoon, small, medium, large. Write '
-                'abbreviations out. Never a weight, a count, or a unit '
-                'from the unit list. Omit when the user named no portion.',
+                    'language the user wrote in — slice, piece, cup, '
+                    'tablespoon, teaspoon, small, medium, large. Write '
+                    'abbreviations out. Never a weight, a count, or a unit '
+                    'from the unit list. Omit when the user named no portion.',
           },
           'query': {
             'type': 'string',
-            'description':
-                'Food name only, no amount, in the user\'s '
+            'description': 'Food name only, no amount, in the user\'s '
                 'language.',
           },
           'quantity': {
@@ -119,8 +118,7 @@ const mealItemsToolSchema = {
               'fl.oz',
               'serving',
             ],
-            'description':
-                'Only if the user stated a unit, and only '
+            'description': 'Only if the user stated a unit, and only '
                 'one of these. Never map a different unit onto one of '
                 'them.',
           },

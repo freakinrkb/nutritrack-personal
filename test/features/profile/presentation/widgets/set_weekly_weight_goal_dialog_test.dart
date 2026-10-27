@@ -21,8 +21,7 @@ Widget _wrap(Widget child) {
 
 void main() {
   group('SetWeeklyWeightGoalDialog', () {
-    testWidgets('Cancel returns WeeklyWeightGoalCancelled',
-        (tester) async {
+    testWidgets('Cancel returns WeeklyWeightGoalCancelled', (tester) async {
       WeeklyWeightGoalResult? captured;
       await tester.pumpWidget(_wrap(Builder(builder: (context) {
         return Center(

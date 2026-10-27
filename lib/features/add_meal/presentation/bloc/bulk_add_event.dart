@@ -50,11 +50,11 @@ class ReadMealPhotoEvent extends BulkAddEvent {
   // would run on every rebuild to answer a question nothing asks.
   @override
   List<Object?> get props => [
-    photo.mediaType,
-    photo.bytes.length,
-    usesImperialUnits,
-    localeCode,
-  ];
+        photo.mediaType,
+        photo.bytes.length,
+        usesImperialUnits,
+        localeCode,
+      ];
 }
 
 /// The photo never made it as far as the model — the picker threw, or the

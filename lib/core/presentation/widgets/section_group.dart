@@ -20,8 +20,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolved =
-        palette ??
+    final resolved = palette ??
         (Theme.of(context).brightness == Brightness.dark
             ? AppPalette.dark
             : AppPalette.light);
@@ -30,10 +29,10 @@ class SectionHeader extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: resolved.textMuted,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.3,
-        ),
+              color: resolved.textMuted,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.3,
+            ),
       ),
     );
   }
@@ -49,8 +48,7 @@ class SectionGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolved =
-        palette ??
+    final resolved = palette ??
         (Theme.of(context).brightness == Brightness.dark
             ? AppPalette.dark
             : AppPalette.light);

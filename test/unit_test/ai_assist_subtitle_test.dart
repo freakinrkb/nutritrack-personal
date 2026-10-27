@@ -11,12 +11,12 @@ import '../helpers/test_l10n.dart';
 /// row that can contain something they would not want on a screen.
 void main() {
   String? subtitleFor(String? endpoint) => aiAssistSubtitle(
-    l10nEn,
-    configured: true,
-    enabled: true,
-    provider: AiProvider.ownServer,
-    endpoint: endpoint,
-  );
+        l10nEn,
+        configured: true,
+        enabled: true,
+        provider: AiProvider.ownServer,
+        endpoint: endpoint,
+      );
 
   test('names the machine, not the route it answers on', () {
     // The stored form carries `/v1/chat/completions`, which is on every one

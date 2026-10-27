@@ -83,7 +83,8 @@ void main() {
                 body: Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final result = await Navigator.of(context).push<MealEntity>(
+                      final result =
+                          await Navigator.of(context).push<MealEntity>(
                         MaterialPageRoute(
                           settings: RouteSettings(
                             // initialBarcode triggers ScannerLoadProductEvent
@@ -187,7 +188,8 @@ void main() {
 
         expect(find.text('meal-detail'), findsOneWidget);
         expect(pushedArgs, hasLength(1),
-            reason: 'scanner should replace itself with meal-detail exactly once');
+            reason:
+                'scanner should replace itself with meal-detail exactly once');
         final args = pushedArgs.single as MealDetailScreenArguments;
         expect(args.day, DateTime(2026, 5, 21));
         expect(args.intakeTypeEntity, IntakeTypeEntity.breakfast);
@@ -195,7 +197,6 @@ void main() {
       },
     );
   });
-
 }
 
 final _loadedMeal = MealEntity(

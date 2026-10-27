@@ -55,15 +55,15 @@ class IntakeDataSource {
   /// any two equal rows do. Changing this list moves every derived id, and
   /// re-importing an old backup would then duplicate its blank-id rows.
   static List<String?> _contentOf(IntakeDBO dbo) => [
-    dbo.dateTime.toIso8601String(),
-    dbo.type.name,
-    contentNumber(dbo.amount),
-    dbo.unit,
-    dbo.meal.source.name,
-    dbo.meal.code,
-    dbo.meal.name,
-    dbo.meal.brands,
-  ];
+        dbo.dateTime.toIso8601String(),
+        dbo.type.name,
+        contentNumber(dbo.amount),
+        dbo.unit,
+        dbo.meal.source.name,
+        dbo.meal.code,
+        dbo.meal.name,
+        dbo.meal.brands,
+      ];
 
   Future<void> deleteIntakeFromId(String intakeId) async {
     log.fine('Deleting intake item from db');
@@ -159,7 +159,9 @@ class IntakeDataSource {
   }
 
   Future<List<IntakeDBO>> getCustomMealIntakes() async {
-    return _intakeBox.values.where((dbo) => dbo.meal.source == MealSourceDBO.custom).toList();
+    return _intakeBox.values
+        .where((dbo) => dbo.meal.source == MealSourceDBO.custom)
+        .toList();
   }
 
   /// Replace the denormalised [MealDBO] snapshot on every intake whose
@@ -173,7 +175,8 @@ class IntakeDataSource {
   Future<List<(IntakeDBO, IntakeDBO)>> remapCustomMealOnIntakes({
     required String fromMealKey,
     required MealDBO toMeal,
-  }) => _rewriteCustomMeal(_intakeBox, fromMealKey, (_) => toMeal);
+  }) =>
+      _rewriteCustomMeal(_intakeBox, fromMealKey, (_) => toMeal);
 
   /// Moves the entries logged with the custom meal known as [fromMealKey]
   /// to [toMeal]'s identity — its barcode, or its name when it has none —
@@ -199,25 +202,25 @@ class IntakeDataSource {
     required MealDBO toMeal,
   }) async {
     MealDBO moved(MealDBO logged) => MealDBO(
-      code: toMeal.code,
-      name: toMeal.name,
-      brands: logged.brands,
-      thumbnailImageUrl: logged.thumbnailImageUrl,
-      mainImageUrl: logged.mainImageUrl,
-      url: logged.url,
-      mealQuantity: logged.mealQuantity,
-      mealUnit: logged.mealUnit,
-      servingQuantity: logged.servingQuantity,
-      servingUnit: logged.servingUnit,
-      servingSize: logged.servingSize,
-      nutriments: logged.nutriments,
-      source: logged.source,
-      localImagePath: logged.localImagePath,
-      detailed: logged.detailed,
-      backendSource: logged.backendSource,
-      machineTranslatedName: logged.machineTranslatedName,
-      dataVersion: logged.dataVersion,
-    );
+          code: toMeal.code,
+          name: toMeal.name,
+          brands: logged.brands,
+          thumbnailImageUrl: logged.thumbnailImageUrl,
+          mainImageUrl: logged.mainImageUrl,
+          url: logged.url,
+          mealQuantity: logged.mealQuantity,
+          mealUnit: logged.mealUnit,
+          servingQuantity: logged.servingQuantity,
+          servingUnit: logged.servingUnit,
+          servingSize: logged.servingSize,
+          nutriments: logged.nutriments,
+          source: logged.source,
+          localImagePath: logged.localImagePath,
+          detailed: logged.detailed,
+          backendSource: logged.backendSource,
+          machineTranslatedName: logged.machineTranslatedName,
+          dataVersion: logged.dataVersion,
+        );
 
     final suffixes = [
       for (final profile in _db.profileBox.values)
@@ -244,7 +247,8 @@ class IntakeDataSource {
             fromMealKey,
             moved,
             undo: undo,
-          )).length;
+          ))
+              .length;
         }
         return count;
       } catch (_) {

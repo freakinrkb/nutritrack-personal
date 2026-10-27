@@ -62,11 +62,11 @@ class _FakePathProvider extends PathProviderPlatform
 
 class _EmptyFavouriteMealRepository extends FavouriteMealRepository {
   _EmptyFavouriteMealRepository()
-    : super(
-        FavouriteMealDataSource(FakeHiveDBProvider()),
-        CustomMealDataSource(FakeHiveDBProvider()),
-        RecipeDataSource(FakeHiveDBProvider()),
-      );
+      : super(
+          FavouriteMealDataSource(FakeHiveDBProvider()),
+          CustomMealDataSource(FakeHiveDBProvider()),
+          RecipeDataSource(FakeHiveDBProvider()),
+        );
 
   @override
   Future<List<FavouriteMealDBO>> getAllFavouritesDBO() async => [];
@@ -193,20 +193,20 @@ void main() {
       _EmptyFavouriteMealRepository(),
       pickFile: () async =>
           _PickedFile('backup.zip', File('${tempDir.path}/backup.zip').uri),
-      restoreTrackedDays:
-          (
-            write, {
-            required importedDayKeys,
-            required importedActivities,
-            required keyedByOffsetMinutes,
-          }) => restoreTrackedDays(
-            provider,
-            config,
-            write: write,
-            importedDayKeys: importedDayKeys,
-            importedActivities: importedActivities,
-            keyedByOffsetMinutes: keyedByOffsetMinutes,
-          ),
+      restoreTrackedDays: (
+        write, {
+        required importedDayKeys,
+        required importedActivities,
+        required keyedByOffsetMinutes,
+      }) =>
+          restoreTrackedDays(
+        provider,
+        config,
+        write: write,
+        importedDayKeys: importedDayKeys,
+        importedActivities: importedActivities,
+        keyedByOffsetMinutes: keyedByOffsetMinutes,
+      ),
     );
   });
 
@@ -226,82 +226,82 @@ void main() {
   }
 
   UserActivityEntity rideAt(DateTime at) => UserActivityEntity(
-    'ride-${at.toIso8601String()}',
-    30,
-    150,
-    at,
-    PhysicalActivityFixtures.moderateBicycling,
-  );
+        'ride-${at.toIso8601String()}',
+        30,
+        150,
+        at,
+        PhysicalActivityFixtures.moderateBicycling,
+      );
 
   /// A row holding only a 150 kcal ride's credit on a 2000 kcal goal.
   TrackedDayDBO rideRow(DateTime day) => TrackedDayDBO(
-    day: day,
-    calorieGoal: 2150,
-    caloriesTracked: 0,
-    carbsGoal: 250,
-    carbsTracked: 0,
-    fatGoal: 70,
-    fatTracked: 0,
-    proteinGoal: 100,
-    proteinTracked: 0,
-  );
+        day: day,
+        calorieGoal: 2150,
+        caloriesTracked: 0,
+        carbsGoal: 250,
+        carbsTracked: 0,
+        fatGoal: 70,
+        fatTracked: 0,
+        proteinGoal: 100,
+        proteinTracked: 0,
+      );
 
   /// 100 g of a 200 kcal-per-100 g toast.
   IntakeEntity toastAt(DateTime at) => IntakeEntity(
-    id: 'toast-${at.toIso8601String()}',
-    unit: 'g',
-    amount: 100,
-    type: IntakeTypeEntity.breakfast,
-    meal: MealEntity(
-      code: null,
-      name: 'Toast',
-      url: null,
-      mealQuantity: '100',
-      mealUnit: 'g',
-      servingQuantity: 100,
-      servingUnit: 'g',
-      servingSize: null,
-      nutriments: MealNutrimentsEntity(
-        energyKcal100: 200,
-        carbohydrates100: 40,
-        fat100: 2,
-        proteins100: 6,
-        sugars100: null,
-        saturatedFat100: null,
-        fiber100: null,
-      ),
-      source: MealSourceEntity.custom,
-    ),
-    dateTime: at,
-  );
+        id: 'toast-${at.toIso8601String()}',
+        unit: 'g',
+        amount: 100,
+        type: IntakeTypeEntity.breakfast,
+        meal: MealEntity(
+          code: null,
+          name: 'Toast',
+          url: null,
+          mealQuantity: '100',
+          mealUnit: 'g',
+          servingQuantity: 100,
+          servingUnit: 'g',
+          servingSize: null,
+          nutriments: MealNutrimentsEntity(
+            energyKcal100: 200,
+            carbohydrates100: 40,
+            fat100: 2,
+            proteins100: 6,
+            sugars100: null,
+            saturatedFat100: null,
+            fiber100: null,
+          ),
+          source: MealSourceEntity.custom,
+        ),
+        dateTime: at,
+      );
 
   /// A row holding the toast on a 2000 kcal goal, no activity credited.
   TrackedDayDBO toastRow(DateTime day) => TrackedDayDBO(
-    day: day,
-    calorieGoal: 2000,
-    caloriesTracked: 200,
-    carbsGoal: 250,
-    carbsTracked: 40,
-    fatGoal: 70,
-    fatTracked: 2,
-    proteinGoal: 100,
-    proteinTracked: 6,
-  );
+        day: day,
+        calorieGoal: 2000,
+        caloriesTracked: 200,
+        carbsGoal: 250,
+        carbsTracked: 40,
+        fatGoal: 70,
+        fatTracked: 2,
+        proteinGoal: 100,
+        proteinTracked: 6,
+      );
 
   void writeArchive(Archive archive) => File(
-    '${tempDir.path}/backup.zip',
-  ).writeAsBytesSync(ZipEncoder().encode(archive));
+        '${tempDir.path}/backup.zip',
+      ).writeAsBytesSync(ZipEncoder().encode(archive));
 
   Future<Archive> export(ExportFormat format) => exporter.assembleArchive(
-    format: format,
-    userActivityJsonFileName: ExportImportBloc.userActivityJsonFileName,
-    userIntakeJsonFileName: ExportImportBloc.userIntakeJsonFileName,
-    trackedDayJsonFileName: ExportImportBloc.trackedDayJsonFileName,
-    recipeJsonFileName: ExportImportBloc.recipeJsonFileName,
-    weightLogJsonFileName: ExportImportBloc.weightLogJsonFileName,
-    customActivityTemplateJsonFileName:
-        ExportImportBloc.customActivityTemplateJsonFileName,
-  );
+        format: format,
+        userActivityJsonFileName: ExportImportBloc.userActivityJsonFileName,
+        userIntakeJsonFileName: ExportImportBloc.userIntakeJsonFileName,
+        trackedDayJsonFileName: ExportImportBloc.trackedDayJsonFileName,
+        recipeJsonFileName: ExportImportBloc.recipeJsonFileName,
+        weightLogJsonFileName: ExportImportBloc.weightLogJsonFileName,
+        customActivityTemplateJsonFileName:
+            ExportImportBloc.customActivityTemplateJsonFileName,
+      );
 
   Future<bool> import(ExportFormat format) => format == ExportFormat.json
       ? importer.importData(
@@ -315,7 +315,8 @@ void main() {
       : importer.importDataCsv();
 
   for (final format in ExportFormat.values) {
-    test('a ${format.name} backup made under 04:00 restored under 00:00 '
+    test(
+        'a ${format.name} backup made under 04:00 restored under 00:00 '
         'moves the ride\'s credit to the day it is listed on', () async {
       // At 04:00 the 02:00 ride on the 5th is listed, and credited, on
       // the 4th.
@@ -348,7 +349,8 @@ void main() {
   // #1317 review: a row the archive does not replace never credited the
   // archive's activities, even when they are listed on its day now.
   for (final format in ExportFormat.values) {
-    test('a ${format.name} backup made under 04:00 restored under 00:00 '
+    test(
+        'a ${format.name} backup made under 04:00 restored under 00:00 '
         'credits the ride on the device\'s own row for its day', () async {
       await boundary(4);
       await activities.addUserActivity(rideAt(DateTime(2026, 10, 5, 2)));
@@ -371,7 +373,8 @@ void main() {
     });
   }
 
-  test('a backup made under 00:00 restored under 04:00 credits the ride on '
+  test(
+      'a backup made under 00:00 restored under 04:00 credits the ride on '
       'the device\'s own row for its day', () async {
     await boundary(0);
     await activities.addUserActivity(rideAt(DateTime(2026, 10, 5, 2)));
@@ -391,7 +394,8 @@ void main() {
     expect(trackedDayBox.get('2026-10-04')?.calorieGoal, 2150);
   });
 
-  test('a device ride whose row the archive replaces keeps its credit, '
+  test(
+      'a device ride whose row the archive replaces keeps its credit, '
       'on the same boundary too', () async {
     // The backup holds the 6th with only the toast on it.
     await boundary(0);
@@ -453,12 +457,12 @@ void main() {
   test('rides with a blank id in a backup are each credited', () async {
     await boundary(0);
     UserActivityEntity blankRide() => UserActivityEntity(
-      '',
-      30,
-      150,
-      DateTime(2026, 10, 5, 12),
-      PhysicalActivityFixtures.moderateBicycling,
-    );
+          '',
+          30,
+          150,
+          DateTime(2026, 10, 5, 12),
+          PhysicalActivityFixtures.moderateBicycling,
+        );
     writeLegacyArchive(
       [blankRide(), blankRide()],
       [rideRow(DateTime(2026, 10, 5))..calorieGoal = 2300],
@@ -470,7 +474,8 @@ void main() {
     expect(trackedDayBox.get('2026-10-05')?.calorieGoal, 2300);
   });
 
-  test('an archive from before the record is read as keyed by the '
+  test(
+      'an archive from before the record is read as keyed by the '
       'wall-clock date, and the device\'s own rows stay put', () async {
     await boundary(4);
     // The device's own ride, at 02:00 on the 7th, credited on the 6th.
@@ -511,7 +516,8 @@ void main() {
     expect((await config.getConfig()).trackedDaysOffsetMinutes, 240);
   });
 
-  test('a record that is not a boundary rejects the archive before it '
+  test(
+      'a record that is not a boundary rejects the archive before it '
       'writes anything', () async {
     final archive = await export(ExportFormat.json);
     archive.addFile(

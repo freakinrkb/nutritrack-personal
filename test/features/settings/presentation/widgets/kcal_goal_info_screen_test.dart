@@ -95,10 +95,10 @@ void main() {
     //      = 572.4 + 1.27×2041.4 = 3164.98
     // Goal = 3164.98 − 500 + 150 + 320 = 3134.98
     KcalGoalBreakdownEntity maleBreakdown() => KcalGoalBreakdownEntity.compute(
-      user: _buildUser(),
-      userKcalAdjustment: 150,
-      totalKcalActivities: 320,
-    );
+          user: _buildUser(),
+          userKcalAdjustment: 150,
+          totalKcalActivities: 320,
+        );
 
     testWidgets('shows the hand-computed input values', (tester) async {
       await _pump(tester, maleBreakdown());

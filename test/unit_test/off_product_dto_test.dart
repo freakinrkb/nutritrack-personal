@@ -62,14 +62,13 @@ void main() {
         serving_quantity: '50 - testValue',
         serving_size: '50g - testValue',
         nutriments: OFFProductNutrimentsDTO(
-          energy_kcal_100g: 1,
-          carbohydrates_100g: 1,
-          fat_100g: 1,
-          proteins_100g: 1,
-          sugars_100g: 1,
-          saturated_fat_100g: 1,
-          fiber_100g: 1
-        ),
+            energy_kcal_100g: 1,
+            carbohydrates_100g: 1,
+            fat_100g: 1,
+            proteins_100g: 1,
+            sugars_100g: 1,
+            saturated_fat_100g: 1,
+            fiber_100g: 1),
       );
 
       final result = product.getLocaleName(SupportedLanguage.de);
@@ -151,20 +150,20 @@ void main() {
 
     test('Case 9: Czech locale returns product_name_cs when present', () {
       final product = _buildProduct(product_name_cs: 'Český název');
-      expect(product.getLocaleName(SupportedLanguage.cs),
-          equals('Český název'));
+      expect(
+          product.getLocaleName(SupportedLanguage.cs), equals('Český název'));
     });
 
     test('Case 10: Italian locale returns product_name_it when present', () {
       final product = _buildProduct(product_name_it: 'Nome italiano');
-      expect(product.getLocaleName(SupportedLanguage.it),
-          equals('Nome italiano'));
+      expect(
+          product.getLocaleName(SupportedLanguage.it), equals('Nome italiano'));
     });
 
     test('Case 11: Turkish locale returns product_name_tr when present', () {
       final product = _buildProduct(product_name_tr: 'Türkçe isim');
-      expect(product.getLocaleName(SupportedLanguage.tr),
-          equals('Türkçe isim'));
+      expect(
+          product.getLocaleName(SupportedLanguage.tr), equals('Türkçe isim'));
     });
 
     test('Case 12: Ukrainian locale returns product_name_uk when present', () {
@@ -177,8 +176,8 @@ void main() {
         'Case 13: Czech locale falls back through product_name when '
         'product_name_cs is null', () {
       final product = _buildProduct(product_name: 'Default name');
-      expect(product.getLocaleName(SupportedLanguage.cs),
-          equals('Default name'));
+      expect(
+          product.getLocaleName(SupportedLanguage.cs), equals('Default name'));
     });
     test('Case 13: Hungarian locale returns product_name_hu when present', () {
       final product = _buildProduct(
@@ -193,8 +192,7 @@ void main() {
       );
     });
 
-    test('Case 14: Hungarian locale falls through when the name is absent',
-        () {
+    test('Case 14: Hungarian locale falls through when the name is absent', () {
       final product = _buildProduct(
         product_name: 'Default Name - testValue',
         product_name_en: 'English Name - testValue',
@@ -220,8 +218,7 @@ void main() {
       );
     });
 
-    test('Case 16: Spanish locale falls through when the name is absent',
-        () {
+    test('Case 16: Spanish locale falls through when the name is absent', () {
       final product = _buildProduct(
         product_name: 'Default Name - testValue',
         product_name_en: 'English Name - testValue',
@@ -274,7 +271,8 @@ void main() {
 
     test('null / empty brands normalise to null', () {
       expect(OFFProductDTO.fromJson({'code': '1'}).brands, isNull);
-      expect(OFFProductDTO.fromJson({'code': '1', 'brands': ''}).brands, isNull);
+      expect(
+          OFFProductDTO.fromJson({'code': '1', 'brands': ''}).brands, isNull);
       expect(
         OFFProductDTO.fromJson({'code': '1', 'brands': <dynamic>[]}).brands,
         isNull,
@@ -298,7 +296,11 @@ void main() {
         'page_size': 2,
         'page_count': 316,
         'hits': [
-          {'code': '111', 'product_name': 'A', 'brands': ['X']},
+          {
+            'code': '111',
+            'product_name': 'A',
+            'brands': ['X']
+          },
           {'code': '222', 'product_name': 'B'},
         ],
       });

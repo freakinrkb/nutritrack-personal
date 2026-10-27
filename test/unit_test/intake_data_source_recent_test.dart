@@ -10,37 +10,37 @@ import '../helpers/fake_hive_db_provider.dart';
 import '../helpers/hive_test_setup.dart';
 
 MealDBO _meal({required String code, required MealSourceDBO source}) => MealDBO(
-  code: code,
-  name: code,
-  brands: null,
-  thumbnailImageUrl: null,
-  mainImageUrl: null,
-  url: null,
-  mealQuantity: '100',
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: MealNutrimentsDBO(
-    energyKcal100: 100,
-    carbohydrates100: 10,
-    fat100: 2,
-    proteins100: 5,
-    sugars100: null,
-    saturatedFat100: null,
-    fiber100: null,
-  ),
-  source: source,
-);
+      code: code,
+      name: code,
+      brands: null,
+      thumbnailImageUrl: null,
+      mainImageUrl: null,
+      url: null,
+      mealQuantity: '100',
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: MealNutrimentsDBO(
+        energyKcal100: 100,
+        carbohydrates100: 10,
+        fat100: 2,
+        proteins100: 5,
+        sugars100: null,
+        saturatedFat100: null,
+        fiber100: null,
+      ),
+      source: source,
+    );
 
 IntakeDBO _intake(String id, MealDBO meal, DateTime at) => IntakeDBO(
-  id: id,
-  unit: 'g',
-  amount: 100,
-  type: IntakeTypeDBO.lunch,
-  meal: meal,
-  dateTime: at,
-);
+      id: id,
+      unit: 'g',
+      amount: 100,
+      type: IntakeTypeDBO.lunch,
+      meal: meal,
+      dateTime: at,
+    );
 
 void main() {
   group('IntakeDataSource.getRecentlyAddedIntake', () {

@@ -63,18 +63,18 @@ class HealthPackageService implements HealthService {
   static const _iosBodyCompositionType = HealthDataType.BODY_FAT_PERCENTAGE;
 
   List<HealthDataType> get _readTypes => [
-    _workoutType,
-    if (_platform == HealthTargetPlatform.android) _androidEnergyType,
-    if (_platform == HealthTargetPlatform.ios) _iosBodyCompositionType,
-  ];
+        _workoutType,
+        if (_platform == HealthTargetPlatform.android) _androidEnergyType,
+        if (_platform == HealthTargetPlatform.ios) _iosBodyCompositionType,
+      ];
 
   /// The types a workout read touches — [requestPermissions] asks for all of
   /// [_readTypes], but a revoked body-fat grant only costs the suggestion,
   /// so the workout guard must not fail on it.
   List<HealthDataType> get _workoutReadTypes => [
-    _workoutType,
-    if (_platform == HealthTargetPlatform.android) _androidEnergyType,
-  ];
+        _workoutType,
+        if (_platform == HealthTargetPlatform.android) _androidEnergyType,
+      ];
 
   /// How far back to look for the latest body fat reading. A year is long
   /// enough that a user who steps on a smart scale occasionally still gets a
@@ -91,8 +91,8 @@ class HealthPackageService implements HealthService {
     this._health, {
     HealthConnectWorkoutReader? workoutReader,
     HealthTargetPlatform? platform,
-  }) : _workoutReader = workoutReader ?? HealthConnectWorkoutReader(),
-       _platform = platform ?? HealthTargetPlatform.current;
+  })  : _workoutReader = workoutReader ?? HealthConnectWorkoutReader(),
+        _platform = platform ?? HealthTargetPlatform.current;
 
   /// Builds a configured service. [Health.configure] resolves the device id
   /// and has to run before any query, so it happens here rather than lazily

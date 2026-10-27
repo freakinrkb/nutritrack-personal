@@ -250,9 +250,8 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selected = index == selectedIndex;
-    final color = selected
-        ? Theme.of(context).colorScheme.primary
-        : palette.textMuted;
+    final color =
+        selected ? Theme.of(context).colorScheme.primary : palette.textMuted;
     return Expanded(
       child: Semantics(
         identifier: id,

@@ -53,8 +53,7 @@ class CalorieWidgetSnapshot {
     DateTime? now,
   }) {
     final offset = sanitiseOffsetMinutes(offsetMinutes);
-    final day =
-        logicalDay ??
+    final day = logicalDay ??
         DayBoundaryCalc.logicalDayOfMinutes(now ?? DateTime.now(), offset);
     final goal = goalKcal.round();
     final hasData = goal > 0;
@@ -89,12 +88,12 @@ class CalorieWidgetSnapshot {
   }
 
   Map<String, Object> toJson() => {
-    'hasData': hasData,
-    'day': dayId,
-    'offsetMinutes': offsetMinutes,
-    'consumed': consumedKcal,
-    'goal': goalKcal,
-  };
+        'hasData': hasData,
+        'day': dayId,
+        'offsetMinutes': offsetMinutes,
+        'consumed': consumedKcal,
+        'goal': goalKcal,
+      };
 
   /// The value stored under [storageKey]: this snapshot with the figure
   /// labels in [labels].

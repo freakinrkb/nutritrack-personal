@@ -6,7 +6,7 @@ import 'package:opennutritracker/generated/l10n.dart';
 
 class OnboardingActivityPageBody extends StatefulWidget {
   final Function(bool active, UserActivitySelectionEntity? selectedActivity)
-  setButtonContent;
+      setButtonContent;
   final UserActivitySelectionEntity? initialActivity;
 
   const OnboardingActivityPageBody({
@@ -109,18 +109,18 @@ class _OnboardingActivityPageBodyState
                   Text(
                     _title(activity),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: isSelected ? colors.onPrimaryContainer : null,
-                      fontWeight: FontWeight.w600,
-                    ),
+                          color: isSelected ? colors.onPrimaryContainer : null,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: Dimens.spacing4),
                   Text(
                     _description(activity),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isSelected
-                          ? colors.onPrimaryContainer
-                          : colors.onSurfaceVariant,
-                    ),
+                          color: isSelected
+                              ? colors.onPrimaryContainer
+                              : colors.onSurfaceVariant,
+                        ),
                   ),
                 ],
               ),

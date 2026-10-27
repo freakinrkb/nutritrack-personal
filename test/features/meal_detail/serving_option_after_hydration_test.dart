@@ -189,9 +189,9 @@ void main() {
     addTearDown(tester.view.reset);
 
     Route<void> routeFor(RouteSettings settings) => MaterialPageRoute<void>(
-      settings: settings,
-      builder: (_) => const MealDetailScreen(),
-    );
+          settings: settings,
+          builder: (_) => const MealDetailScreen(),
+        );
 
     await tester.pumpWidget(
       ChangeNotifierProvider<EnergyUnitProvider>(
@@ -488,7 +488,8 @@ class _FakeCacheManager implements CacheManager {
     String? key,
     Map<String, String>? headers,
     bool withProgress = false,
-  }) => const Stream<FileResponse>.empty();
+  }) =>
+      const Stream<FileResponse>.empty();
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

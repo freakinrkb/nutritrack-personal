@@ -41,10 +41,11 @@ class _FakeMealDetailBloc extends Fake implements MealDetailBloc {
     IntakeTypeEntity type,
     MealEntity meal,
     DateTime day,
-  ) => withTrackedDayLock(() async {
-    await _addGate?.future;
-    _dropLog.add('add');
-  });
+  ) =>
+      withTrackedDayLock(() async {
+        await _addGate?.future;
+        _dropLog.add('add');
+      });
 }
 
 class _FakeHomeBloc extends Fake implements HomeBloc {
@@ -162,8 +163,7 @@ void main() {
     ),
   ];
 
-  String headerWithMacros() =>
-      '200 ${l10nEn.kcalLabel}\n'
+  String headerWithMacros() => '200 ${l10nEn.kcalLabel}\n'
       '20 ${l10nEn.carbsLabelShort}  '
       '10 ${l10nEn.fatLabelShort}  '
       '5 ${l10nEn.proteinLabelShort}';
@@ -292,7 +292,8 @@ void main() {
       )));
       await tester.pump();
 
-      await tester.tap(find.byType(PopupMenuButton<VerticalListPopupMenuSelections>));
+      await tester
+          .tap(find.byType(PopupMenuButton<VerticalListPopupMenuSelections>));
       await tester.pumpAndSettle();
 
       expect(find.text(l10nEn.dialogCopyLabel), findsOneWidget);
@@ -318,7 +319,8 @@ void main() {
       )));
       await tester.pump();
 
-      await tester.tap(find.byType(PopupMenuButton<VerticalListPopupMenuSelections>));
+      await tester
+          .tap(find.byType(PopupMenuButton<VerticalListPopupMenuSelections>));
       await tester.pumpAndSettle();
 
       // Empty section: no Copy/Delete/Share — nothing to act on. Import is
@@ -372,7 +374,8 @@ void main() {
     },
   );
 
-  testWidgets('a profile switch queued during a drag between meals waits '
+  testWidgets(
+      'a profile switch queued during a drag between meals waits '
       'for the delete', (WidgetTester tester) async {
     await tester.pumpWidget(
       _wrapWithMaterial(

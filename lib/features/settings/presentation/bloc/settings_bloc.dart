@@ -52,8 +52,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       final appVersion = await AppConst.getVersionNumber();
       final usesImperialUnits = userConfig.usesImperialUnits;
       final offCacheCount = _cachedOffMealDataSource.count;
-      final offCacheSizeBytes = await _cachedOffMealDataSource
-          .getStorageSizeBytes();
+      final offCacheSizeBytes =
+          await _cachedOffMealDataSource.getStorageSizeBytes();
 
       emit(
         SettingsLoadedState(
@@ -265,6 +265,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   /// for the day yet.
   Future<TrackedDayEntity?> getTodayTrackedDay(DateTime day) async {
     return await _getTrackedDayUsecase.getTrackedDay(day);
+  }
+
+  /// Durable per-nutrient goals for the active profile. These apply to every
+  /// day that does not have its own TrackedDayDBO override.
+  Future<Map<String, double>> getNutrientGoals() async {
+    final config = await _getConfigUsecase.getConfig();
+    return config.nutrientGoals;
+  }
+
+  /// Replaces the profile's durable per-nutrient goals in one write.
+  Future<void> setNutrientGoals(Map<String, double> goals) async {
+    await _addConfigUsecase.setNutrientGoals(goals);
   }
 
   /// #173 (+follow-up): persist user-set per-nutrient goals to today's

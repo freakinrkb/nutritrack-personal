@@ -23,7 +23,8 @@ void main() {
       .replaceAll(RegExp(r'\s+'), '-');
 
   final ownAnchors = {
-    for (final m in RegExp(r'^#{1,6}\s+(.+)$', multiLine: true).allMatches(text))
+    for (final m
+        in RegExp(r'^#{1,6}\s+(.+)$', multiLine: true).allMatches(text))
       slug(m.group(1)!.trim()),
   };
 

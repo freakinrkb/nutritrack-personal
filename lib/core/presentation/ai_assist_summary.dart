@@ -27,28 +27,28 @@ String? aiAssistSubtitle(
   required bool enabled,
   required AiProvider? provider,
   String? endpoint,
-}) => switch (configured) {
-  null => null,
-  false => s.settingsAiAssistNotConfiguredLabel,
-  true when enabled && provider != null =>
-    // Brand names are not localized, and the em-dash slot is free in this
-    // state.
-    '${s.settingsAiAssistOnLabel} — ${switch (provider) {
-      AiProvider.anthropic => 'Anthropic',
-      AiProvider.openrouter => 'OpenRouter',
-      AiProvider.openai => 'OpenAI',
-      // No brand to print. #736: the row names where the data goes, and for a
-      // server the user runs that is the machine they pointed it at — host
-      // and port, not the stored URL. That string carries the chat route,
-      // which is on every one of these addresses and tells them apart not at
-      // all, and it carries `userInfo` when the server sits behind basic
-      // auth, which would put a password on the settings row.
-      AiProvider.ownServer =>
-        AiCredentialStorage.displayHost(endpoint ?? '') ?? '',
-    }}',
-  true => s.settingsAiAssistPausedLabel,
-};
-
+}) =>
+    switch (configured) {
+      null => null,
+      false => s.settingsAiAssistNotConfiguredLabel,
+      true when enabled && provider != null =>
+        // Brand names are not localized, and the em-dash slot is free in this
+        // state.
+        '${s.settingsAiAssistOnLabel} — ${switch (provider) {
+          AiProvider.anthropic => 'Anthropic',
+          AiProvider.openrouter => 'OpenRouter',
+          AiProvider.openai => 'OpenAI',
+          // No brand to print. #736: the row names where the data goes, and for a
+          // server the user runs that is the machine they pointed it at — host
+          // and port, not the stored URL. That string carries the chat route,
+          // which is on every one of these addresses and tells them apart not at
+          // all, and it carries `userInfo` when the server sits behind basic
+          // auth, which would put a password on the settings row.
+          AiProvider.ownServer =>
+            AiCredentialStorage.displayHost(endpoint ?? '') ?? '',
+        }}',
+      true => s.settingsAiAssistPausedLabel,
+    };
 
 /// The paragraph naming where a user's typing and photos go for [provider].
 ///
@@ -72,12 +72,13 @@ String aiDisclosureFor(
   S s, {
   required AiProvider provider,
   String typedEndpoint = '',
-}) => switch (provider) {
-  AiProvider.anthropic => s.aiAssistDisclosureAnthropic,
-  AiProvider.openrouter => s.aiAssistDisclosureOpenRouter,
-  AiProvider.openai => s.aiAssistDisclosureOpenAI,
-  AiProvider.ownServer => _ownServerDisclosure(s, typedEndpoint),
-};
+}) =>
+    switch (provider) {
+      AiProvider.anthropic => s.aiAssistDisclosureAnthropic,
+      AiProvider.openrouter => s.aiAssistDisclosureOpenRouter,
+      AiProvider.openai => s.aiAssistDisclosureOpenAI,
+      AiProvider.ownServer => _ownServerDisclosure(s, typedEndpoint),
+    };
 
 /// Empty while no address is stored: there is no destination to name yet, and
 /// a sentence naming nothing would be worse than none.

@@ -169,22 +169,23 @@ class SendIntakeToProfilesUsecase {
   }
 
   Future<void> _closeScoped(String suffix) => Future.wait([
-    _hiveDBProvider.closeScopedBox<IntakeDBO>(
-      HiveDBProvider.intakeBoxName,
-      suffix,
-    ),
-    _hiveDBProvider.closeScopedBox<TrackedDayDBO>(
-      HiveDBProvider.trackedDayBoxName,
-      suffix,
-    ),
-    _hiveDBProvider.closeScopedBox<UserDBO>(HiveDBProvider.userBoxName, suffix),
-    _hiveDBProvider.closeScopedBox<ConfigDBO>(
-      HiveDBProvider.configBoxName,
-      suffix,
-    ),
-    _hiveDBProvider.closeScopedBox<UserActivityDBO>(
-      HiveDBProvider.userActivityBoxName,
-      suffix,
-    ),
-  ]);
+        _hiveDBProvider.closeScopedBox<IntakeDBO>(
+          HiveDBProvider.intakeBoxName,
+          suffix,
+        ),
+        _hiveDBProvider.closeScopedBox<TrackedDayDBO>(
+          HiveDBProvider.trackedDayBoxName,
+          suffix,
+        ),
+        _hiveDBProvider.closeScopedBox<UserDBO>(
+            HiveDBProvider.userBoxName, suffix),
+        _hiveDBProvider.closeScopedBox<ConfigDBO>(
+          HiveDBProvider.configBoxName,
+          suffix,
+        ),
+        _hiveDBProvider.closeScopedBox<UserActivityDBO>(
+          HiveDBProvider.userActivityBoxName,
+          suffix,
+        ),
+      ]);
 }

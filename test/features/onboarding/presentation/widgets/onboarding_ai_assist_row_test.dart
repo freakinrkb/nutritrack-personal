@@ -32,7 +32,8 @@ class _MemoryStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => store[key];
+  }) async =>
+      store[key];
 
   @override
   Future<void> write({
@@ -61,7 +62,8 @@ class _MemoryStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => store.remove(key);
+  }) async =>
+      store.remove(key);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -83,7 +85,8 @@ class _DelayedStorage extends _MemoryStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) => Future.delayed(delay, () => store[key]);
+  }) =>
+      Future.delayed(delay, () => store[key]);
 }
 
 /// The AI row on onboarding's Other options page. #728.

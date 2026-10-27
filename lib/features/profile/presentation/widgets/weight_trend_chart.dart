@@ -83,13 +83,12 @@ class WeightTrendChart extends StatelessWidget {
         CalendarDayCalc.daysBetween(windowStart, date);
     DateTime dayAt(int x) => DateUtils.addDaysToDate(windowStart, x);
 
-    final inWindow =
-        entries
-            .where(
-              (e) => !e.date.isBefore(windowStart) && !e.date.isAfter(today),
-            )
-            .toList()
-          ..sort((a, b) => a.date.compareTo(b.date));
+    final inWindow = entries
+        .where(
+          (e) => !e.date.isBefore(windowStart) && !e.date.isAfter(today),
+        )
+        .toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
 
     if (inWindow.length < 2) {
       return Padding(
@@ -120,12 +119,11 @@ class WeightTrendChart extends StatelessWidget {
     // predating the window rather than lagging one window-length behind.
     final maSpots = <FlSpot>[
       if (movingAverageWindowDays != null)
-        for (final point
-            in WeightMovingAverage(windowDays: movingAverageWindowDays!)
-                .compute(entries)
-                .where((p) =>
-                    !p.date.isBefore(windowStart) &&
-                    !p.date.isAfter(today)))
+        for (final point in WeightMovingAverage(
+                windowDays: movingAverageWindowDays!)
+            .compute(entries)
+            .where(
+                (p) => !p.date.isBefore(windowStart) && !p.date.isAfter(today)))
           FlSpot(dayIndex(point.date).toDouble(), _toChartY(point.weightKg)),
     ];
 
@@ -145,18 +143,15 @@ class WeightTrendChart extends StatelessWidget {
     // Only draw the dashed reference when the target sits within (or just
     // adjacent to) the auto y-range, so a far-off target doesn't autoscale
     // the chart away from the recorded weights.
-    final showTargetLine =
-        targetY != null &&
+    final showTargetLine = targetY != null &&
         targetY >= (minY - yPadding) &&
         targetY <= (maxY + yPadding);
 
     final localeTag = Localizations.localeOf(context).toLanguageTag();
     final dateFormat = DateFormat.MMMd(localeTag);
     // ~5 evenly spaced date labels regardless of window length.
-    final labelInterval = (windowDays / 5)
-        .ceilToDouble()
-        .clamp(1.0, double.infinity)
-        .toDouble();
+    final labelInterval =
+        (windowDays / 5).ceilToDouble().clamp(1.0, double.infinity).toDouble();
 
     return Padding(
       key: const Key('weightHistoryChart'),
@@ -230,10 +225,10 @@ class WeightTrendChart extends StatelessWidget {
                   show: true,
                   getDotPainter: (spot, percent, bar, index) =>
                       FlDotCirclePainter(
-                        radius: 3,
-                        color: lineColor,
-                        strokeWidth: 0,
-                      ),
+                    radius: 3,
+                    color: lineColor,
+                    strokeWidth: 0,
+                  ),
                 ),
               ),
               // Moving-average overlay (#1119): dashed, no dots, thinner

@@ -82,9 +82,10 @@ class AppPalette {
   /// harmonized Material You primary). The neutral canvas, surfaces and macro
   /// colours are untouched, so only the one vivid role follows the user.
   AppPalette withAccent(Color newAccent) {
-    final onNew = ThemeData.estimateBrightnessForColor(newAccent) == Brightness.dark
-        ? Colors.white
-        : const Color(0xFF20201C);
+    final onNew =
+        ThemeData.estimateBrightnessForColor(newAccent) == Brightness.dark
+            ? Colors.white
+            : const Color(0xFF20201C);
     return AppPalette(
       brightness: brightness,
       canvas: canvas,
@@ -116,8 +117,12 @@ class AppPalette {
         onTertiary: onAccent,
         tertiaryContainer: surfaceMuted,
         onTertiaryContainer: textStrong,
-        error: brightness == Brightness.light ? const Color(0xFFC4453A) : const Color(0xFFFFB4AB),
-        onError: brightness == Brightness.light ? Colors.white : const Color(0xFF690005),
+        error: brightness == Brightness.light
+            ? const Color(0xFFC4453A)
+            : const Color(0xFFFFB4AB),
+        onError: brightness == Brightness.light
+            ? Colors.white
+            : const Color(0xFF690005),
         surface: surface,
         onSurface: textStrong,
         surfaceContainerLowest: canvas,

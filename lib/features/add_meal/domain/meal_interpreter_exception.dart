@@ -107,7 +107,6 @@ class MealInterpreterException implements Exception {
   });
 
   @override
-  String toString() =>
-      'MealInterpreterException($reason, ${failure.name}'
+  String toString() => 'MealInterpreterException($reason, ${failure.name}'
       '${statusCode == null ? '' : ', status: $statusCode'})';
 }

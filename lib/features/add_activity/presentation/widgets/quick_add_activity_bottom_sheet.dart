@@ -129,7 +129,8 @@ class _QuickAddActivityBottomSheetState
     final s = S.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
           Dimens.spacing24,
@@ -179,7 +180,8 @@ class _QuickAddActivityBottomSheetState
               child: FilledButton(
                 style: FilledButton.styleFrom(
                   shape: Dimens.shapeM,
-                  padding: const EdgeInsets.symmetric(vertical: Dimens.spacing16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: Dimens.spacing16),
                 ),
                 onPressed: _canSubmit ? _onSubmit : null,
                 child: _saving
@@ -229,11 +231,13 @@ class _QuickAddActivityBottomSheetState
             fillColor: palette.surfaceMuted,
             border: OutlineInputBorder(
               borderRadius: Dimens.borderRadiusM,
-              borderSide: BorderSide(color: palette.border, width: Dimens.hairline),
+              borderSide:
+                  BorderSide(color: palette.border, width: Dimens.hairline),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: Dimens.borderRadiusM,
-              borderSide: BorderSide(color: palette.border, width: Dimens.hairline),
+              borderSide:
+                  BorderSide(color: palette.border, width: Dimens.hairline),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: Dimens.borderRadiusM,

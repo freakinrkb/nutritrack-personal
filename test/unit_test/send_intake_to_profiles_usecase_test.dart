@@ -99,32 +99,32 @@ void main() {
   });
 
   IntakeEntity buildIntake() => IntakeEntity(
-    id: 'source-intake',
-    unit: 'g',
-    amount: 100,
-    type: IntakeTypeEntity.breakfast,
-    dateTime: DateTime(2026, 1, 1, 8),
-    meal: MealEntity(
-      code: 'meal-1',
-      name: 'Test Meal',
-      url: null,
-      mealQuantity: '100',
-      mealUnit: 'g',
-      servingQuantity: null,
-      servingUnit: 'g',
-      servingSize: '100 g',
-      nutriments: MealNutrimentsEntity(
-        energyKcal100: 200,
-        carbohydrates100: 20,
-        fat100: 10,
-        proteins100: 5,
-        sugars100: null,
-        saturatedFat100: null,
-        fiber100: null,
-      ),
-      source: MealSourceEntity.custom,
-    ),
-  );
+        id: 'source-intake',
+        unit: 'g',
+        amount: 100,
+        type: IntakeTypeEntity.breakfast,
+        dateTime: DateTime(2026, 1, 1, 8),
+        meal: MealEntity(
+          code: 'meal-1',
+          name: 'Test Meal',
+          url: null,
+          mealQuantity: '100',
+          mealUnit: 'g',
+          servingQuantity: null,
+          servingUnit: 'g',
+          servingSize: '100 g',
+          nutriments: MealNutrimentsEntity(
+            energyKcal100: 200,
+            carbohydrates100: 20,
+            fat100: 10,
+            proteins100: 5,
+            sugars100: null,
+            saturatedFat100: null,
+            fiber100: null,
+          ),
+          source: MealSourceEntity.custom,
+        ),
+      );
 
   test('copies the intake into the target profile with a fresh id', () async {
     final intake = buildIntake();

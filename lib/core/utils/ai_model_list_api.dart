@@ -57,7 +57,7 @@ class AiModelListResult {
   const AiModelListResult.models(this.ids) : failure = null;
 
   const AiModelListResult.failed(AiModelListFailure this.failure)
-    : ids = const [];
+      : ids = const [];
 }
 
 /// Asks an OpenAI-compatible server what models it serves.
@@ -81,7 +81,7 @@ class AiModelListApi {
   final Duration timeout;
 
   AiModelListApi({http.Client? client, this.timeout = aiModelListTimeout})
-    : _client = GuardedPlaintextClient(client ?? http.Client());
+      : _client = GuardedPlaintextClient(client ?? http.Client());
 
   /// Asks [endpoint] — the `/v1/models` route, per
   /// `AiCredentialStorage.resolveModelsEndpoint` — for its model ids.
@@ -95,15 +95,13 @@ class AiModelListApi {
   Future<AiModelListResult> list(Uri endpoint, {String? apiKey}) async {
     final http.Response response;
     try {
-      response = await _client
-          .get(
-            endpoint,
-            headers: {
-              if (apiKey != null && apiKey.isNotEmpty)
-                'authorization': 'Bearer $apiKey',
-            },
-          )
-          .timeout(timeout);
+      response = await _client.get(
+        endpoint,
+        headers: {
+          if (apiKey != null && apiKey.isNotEmpty)
+            'authorization': 'Bearer $apiKey',
+        },
+      ).timeout(timeout);
     } on InsecureDestinationException {
       // Ahead of the catch-all, which would report this as unreachable and
       // send the user to wake a machine the app never spoke to. The host is

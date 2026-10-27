@@ -27,6 +27,13 @@ class _FakeSettingsBloc extends Fake implements SettingsBloc {
   Future<TrackedDayEntity?> getTodayTrackedDay(DateTime day) async => today;
 
   @override
+  Future<Map<String, double>> getNutrientGoals() async =>
+      const <String, double>{};
+
+  @override
+  Future<void> setNutrientGoals(Map<String, double> goals) async {}
+
+  @override
   Future<DateTime> getCurrentLogicalDay() async => DateTime(2026, 10, 10);
 
   @override

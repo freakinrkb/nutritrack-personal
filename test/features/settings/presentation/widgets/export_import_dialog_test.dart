@@ -74,21 +74,22 @@ void main() {
   }
 
   Future<void> pumpDialog(WidgetTester tester) => tester.pumpWidget(
-    const MaterialApp(
-      localizationsDelegates: [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [Locale('en')],
-      home: Scaffold(body: ExportImportDialog()),
-    ),
-  );
+        const MaterialApp(
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [Locale('en')],
+          home: Scaffold(body: ExportImportDialog()),
+        ),
+      );
 
   tearDown(locator.reset);
 
-  testWidgets('a finished import reloads the blocs that show goal settings, '
+  testWidgets(
+      'a finished import reloads the blocs that show goal settings, '
       'keeping the Trends range (#1363)', (tester) async {
     register(
       const TrendsLoaded(

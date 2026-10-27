@@ -109,19 +109,21 @@ void main() {
       String updated = 'Latest update: August 27, 2026',
       List<(String, int)> groups = const [('16', 1), ('46', 2)],
       List<String> hosts = const ['example.invalid'],
-    }) => _document(lastUpdatedLine: updated, groups: groups, hosts: hosts);
+    }) =>
+        _document(lastUpdatedLine: updated, groups: groups, hosts: hosts);
 
     String de({
       String updated = 'Letzte Aktualisierung: 27. August 2026',
       List<(String, int)> groups = const [('16', 1), ('46', 2)],
       List<String> hosts = const ['example.invalid'],
-    }) => _document(
-      lastUpdatedLine: updated,
-      groups: groups,
-      hosts: hosts,
-      ownerHeading: 'Anbieter und Verantwortlicher',
-      contactLine: 'E-Mail-Adresse des Anbieters: someone@example.invalid',
-    );
+    }) =>
+        _document(
+          lastUpdatedLine: updated,
+          groups: groups,
+          hosts: hosts,
+          ownerHeading: 'Anbieter und Verantwortlicher',
+          contactLine: 'E-Mail-Adresse des Anbieters: someone@example.invalid',
+        );
 
     test('two documents in step pass', () {
       final report = comparePolicies(en(), de());

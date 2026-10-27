@@ -48,8 +48,8 @@ class MealDetailBloc extends Bloc<MealDetailEvent, MealDetailState> {
     this._productsRepository,
     this._remoteSearchCacheDataSource, {
     ToggleFavouriteMealUsecase? favourites,
-  }) : _favourites = favourites,
-       super(
+  })  : _favourites = favourites,
+        super(
           MealDetailInitial(
             totalQuantityConverted: '100',
             selectedUnit: UnitDropdownItem.gml.toString(),

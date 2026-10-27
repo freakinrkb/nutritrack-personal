@@ -6,7 +6,7 @@ import 'package:opennutritracker/generated/l10n.dart';
 
 class OnboardingGoalPageBody extends StatefulWidget {
   final Function(bool active, UserGoalSelectionEntity? selectedGoal)
-  setButtonContent;
+      setButtonContent;
   final UserGoalSelectionEntity? initialGoal;
 
   /// Entered on the previous pages, and used only to derive the suggestion.
@@ -36,10 +36,10 @@ class _OnboardingGoalPageBodyState extends State<OnboardingGoalPageBody> {
   /// the goal the old numbers pointed at. It is pure arithmetic on three
   /// doubles, so there is nothing to save by holding on to it.
   GoalSuggestionEntity? get _suggestion => GoalSuggestionEntity.from(
-    heightCm: widget.heightCm,
-    weightKg: widget.weightKg,
-    targetWeightKg: widget.targetWeightKg,
-  );
+        heightCm: widget.heightCm,
+        weightKg: widget.weightKg,
+        targetWeightKg: widget.targetWeightKg,
+      );
 
   String _label(UserGoalSelectionEntity goal) {
     switch (goal) {
@@ -147,9 +147,7 @@ class _OnboardingGoalPageBodyState extends State<OnboardingGoalPageBody> {
       case GoalSuggestionBasis.targetWeight:
         reason = S.of(context).onboardingGoalSuggestionTarget;
       case GoalSuggestionBasis.bmi:
-        reason = S
-            .of(context)
-            .onboardingGoalSuggestionBmi(
+        reason = S.of(context).onboardingGoalSuggestionBmi(
               suggestion.bmi!.toStringAsFixed(1),
               suggestion.nutritionalStatus!.getName(context),
             );

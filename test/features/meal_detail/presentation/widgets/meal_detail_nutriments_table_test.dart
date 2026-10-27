@@ -35,17 +35,17 @@ const _withoutMicros = MealNutrimentsEntity(
 );
 
 MealEntity _meal(MealNutrimentsEntity nutriments) => MealEntity(
-  code: 'nutriments-table-test',
-  name: 'Test product',
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: nutriments,
-  source: MealSourceEntity.off,
-);
+      code: 'nutriments-table-test',
+      name: 'Test product',
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: nutriments,
+      source: MealSourceEntity.off,
+    );
 
 Future<void> _pump(
   WidgetTester tester, {

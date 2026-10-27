@@ -135,7 +135,8 @@ void main() {
       expect(find.byType(OutlinedButton), findsNWidgets(2));
     });
 
-    testWidgets('share button reports a bounded, on-screen render rect '
+    testWidgets(
+        'share button reports a bounded, on-screen render rect '
         '(guards iPad popover anchor + iPhone presentation fix)', (
       tester,
     ) async {

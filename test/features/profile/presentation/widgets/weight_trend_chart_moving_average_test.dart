@@ -58,7 +58,8 @@ void main() {
       // 30 days by default; the moving-average overlay looks 7 days back.
       final entries = [
         for (var i = 0; i < 10; i++)
-          _entry(today0.subtract(Duration(days: 9 - i)), 80 + (i.isEven ? 0.5 : -0.5)),
+          _entry(today0.subtract(Duration(days: 9 - i)),
+              80 + (i.isEven ? 0.5 : -0.5)),
       ];
 
       final data = await _pumpChart(tester, entries: entries);
@@ -82,7 +83,8 @@ void main() {
       final rawYs = raw.spots.map((s) => s.y).toList();
       final maYs = ma.spots.map((s) => s.y).toList();
       expect(
-        maYs.every((y) => y >= rawYs.reduce((a, b) => a < b ? a : b) &&
+        maYs.every((y) =>
+            y >= rawYs.reduce((a, b) => a < b ? a : b) &&
             y <= rawYs.reduce((a, b) => a > b ? a : b)),
         isTrue,
         reason: 'MA never escapes the raw envelope on this data',

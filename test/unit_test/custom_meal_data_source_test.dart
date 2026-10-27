@@ -85,7 +85,8 @@ void main() {
       expect(ds.getAllCustomMeals(), hasLength(2));
       final names = ds.getAllCustomMeals().map((m) => m.name).toSet();
       expect(names, equals({'Banana', 'Apple'}));
-      final banana = ds.getAllCustomMeals().firstWhere((m) => m.name == 'Banana');
+      final banana =
+          ds.getAllCustomMeals().firstWhere((m) => m.name == 'Banana');
       expect(banana.nutriments.energyKcal100, equals(95),
           reason: 'most-recent save should win on dedup');
     });

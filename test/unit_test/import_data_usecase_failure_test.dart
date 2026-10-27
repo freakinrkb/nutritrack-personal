@@ -83,17 +83,17 @@ ImportDataUsecase _usecase(Future<PlatformFile?> Function() pickFile) {
 }
 
 Future<bool> _importJson(ImportDataUsecase usecase) => usecase.importData(
-  ExportImportBloc.userActivityJsonFileName,
-  ExportImportBloc.userIntakeJsonFileName,
-  ExportImportBloc.trackedDayJsonFileName,
-  ExportImportBloc.recipeJsonFileName,
-  ExportImportBloc.weightLogJsonFileName,
-  ExportImportBloc.customActivityTemplateJsonFileName,
-);
+      ExportImportBloc.userActivityJsonFileName,
+      ExportImportBloc.userIntakeJsonFileName,
+      ExportImportBloc.trackedDayJsonFileName,
+      ExportImportBloc.recipeJsonFileName,
+      ExportImportBloc.weightLogJsonFileName,
+      ExportImportBloc.customActivityTemplateJsonFileName,
+    );
 
 Matcher _failsWith(ExportImportFailureReason reason) => throwsA(
-  isA<ExportImportFailure>().having((f) => f.reason, 'reason', reason),
-);
+      isA<ExportImportFailure>().having((f) => f.reason, 'reason', reason),
+    );
 
 void main() {
   late Directory tempDir;

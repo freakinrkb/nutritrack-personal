@@ -135,19 +135,19 @@ class BulkAddLoadedState extends BulkAddState {
   bool get hasUnresolved => rows.any((row) => !row.isResolved);
 
   BulkAddLoadedState copyWith({List<BulkAddRow>? rows}) => BulkAddLoadedState(
-    rows: rows ?? this.rows,
-    parseErrors: parseErrors,
-    usesImperialUnits: usesImperialUnits,
-    source: source,
-    modelFailure: modelFailure,
-  );
+        rows: rows ?? this.rows,
+        parseErrors: parseErrors,
+        usesImperialUnits: usesImperialUnits,
+        source: source,
+        modelFailure: modelFailure,
+      );
 
   @override
   List<Object?> get props => [
-    rows,
-    parseErrors,
-    usesImperialUnits,
-    source,
-    modelFailure,
-  ];
+        rows,
+        parseErrors,
+        usesImperialUnits,
+        source,
+        modelFailure,
+      ];
 }

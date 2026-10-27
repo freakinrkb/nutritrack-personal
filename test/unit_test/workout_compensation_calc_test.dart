@@ -14,15 +14,16 @@ UserEntity _user({
   double bmi = 25,
   double heightCM = 200,
   CaloriesProfileEntity? caloriesProfile,
-}) => UserEntity(
-  birthday: DateTime(1990, 1, 1),
-  heightCM: heightCM,
-  weightKG: heightCM <= 0 ? 80 : bmi * (heightCM / 100) * (heightCM / 100),
-  gender: gender,
-  goal: UserWeightGoalEntity.maintainWeight,
-  pal: UserPALEntity.sedentary,
-  caloriesProfile: caloriesProfile,
-);
+}) =>
+    UserEntity(
+      birthday: DateTime(1990, 1, 1),
+      heightCM: heightCM,
+      weightKG: heightCM <= 0 ? 80 : bmi * (heightCM / 100) * (heightCM / 100),
+      gender: gender,
+      goal: UserWeightGoalEntity.maintainWeight,
+      pal: UserPALEntity.sedentary,
+      caloriesProfile: caloriesProfile,
+    );
 
 void main() {
   group('WorkoutCompensationCalc anchors', () {

@@ -34,9 +34,8 @@ void main() {
 
     for (final file in files) {
       final locale = file.uri.pathSegments.last;
-      final hint =
-          (jsonDecode(file.readAsStringSync()) as Map)['bulkAddInputHint']
-              as String?;
+      final hint = (jsonDecode(file.readAsStringSync())
+          as Map)['bulkAddInputHint'] as String?;
       if (hint == null) continue; // untranslated: English hint until Weblate
 
       final result = parseMealText(hint);
@@ -61,8 +60,7 @@ void main() {
       expect(
         withQuantity,
         hasLength(greaterThanOrEqualTo(2)),
-        reason:
-            '$locale hint "$hint" only had ${withQuantity.length} item(s) '
+        reason: '$locale hint "$hint" only had ${withQuantity.length} item(s) '
             'with a recognised quantity',
       );
 

@@ -19,6 +19,7 @@ class NavigationOptions {
   static const importRecipeScannerRoute = "importRecipeScanner";
   static const weightHistoryRoute = "weightHistory";
   static const fastingRoute = "fasting";
+  static const routinesRoute = "routines";
   static const accentColourRoute = "accentColour";
 
   /// Named rather than pushed directly because Health Connect can ask for this

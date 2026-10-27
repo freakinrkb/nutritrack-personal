@@ -90,8 +90,7 @@ class ProductsRepository {
     int consistencyBucket(_RankedOffProduct p) =>
         isAtwaterConsistent(p.meal.nutriments) ? 0 : 1;
 
-    final ranked = [...candidates]
-      ..sort((a, b) {
+    final ranked = [...candidates]..sort((a, b) {
         final byConsistency =
             consistencyBucket(a).compareTo(consistencyBucket(b));
         if (byConsistency != 0) return byConsistency;
@@ -123,10 +122,8 @@ class ProductsRepository {
     //
     // After the consistency filter, so nothing is fetched for rows that were
     // just dropped. One call for the whole page rather than one per row.
-    final ids = products
-        .map((meal) => int.tryParse(meal.code ?? ''))
-        .nonNulls
-        .toList();
+    final ids =
+        products.map((meal) => int.tryParse(meal.code ?? '')).nonNulls.toList();
     // Both lookups in flight together: they answer different questions of the
     // same page and neither depends on the other, so serialising them would
     // just add a round trip to every search.
@@ -136,8 +133,7 @@ class ProductsRepository {
     ).wait;
 
     return [
-      for (final meal in products)
-        _decorate(meal, labels, portions),
+      for (final meal in products) _decorate(meal, labels, portions),
     ];
   }
 

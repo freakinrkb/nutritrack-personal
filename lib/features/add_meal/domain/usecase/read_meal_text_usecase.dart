@@ -39,6 +39,7 @@ enum MealTextModelFailure {
   /// user waits, the model is never mentioned again, and rows appear that
   /// look no different from rows the model produced.
   timeout,
+
   /// The app refused to send: plaintext, to an address that is not private.
   ///
   /// The most important one in this list to say out loud, because it is the
@@ -139,7 +140,8 @@ class ReadMealTextUseCase {
           // notice that would say the same thing tomorrow is not worth
           // interrupting for.
           MealInterpreterFailure.rejected ||
-          MealInterpreterFailure.transient => null,
+          MealInterpreterFailure.transient =>
+            null,
         },
       );
     } catch (e, stackTrace) {

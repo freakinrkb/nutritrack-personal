@@ -27,7 +27,7 @@ class FavouriteMealBloc extends Bloc<FavouriteMealEvent, FavouriteMealState> {
   String _searchString = '';
 
   FavouriteMealBloc(this._getFavouriteMealsUsecase, this._getConfigUsecase)
-    : super(FavouriteMealInitial()) {
+      : super(FavouriteMealInitial()) {
     on<LoadFavouriteMealEvent>((event, emit) async {
       _searchString = event.searchString;
       emit(FavouriteMealLoadingState());
@@ -39,8 +39,8 @@ class FavouriteMealBloc extends Bloc<FavouriteMealEvent, FavouriteMealState> {
       await _load(emit);
     });
     _changes = _getFavouriteMealsUsecase.watchFavourites().listen(
-      (_) => add(const _FavouritesChangedEvent()),
-    );
+          (_) => add(const _FavouritesChangedEvent()),
+        );
   }
 
   Future<void> _load(Emitter<FavouriteMealState> emit) async {
@@ -62,10 +62,9 @@ class FavouriteMealBloc extends Bloc<FavouriteMealEvent, FavouriteMealState> {
     }
   }
 
-  bool Function(MealEntity) _matches(String query) =>
-      (meal) =>
-          (meal.name?.toLowerCase().contains(query) ?? false) ||
-          (meal.brands?.toLowerCase().contains(query) ?? false);
+  bool Function(MealEntity) _matches(String query) => (meal) =>
+      (meal.name?.toLowerCase().contains(query) ?? false) ||
+      (meal.brands?.toLowerCase().contains(query) ?? false);
 
   @override
   Future<void> close() async {

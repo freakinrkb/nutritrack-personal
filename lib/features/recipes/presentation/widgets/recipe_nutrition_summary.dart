@@ -37,9 +37,8 @@ class RecipeNutritionSummary extends StatelessWidget {
     final energyTotalDisplay =
         usesKilojoules ? UnitCalc.kcalToKj(energyTotalKcal) : energyTotalKcal;
     final energyPer100Kcal = nutrimentsPer100.energyKcal100 ?? 0;
-    final energyPer100Display = usesKilojoules
-        ? UnitCalc.kcalToKj(energyPer100Kcal)
-        : energyPer100Kcal;
+    final energyPer100Display =
+        usesKilojoules ? UnitCalc.kcalToKj(energyPer100Kcal) : energyPer100Kcal;
     return AppCard(
       padding: const EdgeInsets.all(Dimens.spacing16),
       child: Column(
@@ -47,7 +46,8 @@ class RecipeNutritionSummary extends StatelessWidget {
         children: [
           Text(
             s.recipeNutritionPreviewLabel,
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: Dimens.spacing16),
           Row(
@@ -87,14 +87,17 @@ class RecipeNutritionSummary extends StatelessWidget {
               ),
             ],
           ),
-          Divider(height: Dimens.spacing24 + Dimens.spacing8, color: palette.border),
+          Divider(
+              height: Dimens.spacing24 + Dimens.spacing8,
+              color: palette.border),
           Text(
             '${s.recipeNutritionPer100Label} · '
             '${energyPer100Display.toStringAsFixed(0)} $energyLabel · '
             '${s.carbsLabelShort.toUpperCase()} ${(nutrimentsPer100.carbohydrates100 ?? 0).toStringAsFixed(1)}g · '
             '${s.fatLabelShort.toUpperCase()} ${(nutrimentsPer100.fat100 ?? 0).toStringAsFixed(1)}g · '
             '${s.proteinLabelShort.toUpperCase()} ${(nutrimentsPer100.proteins100 ?? 0).toStringAsFixed(1)}g',
-            style: theme.textTheme.bodySmall?.copyWith(color: palette.textMuted),
+            style:
+                theme.textTheme.bodySmall?.copyWith(color: palette.textMuted),
           ),
         ],
       ),
@@ -124,7 +127,8 @@ class _NutrientCell extends StatelessWidget {
           value.toStringAsFixed(0),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: textTheme.titleLarge?.copyWith(color: color, fontWeight: FontWeight.w800),
+          style: textTheme.titleLarge
+              ?.copyWith(color: color, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 2),
         Text(

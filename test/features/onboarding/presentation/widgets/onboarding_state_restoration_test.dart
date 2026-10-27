@@ -62,7 +62,8 @@ void main() {
       )));
       await tester.pumpAndSettle();
 
-      final chips = tester.widgetList<ChoiceChip>(find.byType(ChoiceChip)).toList();
+      final chips =
+          tester.widgetList<ChoiceChip>(find.byType(ChoiceChip)).toList();
       expect(chips[0].selected, isFalse, reason: 'male should be unselected');
       expect(chips[1].selected, isTrue, reason: 'female should be selected');
     });
@@ -77,7 +78,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // The displayed text is locale-formatted; just confirm the field is non-empty.
-      final dateField = tester.widget<TextFormField>(find.byType(TextFormField));
+      final dateField =
+          tester.widget<TextFormField>(find.byType(TextFormField));
       expect(dateField.controller?.text, isNotEmpty);
     });
   });
@@ -109,8 +111,7 @@ void main() {
 
       // 180 cm restores into the feet + inches fields (5 ft 11 in). These are
       // raw TextFields; the first two in the tree are feet then inches.
-      final raw =
-          tester.widgetList<TextField>(find.byType(TextField)).toList();
+      final raw = tester.widgetList<TextField>(find.byType(TextField)).toList();
       expect(raw[0].controller?.text, '5');
       expect(raw[1].controller?.text, isNotEmpty);
 
@@ -174,8 +175,7 @@ void main() {
       )));
       await tester.pumpAndSettle();
 
-      final boxes =
-          tester.widgetList<Checkbox>(find.byType(Checkbox)).toList();
+      final boxes = tester.widgetList<Checkbox>(find.byType(Checkbox)).toList();
       expect(boxes.every((b) => b.value == false), isTrue);
     });
 

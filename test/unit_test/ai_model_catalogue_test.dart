@@ -31,10 +31,12 @@ void main() {
       // there instead, so "none" has to be representable. #755.
       expect(AiModelCatalogue.forProvider(AiProvider.ownServer), isEmpty);
       expect(AiModelCatalogue.defaultFor(AiProvider.ownServer), isNull);
-      expect(AiModelCatalogue.resolve(AiProvider.ownServer, 'gemma3:4b'), isNull);
+      expect(
+          AiModelCatalogue.resolve(AiProvider.ownServer, 'gemma3:4b'), isNull);
     });
 
-    test('adding cheaper OpenAI models did not move the OpenRouter default', () {
+    test('adding cheaper OpenAI models did not move the OpenRouter default',
+        () {
       // Reordering would send the food photographs of everyone who never
       // opened the picker to a different company, with no interaction, after
       // the photo sheet had named the old one — it interpolates `servedBy`.

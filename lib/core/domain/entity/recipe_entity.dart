@@ -44,8 +44,7 @@ class RecipeEntity extends Equatable {
       id: dbo.id,
       name: dbo.name,
       description: dbo.description,
-      ingredients:
-          dbo.ingredients.map(RecipeIngredientEntity.fromDBO).toList(),
+      ingredients: dbo.ingredients.map(RecipeIngredientEntity.fromDBO).toList(),
       totalWeightG: dbo.totalWeightG,
       aggregatedNutrimentsPer100: MealNutrimentsEntity.fromMealNutrimentsDBO(
         dbo.aggregatedNutrimentsPer100,
@@ -65,8 +64,7 @@ class RecipeEntity extends Equatable {
       description: description,
       ingredients: ingredients.map((i) => i.toDBO()).toList(),
       totalWeightG: totalWeightG,
-      aggregatedNutrimentsPer100:
-          MealNutrimentsDBO.fromProductNutrimentsEntity(
+      aggregatedNutrimentsPer100: MealNutrimentsDBO.fromProductNutrimentsEntity(
         aggregatedNutrimentsPer100,
       ),
       createdAt: createdAt,

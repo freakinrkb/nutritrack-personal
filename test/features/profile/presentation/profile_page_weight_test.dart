@@ -127,7 +127,8 @@ void main() {
     await GetIt.instance.reset();
   });
 
-  testWidgets('tapping the profile weight tile logs a weight-history entry '
+  testWidgets(
+      'tapping the profile weight tile logs a weight-history entry '
       '(regression #510: Profile weight edits used to skip WeightLogBox)', (
     tester,
   ) async {

@@ -343,7 +343,8 @@ class _FakeGetIntakeUsecase implements GetIntakeUsecase {
     DateTime day, {
     int dayStartOffsetHours = 0,
     int dayStartOffsetMinutes = 0,
-  }) async => [];
+  }) async =>
+      [];
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -388,7 +389,8 @@ class _FakeCacheManager implements CacheManager {
     String? key,
     Map<String, String>? headers,
     bool withProgress = false,
-  }) => const Stream<FileResponse>.empty();
+  }) =>
+      const Stream<FileResponse>.empty();
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>

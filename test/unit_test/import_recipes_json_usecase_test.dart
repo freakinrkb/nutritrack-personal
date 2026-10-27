@@ -112,7 +112,8 @@ void main() {
         expect(repo.saved, hasLength(1));
         final saved = repo.saved.single;
         expect(saved.totalWeightG, 300);
-        expect(saved.aggregatedNutrimentsPer100.energyKcal100, closeTo(132, 1e-9));
+        expect(
+            saved.aggregatedNutrimentsPer100.energyKcal100, closeTo(132, 1e-9));
       },
     );
 

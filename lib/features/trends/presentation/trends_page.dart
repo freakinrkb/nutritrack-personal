@@ -60,8 +60,8 @@ class _TrendsView extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         return ListView(
-          padding: const EdgeInsets.fromLTRB(
-              Dimens.spacing16, Dimens.spacing8, Dimens.spacing16, Dimens.spacing32),
+          padding: const EdgeInsets.fromLTRB(Dimens.spacing16, Dimens.spacing8,
+              Dimens.spacing16, Dimens.spacing32),
           children: [
             _StreakCard(
               days: state.days,
@@ -73,10 +73,14 @@ class _TrendsView extends StatelessWidget {
             _RangeSelector(rangeDays: state.rangeDays),
             const SizedBox(height: Dimens.spacing16),
             _CaloriesTrendCard(
-                days: state.days, rangeDays: state.windowDays, palette: palette),
+                days: state.days,
+                rangeDays: state.windowDays,
+                palette: palette),
             const SizedBox(height: Dimens.spacing16),
             _MacrosTrendCard(
-                days: state.days, rangeDays: state.windowDays, palette: palette),
+                days: state.days,
+                rangeDays: state.windowDays,
+                palette: palette),
             const SizedBox(height: Dimens.spacing16),
             _WaterTrendCard(
               waterByDay: state.waterByDay,
@@ -170,9 +174,7 @@ class _StreakCard extends StatelessWidget {
             day.isAfter(weekStart.subtract(const Duration(days: 1))) &&
             day.isBefore(weekEnd.add(const Duration(days: 1))))
         .length;
-    final delta = priorOnTrack.isNotEmpty
-        ? thisWeek - priorOnTrack.length
-        : 0;
+    final delta = priorOnTrack.isNotEmpty ? thisWeek - priorOnTrack.length : 0;
 
     return AppCard(
       padding: const EdgeInsets.all(Dimens.spacing20),
@@ -228,7 +230,8 @@ class _WeekDeltaChip extends StatelessWidget {
     final up = delta > 0;
     final color = up ? palette.proteinColor : palette.fatColor;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing12, vertical: 6),
+      padding:
+          const EdgeInsets.symmetric(horizontal: Dimens.spacing12, vertical: 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.16),
         borderRadius: Dimens.borderRadiusS,
@@ -236,10 +239,14 @@ class _WeekDeltaChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(up ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded, color: color, size: 16),
+          Icon(up ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+              color: color, size: 16),
           const SizedBox(width: 2),
           Text('${delta.abs()}',
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(color: color)),
         ],
       ),
     );
@@ -250,7 +257,8 @@ class _CaloriesTrendCard extends StatelessWidget {
   final List<TrackedDayEntity> days;
   final int rangeDays;
   final AppPalette palette;
-  const _CaloriesTrendCard({required this.days, required this.rangeDays, required this.palette});
+  const _CaloriesTrendCard(
+      {required this.days, required this.rangeDays, required this.palette});
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +266,9 @@ class _CaloriesTrendCard extends StatelessWidget {
     final accent = Theme.of(context).colorScheme.primary;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final byDay = {for (final d in days) DateTime(d.day.year, d.day.month, d.day.day): d};
+    final byDay = {
+      for (final d in days) DateTime(d.day.year, d.day.month, d.day.day): d
+    };
     // Full per-day series across the window; missing days contribute 0 tracked.
     // Values are converted to the user's energy unit up front (#1362), so the
     // plotted line, the goal reference and the tooltip all read in kcal or kJ.
@@ -273,9 +283,11 @@ class _CaloriesTrendCard extends StatelessWidget {
         goals.add(EnergyDisplay.convert(context, d.calorieGoal));
       }
     }
-    final avgGoal = goals.isEmpty ? 0.0 : goals.reduce((a, b) => a + b) / goals.length;
+    final avgGoal =
+        goals.isEmpty ? 0.0 : goals.reduce((a, b) => a + b) / goals.length;
     final maxTracked = spots.fold<double>(0, (m, s) => s.y > m ? s.y : m);
-    final maxY = [maxTracked, avgGoal].reduce((a, b) => a > b ? a : b) * 1.15 + 1;
+    final maxY =
+        [maxTracked, avgGoal].reduce((a, b) => a > b ? a : b) * 1.15 + 1;
 
     return AppCard(
       padding: const EdgeInsets.all(Dimens.spacing20),
@@ -287,53 +299,54 @@ class _CaloriesTrendCard extends StatelessWidget {
           Semantics(
             label: S.of(context).trendsCaloriesLabel,
             child: SizedBox(
-            height: 140,
-            child: LineChart(
-              LineChartData(
-                minX: 0,
-                maxX: (rangeDays - 1).toDouble(),
-                minY: 0,
-                maxY: maxY,
-                gridData: const FlGridData(show: false),
-                borderData: FlBorderData(show: false),
-                titlesData: const FlTitlesData(show: false),
-                lineTouchData: LineTouchData(
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipItems: (spots) => [
-                      for (final s in spots)
-                        LineTooltipItem(
-                          s.y.toInt().toString(),
-                          text.labelMedium ?? const TextStyle(),
-                        ),
-                    ],
+              height: 140,
+              child: LineChart(
+                LineChartData(
+                  minX: 0,
+                  maxX: (rangeDays - 1).toDouble(),
+                  minY: 0,
+                  maxY: maxY,
+                  gridData: const FlGridData(show: false),
+                  borderData: FlBorderData(show: false),
+                  titlesData: const FlTitlesData(show: false),
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipItems: (spots) => [
+                        for (final s in spots)
+                          LineTooltipItem(
+                            s.y.toInt().toString(),
+                            text.labelMedium ?? const TextStyle(),
+                          ),
+                      ],
+                    ),
                   ),
+                  // Dashed average-goal reference: the line above/below it reads
+                  // as days over / under goal at a glance.
+                  extraLinesData: avgGoal <= 0
+                      ? const ExtraLinesData()
+                      : ExtraLinesData(horizontalLines: [
+                          HorizontalLine(
+                            y: avgGoal,
+                            color: palette.textMuted,
+                            strokeWidth: 1.2,
+                            dashArray: const [6, 4],
+                          ),
+                        ]),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: spots,
+                      isCurved: true,
+                      preventCurveOverShooting: true,
+                      color: accent,
+                      barWidth: 3,
+                      dotData: FlDotData(show: rangeDays <= 7),
+                      belowBarData: BarAreaData(
+                          show: true, color: accent.withValues(alpha: 0.12)),
+                    ),
+                  ],
                 ),
-                // Dashed average-goal reference: the line above/below it reads
-                // as days over / under goal at a glance.
-                extraLinesData: avgGoal <= 0
-                    ? const ExtraLinesData()
-                    : ExtraLinesData(horizontalLines: [
-                        HorizontalLine(
-                          y: avgGoal,
-                          color: palette.textMuted,
-                          strokeWidth: 1.2,
-                          dashArray: const [6, 4],
-                        ),
-                      ]),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: spots,
-                    isCurved: true,
-                    preventCurveOverShooting: true,
-                    color: accent,
-                    barWidth: 3,
-                    dotData: FlDotData(show: rangeDays <= 7),
-                    belowBarData: BarAreaData(show: true, color: accent.withValues(alpha: 0.12)),
-                  ),
-                ],
               ),
             ),
-          ),
           ),
         ],
       ),
@@ -374,7 +387,8 @@ class _WaterTrendCard extends StatelessWidget {
     final avg = loggedDays == 0 ? 0 : (sum / rangeDays).round();
     final maxWater = spots.fold<double>(0, (m, s) => s.y > m ? s.y : m);
     final maxY =
-        [maxWater, goalMl.toDouble()].reduce((a, b) => a > b ? a : b) * 1.15 + 1;
+        [maxWater, goalMl.toDouble()].reduce((a, b) => a > b ? a : b) * 1.15 +
+            1;
 
     return AppCard(
       padding: const EdgeInsets.all(Dimens.spacing20),
@@ -474,12 +488,24 @@ class _MacrosTrendCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final rows = [
-      (S.of(context).carbsLabel, _avg(days.map((d) => d.carbsTracked)),
-          _avg(days.map((d) => d.carbsGoal)), palette.carbs),
-      (S.of(context).fatLabel, _avg(days.map((d) => d.fatTracked)),
-          _avg(days.map((d) => d.fatGoal)), palette.fat),
-      (S.of(context).proteinLabel, _avg(days.map((d) => d.proteinTracked)),
-          _avg(days.map((d) => d.proteinGoal)), palette.protein),
+      (
+        S.of(context).carbsLabel,
+        _avg(days.map((d) => d.carbsTracked)),
+        _avg(days.map((d) => d.carbsGoal)),
+        palette.carbs
+      ),
+      (
+        S.of(context).fatLabel,
+        _avg(days.map((d) => d.fatTracked)),
+        _avg(days.map((d) => d.fatGoal)),
+        palette.fat
+      ),
+      (
+        S.of(context).proteinLabel,
+        _avg(days.map((d) => d.proteinTracked)),
+        _avg(days.map((d) => d.proteinGoal)),
+        palette.protein
+      ),
     ];
     return AppCard(
       padding: const EdgeInsets.all(Dimens.spacing20),
@@ -500,7 +526,9 @@ class _MacrosTrendCard extends StatelessWidget {
                 ),
                 const SizedBox(width: Dimens.spacing8),
                 Text('${intake.toInt()} / ${goal.toInt()} g',
-                    style: text.bodySmall?.copyWith(color: palette.textStrong, fontWeight: FontWeight.w700)),
+                    style: text.bodySmall?.copyWith(
+                        color: palette.textStrong,
+                        fontWeight: FontWeight.w700)),
               ],
             ),
             const SizedBox(height: 6),

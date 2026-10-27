@@ -66,13 +66,13 @@ class _FakeGetUserUsecase extends Fake implements GetUserUsecase {
 
   @override
   Future<UserEntity> getUserData() async => UserEntity(
-    birthday: DateTime(1990, 6, 15),
-    heightCM: 165,
-    weightKG: weightKg,
-    gender: UserGenderEntity.female,
-    goal: UserWeightGoalEntity.maintainWeight,
-    pal: UserPALEntity.sedentary,
-  );
+        birthday: DateTime(1990, 6, 15),
+        heightCM: 165,
+        weightKG: weightKg,
+        gender: UserGenderEntity.female,
+        goal: UserWeightGoalEntity.maintainWeight,
+        pal: UserPALEntity.sedentary,
+      );
 }
 
 Widget _wrap(Widget child) {
@@ -162,7 +162,8 @@ void main() {
       );
     });
 
-    testWidgets('default 30d hides an older point (showing empty state), '
+    testWidgets(
+        'default 30d hides an older point (showing empty state), '
         'selecting 60d shows chart, and selecting All shows chart '
         'with very old history', (tester) async {
       final today = DateTime.now();
@@ -213,7 +214,8 @@ void main() {
     });
   });
 
-  testWidgets('deleting an entry reloads Trends so its weight card drops '
+  testWidgets(
+      'deleting an entry reloads Trends so its weight card drops '
       'the reading (#1359)', (tester) async {
     final recorder = ReloadRecorder()..register();
     addTearDown(locator.reset);
@@ -247,9 +249,8 @@ void main() {
             addUsecase: _FakeAddWeightLogUsecase(),
             deleteUsecase: _FakeDeleteWeightLogUsecase(),
             configRepository: _FakeConfigRepository(),
-            getUserUsecase: profileKg == null
-                ? null
-                : _FakeGetUserUsecase(profileKg),
+            getUserUsecase:
+                profileKg == null ? null : _FakeGetUserUsecase(profileKg),
           ),
         ),
       );
@@ -292,7 +293,8 @@ void main() {
     });
   });
 
-  testWidgets('deleting a row hands over that row, filed day and all, '
+  testWidgets(
+      'deleting a row hands over that row, filed day and all, '
       'when its date shows a neighbouring day (#1418)', (tester) async {
     ReloadRecorder().register();
     addTearDown(locator.reset);

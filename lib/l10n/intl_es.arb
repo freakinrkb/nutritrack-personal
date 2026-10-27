@@ -246,7 +246,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Se borrarán los registros del diario asociados a esta comida.",
+  "customMealsDeleteConfirmContent": "Los registros anteriores del diario de esta comida personalizada se conservarán.",
   "customMealsDeleteConfirmTitle": "¿Borrar comida personalizada?",
   "customMealsEmptyLabel": "No tienes comidas personalizadas.",
   "dailyKcalAdjustmentLabel": "Ajuste diario de Kcal:",

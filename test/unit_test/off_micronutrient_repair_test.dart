@@ -21,31 +21,31 @@ import '../helpers/hive_test_setup.dart';
 // The expectations are the app's units, the same pairs #775's own test
 // reads in both directions.
 MealNutrimentsDBO _offGramsAsStoredBefore775() => MealNutrimentsDBO(
-  energyKcal100: 250,
-  carbohydrates100: 30,
-  fat100: 10,
-  proteins100: 8,
-  sugars100: 12,
-  saturatedFat100: 4,
-  fiber100: 2,
-  monounsaturatedFat100: 1.1,
-  polyunsaturatedFat100: 2.2,
-  transFat100: 0.5,
-  cholesterol100: 0.055,
-  sodium100: 0.12,
-  potassium100: 0.3,
-  magnesium100: 0.025,
-  calcium100: 0.1,
-  iron100: 0.002,
-  zinc100: 0.001,
-  phosphorus100: 0.15,
-  vitaminA100: 0.00009,
-  vitaminC100: 0.045,
-  vitaminD100: 0.000005,
-  vitaminB6100: 0.0003,
-  vitaminB12100: 0.0000015,
-  niacin100: 0.008,
-);
+      energyKcal100: 250,
+      carbohydrates100: 30,
+      fat100: 10,
+      proteins100: 8,
+      sugars100: 12,
+      saturatedFat100: 4,
+      fiber100: 2,
+      monounsaturatedFat100: 1.1,
+      polyunsaturatedFat100: 2.2,
+      transFat100: 0.5,
+      cholesterol100: 0.055,
+      sodium100: 0.12,
+      potassium100: 0.3,
+      magnesium100: 0.025,
+      calcium100: 0.1,
+      iron100: 0.002,
+      zinc100: 0.001,
+      phosphorus100: 0.15,
+      vitaminA100: 0.00009,
+      vitaminC100: 0.045,
+      vitaminD100: 0.000005,
+      vitaminB6100: 0.0003,
+      vitaminB12100: 0.0000015,
+      niacin100: 0.008,
+    );
 
 void _expectAppUnits(MealNutrimentsDBO n) {
   // Macros and the three lipid fields are grams on both sides.
@@ -84,65 +84,67 @@ MealDBO _meal({
   String? code = '3017620422003',
   String name = 'Nutella',
   bool? detailed,
-}) => MealDBO(
-  code: code,
-  name: name,
-  brands: 'Ferrero',
-  thumbnailImageUrl: 'https://example.test/thumb.jpg',
-  mainImageUrl: null,
-  url: 'https://world.openfoodfacts.org/product/3017620422003',
-  mealQuantity: '400',
-  mealUnit: 'g',
-  servingQuantity: 15,
-  servingUnit: 'g',
-  servingSize: '15 g',
-  source: source,
-  nutriments: nutriments ?? _offGramsAsStoredBefore775(),
-  detailed: detailed,
-  dataVersion: dataVersion,
-);
+}) =>
+    MealDBO(
+      code: code,
+      name: name,
+      brands: 'Ferrero',
+      thumbnailImageUrl: 'https://example.test/thumb.jpg',
+      mainImageUrl: null,
+      url: 'https://world.openfoodfacts.org/product/3017620422003',
+      mealQuantity: '400',
+      mealUnit: 'g',
+      servingQuantity: 15,
+      servingUnit: 'g',
+      servingSize: '15 g',
+      source: source,
+      nutriments: nutriments ?? _offGramsAsStoredBefore775(),
+      detailed: detailed,
+      dataVersion: dataVersion,
+    );
 
 /// A row the way a build carrying #775 writes it: the entity mapping has
 /// already converted, and [MealDBO.fromMealEntity] stamps the version.
 MealDBO _mealWrittenAfter775({
   MealSourceEntity source = MealSourceEntity.off,
-}) => MealDBO.fromMealEntity(
-  MealEntity(
-    code: '3168930010265',
-    name: 'Muesli',
-    brands: 'Bjorg',
-    url: null,
-    thumbnailImageUrl: null,
-    mainImageUrl: null,
-    mealQuantity: '500',
-    mealUnit: 'g',
-    servingQuantity: 50,
-    servingUnit: 'g',
-    servingSize: '50 g',
-    nutriments: const MealNutrimentsEntity(
-      energyKcal100: 380,
-      carbohydrates100: 60,
-      fat100: 8,
-      proteins100: 10,
-      sugars100: 15,
-      saturatedFat100: 1.5,
-      fiber100: 9,
-      sodium100: 42.8,
-      iron100: 2.1,
-      vitaminD100: 5,
-    ),
-    source: source,
-  ),
-);
+}) =>
+    MealDBO.fromMealEntity(
+      MealEntity(
+        code: '3168930010265',
+        name: 'Muesli',
+        brands: 'Bjorg',
+        url: null,
+        thumbnailImageUrl: null,
+        mainImageUrl: null,
+        mealQuantity: '500',
+        mealUnit: 'g',
+        servingQuantity: 50,
+        servingUnit: 'g',
+        servingSize: '50 g',
+        nutriments: const MealNutrimentsEntity(
+          energyKcal100: 380,
+          carbohydrates100: 60,
+          fat100: 8,
+          proteins100: 10,
+          sugars100: 15,
+          saturatedFat100: 1.5,
+          fiber100: 9,
+          sodium100: 42.8,
+          iron100: 2.1,
+          vitaminD100: 5,
+        ),
+        source: source,
+      ),
+    );
 
 IntakeDBO _intake(String id, MealDBO meal, {double amount = 100}) => IntakeDBO(
-  id: id,
-  unit: 'g',
-  amount: amount,
-  type: IntakeTypeDBO.breakfast,
-  meal: meal,
-  dateTime: DateTime.utc(2026, 8, 20, 8, 15),
-);
+      id: id,
+      unit: 'g',
+      amount: amount,
+      type: IntakeTypeDBO.breakfast,
+      meal: meal,
+      dateTime: DateTime.utc(2026, 8, 20, 8, 15),
+    );
 
 RecipeDBO _recipe(String id, List<RecipeIngredientDBO> ingredients) {
   final total = ingredients.fold<double>(0, (s, i) => s + i.convertedAmountG);
@@ -303,7 +305,8 @@ void main() {
       await recipeBox.deleteFromDisk();
     });
 
-    test('repairs only the pre-#775 Open Food Facts intakes in a mixed box, '
+    test(
+        'repairs only the pre-#775 Open Food Facts intakes in a mixed box, '
         'and a second run changes nothing', () async {
       await intakeBox.addAll([
         _intake('old-off', _meal(source: MealSourceDBO.off)),
@@ -404,7 +407,8 @@ void main() {
       },
     );
 
-    test('repairs an unstamped Open Food Facts row in the saved-meals box, '
+    test(
+        'repairs an unstamped Open Food Facts row in the saved-meals box, '
         'and a second run changes nothing', () async {
       // Nothing in the app writes an `off` row here — the edit screen saves
       // a meal for reuse only when its source is `custom` — but the box is
@@ -475,7 +479,8 @@ void main() {
       }, after);
     });
 
-    test('repairs Open Food Facts ingredient snapshots and recomputes the '
+    test(
+        'repairs Open Food Facts ingredient snapshots and recomputes the '
         'recipe aggregate, leaving recipes without one alone', () async {
       // 100 g of the pre-#775 OFF product (120 mg sodium once repaired) plus
       // 100 g of a custom food declaring 80 mg: 200 mg over 200 g is

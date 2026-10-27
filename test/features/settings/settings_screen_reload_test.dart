@@ -69,7 +69,8 @@ class _EmptyStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => null;
+  }) async =>
+      null;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -78,15 +79,15 @@ class _EmptyStorage implements FlutterSecureStorage {
 class _FakeProber extends Fake implements AiEndpointProber {}
 
 Widget _app() => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  home: const SettingsScreen(),
-);
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      home: const SettingsScreen(),
+    );
 
 void main() {
   late _DrivenSettingsBloc settingsBloc;
@@ -157,7 +158,8 @@ void main() {
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
-  testWidgets('coming back from a pushed screen re-reads the cache count '
+  testWidgets(
+      'coming back from a pushed screen re-reads the cache count '
       '(#1368)', (tester) async {
     // The embedded form, as the You tab hosts it: it outlives the search and
     // scan screens that fill the cache, which are pushed over it.
@@ -178,9 +180,8 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    final loadsOnEntry = settingsBloc.events
-        .whereType<LoadSettingsEvent>()
-        .length;
+    final loadsOnEntry =
+        settingsBloc.events.whereType<LoadSettingsEvent>().length;
 
     navigatorKey.currentState!.push(
       MaterialPageRoute<void>(builder: (_) => const Scaffold()),

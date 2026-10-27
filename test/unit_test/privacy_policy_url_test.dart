@@ -51,8 +51,8 @@ void main() {
       final routedToGerman = S.supportedLocales
           .map((locale) => locale.languageCode)
           .where(
-            (code) => URLConst.privacyPolicyFor(code) ==
-                URLConst.privacyPolicyURLDe,
+            (code) =>
+                URLConst.privacyPolicyFor(code) == URLConst.privacyPolicyURLDe,
           )
           .toList();
 

@@ -140,13 +140,17 @@ void main() {
   testWidgets('renders both checkboxes unchecked initially', (tester) async {
     await pumpIntroPage(tester, onSetPageContent: (_, _) {});
 
-    final checkboxes = tester.widgetList<Checkbox>(find.byType(Checkbox)).toList();
+    final checkboxes =
+        tester.widgetList<Checkbox>(find.byType(Checkbox)).toList();
     expect(checkboxes, hasLength(2));
-    expect(checkboxes[0].value, isFalse, reason: 'policy checkbox starts unchecked');
-    expect(checkboxes[1].value, isFalse, reason: 'data-collection checkbox starts unchecked');
+    expect(checkboxes[0].value, isFalse,
+        reason: 'policy checkbox starts unchecked');
+    expect(checkboxes[1].value, isFalse,
+        reason: 'data-collection checkbox starts unchecked');
   });
 
-  testWidgets('tapping the policy checkbox reports (true, false) and checks the box',
+  testWidgets(
+      'tapping the policy checkbox reports (true, false) and checks the box',
       (tester) async {
     bool? lastPolicy;
     bool? lastData;
@@ -237,7 +241,8 @@ void main() {
         reason: 'no seeding should have started');
   });
 
-  testWidgets('tapping the policy ListTile (not just the checkbox) also toggles',
+  testWidgets(
+      'tapping the policy ListTile (not just the checkbox) also toggles',
       (tester) async {
     bool? lastPolicy;
     await pumpIntroPage(tester, onSetPageContent: (policy, _) {

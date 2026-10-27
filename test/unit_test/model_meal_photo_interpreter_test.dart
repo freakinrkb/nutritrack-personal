@@ -46,25 +46,26 @@ class FakeClient extends http.BaseClient {
 }
 
 String toolReply(List<Map<String, dynamic>> items) => jsonEncode({
-  'id': 'msg_1',
-  'type': 'message',
-  'role': 'assistant',
-  'content': [
-    {
-      'type': 'tool_use',
-      'id': 'tu_1',
-      'name': 'log_meal_items',
-      'input': {'items': items},
-    },
-  ],
-});
+      'id': 'msg_1',
+      'type': 'message',
+      'role': 'assistant',
+      'content': [
+        {
+          'type': 'tool_use',
+          'id': 'tu_1',
+          'name': 'log_meal_items',
+          'input': {'items': items},
+        },
+      ],
+    });
 
 ModelMealPhotoInterpreter interpreterWith(
   http.Client client, {
   Duration timeout = AnthropicMealItemsApi.defaultTimeout,
-}) => ModelMealPhotoInterpreter(
-  AnthropicMealItemsApi(client, () => 'test-key', timeout: timeout),
-);
+}) =>
+    ModelMealPhotoInterpreter(
+      AnthropicMealItemsApi(client, () => 'test-key', timeout: timeout),
+    );
 
 final _photo = MealPhoto(
   bytes: Uint8List.fromList([1, 2, 3, 4]),
@@ -442,7 +443,8 @@ void main() {
           throwsA(
             isA<MealInterpreterException>()
                 .having((e) => e.statusCode, 'statusCode', 401)
-                .having((e) => e.failure, 'failure', MealInterpreterFailure.auth),
+                .having(
+                    (e) => e.failure, 'failure', MealInterpreterFailure.auth),
           ),
         );
       },
@@ -505,12 +507,11 @@ void main() {
       await expectLater(
         interpreterWith(client).interpret(_photo),
         throwsA(
-          isA<MealInterpreterException>()
-              .having(
-                (e) => e.failure,
-                'failure',
-                MealInterpreterFailure.transient,
-              ),
+          isA<MealInterpreterException>().having(
+            (e) => e.failure,
+            'failure',
+            MealInterpreterFailure.transient,
+          ),
         ),
       );
     });

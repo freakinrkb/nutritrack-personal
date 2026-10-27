@@ -52,7 +52,8 @@ class _FakeSecureStorage extends Fake implements SecureAppStorageProvider {
 void main() {
   setUpAll(registerHiveAdaptersOnce);
 
-  test('the box swap waits for a writer holding the tracked-day lock', () async {
+  test('the box swap waits for a writer holding the tracked-day lock',
+      () async {
     Future<Box<T>> open<T>(String name) =>
         Hive.openBox<T>('switch_lock_$name', bytes: Uint8List(0));
     final log = <String>[];

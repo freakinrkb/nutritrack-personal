@@ -98,8 +98,7 @@ class _CopyToProfileSheetState extends State<_CopyToProfileSheet> {
             child: Semantics(
               identifier: 'copy-to-profile-confirm',
               child: FilledButton(
-                onPressed:
-                    _selectedIds.isEmpty || _copying ? null : _onConfirm,
+                onPressed: _selectedIds.isEmpty || _copying ? null : _onConfirm,
                 child: _copying
                     ? const SizedBox(
                         height: 20,
@@ -117,9 +116,8 @@ class _CopyToProfileSheetState extends State<_CopyToProfileSheet> {
 
   Future<void> _onConfirm() async {
     setState(() => _copying = true);
-    final targets = widget.otherProfiles
-        .where((p) => _selectedIds.contains(p.id))
-        .toList();
+    final targets =
+        widget.otherProfiles.where((p) => _selectedIds.contains(p.id)).toList();
     await locator<SendIntakeToProfilesUsecase>()
         .copyToProfiles(widget.intakes, targets);
     if (!mounted) return;

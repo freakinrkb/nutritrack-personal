@@ -17,6 +17,7 @@ import 'package:opennutritracker/core/data/repository/intake_repository.dart';
 import 'package:opennutritracker/core/data/repository/recipe_repository.dart';
 import 'package:opennutritracker/core/data/repository/tracked_day_repository.dart';
 import 'package:opennutritracker/core/data/repository/user_activity_repository.dart';
+import 'package:opennutritracker/core/data/repository/water_intake_repository.dart';
 import 'package:opennutritracker/core/data/repository/weight_log_repository.dart';
 import 'package:opennutritracker/core/utils/csv_data_exporter.dart';
 import 'package:opennutritracker/core/utils/export_write_verifier.dart';
@@ -41,6 +42,7 @@ class ExportDataUsecase {
   final CustomActivityTemplateRepository _customActivityTemplateRepository;
   final ConfigRepository _configRepository;
   final FavouriteMealRepository _favouriteMealRepository;
+  final WaterIntakeRepository? _waterIntakeRepository;
 
   ExportDataUsecase(
     this._userActivityRepository,
@@ -51,8 +53,9 @@ class ExportDataUsecase {
     this._weightLogRepository,
     this._customActivityTemplateRepository,
     this._configRepository,
-    this._favouriteMealRepository,
-  );
+    this._favouriteMealRepository, {
+    WaterIntakeRepository? waterIntakeRepository,
+  }) : _waterIntakeRepository = waterIntakeRepository;
 
   /// Exports user activity, intake, tracked day, recipe, weight-log, Custom
   /// activity template and favourites data, plus the profile's goal
@@ -75,6 +78,8 @@ class ExportDataUsecase {
     String customActivityTemplateJsonFileName, {
     ExportFormat format = ExportFormat.json,
     String favouriteJsonFileName = 'user_favourites.json',
+    String customMealJsonFileName = 'user_custom_meals.json',
+    String waterIntakeJsonFileName = 'user_water.json',
     String userActivityCsvFileName = 'user_activity.csv',
     String userIntakeCsvFileName = 'user_intake.csv',
     String trackedDayCsvFileName = 'user_tracked_day.csv',
@@ -90,6 +95,8 @@ class ExportDataUsecase {
       customActivityTemplateJsonFileName: customActivityTemplateJsonFileName,
       goalSettingsJsonFileName: goalSettingsJsonFileName,
       favouriteJsonFileName: favouriteJsonFileName,
+      customMealJsonFileName: customMealJsonFileName,
+      waterIntakeJsonFileName: waterIntakeJsonFileName,
       userActivityCsvFileName: userActivityCsvFileName,
       userIntakeCsvFileName: userIntakeCsvFileName,
       trackedDayCsvFileName: trackedDayCsvFileName,
@@ -153,6 +160,8 @@ class ExportDataUsecase {
     required String customActivityTemplateJsonFileName,
     String goalSettingsJsonFileName = 'goal_settings.json',
     String favouriteJsonFileName = 'user_favourites.json',
+    String customMealJsonFileName = 'user_custom_meals.json',
+    String waterIntakeJsonFileName = 'user_water.json',
     String userActivityCsvFileName = 'user_activity.csv',
     String userIntakeCsvFileName = 'user_intake.csv',
     String trackedDayCsvFileName = 'user_tracked_day.csv',
@@ -164,8 +173,8 @@ class ExportDataUsecase {
     // or profile switch can change either half of the backup.
     await withTrackedDayLock(() async {
       // Activity dataset
-      final fullUserActivity = await _userActivityRepository
-          .getAllUserActivityDBO();
+      final fullUserActivity =
+          await _userActivityRepository.getAllUserActivityDBO();
       if (format == ExportFormat.json) {
         final bytes = utf8.encode(
           jsonEncode(fullUserActivity.map((a) => a.toJson()).toList()),
@@ -251,8 +260,8 @@ class ExportDataUsecase {
 
         // Export the current library version while preserving when it was
         // starred. The custom-meal and recipe libraries are not exported.
-        final fullFavourites = await _favouriteMealRepository
-            .getAllFavouritesDBO();
+        final fullFavourites =
+            await _favouriteMealRepository.getAllFavouritesDBO();
         final favouriteBytes = utf8.encode(
           jsonEncode(fullFavourites.map((f) => f.toJson()).toList()),
         );
@@ -291,8 +300,8 @@ class ExportDataUsecase {
         );
 
         // Custom activity templates (#70 follow-up)
-        final fullTemplates = await _customActivityTemplateRepository
-            .allTemplateDBOs();
+        final fullTemplates =
+            await _customActivityTemplateRepository.allTemplateDBOs();
         final templatesBytes = utf8.encode(
           jsonEncode(
             fullTemplates.map((template) => template.toJson()).toList(),
@@ -305,6 +314,34 @@ class ExportDataUsecase {
             templatesBytes,
           ),
         );
+
+        // The shared custom-meal library. Its photos are collected below
+        // and travel under `meal_images/`, so a restored meal is usable
+        // without re-taking the picture.
+        final customMeals = _customMealDataSource.getAllCustomMeals();
+        final customMealBytes = utf8.encode(
+          jsonEncode(customMeals.map((meal) => meal.toJson()).toList()),
+        );
+        archive.addFile(
+          ArchiveFile(
+            customMealJsonFileName,
+            customMealBytes.length,
+            customMealBytes,
+          ),
+        );
+
+        // This profile's water log, one row per sip, so the diary's
+        // hydration total survives a restore.
+        final waterRepository = _waterIntakeRepository;
+        if (waterRepository != null) {
+          final waterEntries = await waterRepository.getAllEntriesDBO();
+          final waterBytes = utf8.encode(
+            jsonEncode(waterEntries.map((entry) => entry.toJson()).toList()),
+          );
+          archive.addFile(
+            ArchiveFile(waterIntakeJsonFileName, waterBytes.length, waterBytes),
+          );
+        }
 
         // The profile's goal settings (#1363), so a restore after a reset or
         // a reinstall brings back the goals and not just the diary.

@@ -115,7 +115,8 @@ void main() {
       expect(ref!.amount, 8);
     });
 
-    test('non-binary averaged at 25 — iron sits at the female / male midpoint', () {
+    test('non-binary averaged at 25 — iron sits at the female / male midpoint',
+        () {
       final ref = getReferenceFor(
         nutrient: NutrientPanelKeys.iron,
         user: user(

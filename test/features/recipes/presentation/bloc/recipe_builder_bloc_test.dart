@@ -78,8 +78,8 @@ void main() {
 
       expect(bloc.state.ingredients, hasLength(1));
       expect(bloc.state.totalWeightG, 100);
-      expect(
-          bloc.state.aggregatedNutrimentsPer100.energyKcal100, closeTo(340, 0.01));
+      expect(bloc.state.aggregatedNutrimentsPer100.energyKcal100,
+          closeTo(340, 0.01));
     });
 
     test('save with empty name emits nameRequired error', () async {
@@ -155,7 +155,8 @@ void main() {
       expect(bloc.state.name, 'Original');
     });
 
-    test('initialize with empty-id recipe (duplicate sentinel) treats as create',
+    test(
+        'initialize with empty-id recipe (duplicate sentinel) treats as create',
         () async {
       final duplicate = RecipeEntity(
         id: '',

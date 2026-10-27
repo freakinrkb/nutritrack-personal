@@ -29,6 +29,6 @@ class ToggleFavouriteMealUsecase {
   /// Stores [meal], the full record its detail page fetched, over a starred
   /// food's thin search snapshot. Stars nothing that was not starred.
   Future<void> refreshDetailedSnapshot(MealEntity meal) => withTrackedDayLock(
-    () => _favouriteMealRepository.refreshDetailedSnapshot(meal),
-  );
+        () => _favouriteMealRepository.refreshDetailedSnapshot(meal),
+      );
 }

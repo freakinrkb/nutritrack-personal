@@ -169,8 +169,8 @@ class _BodyWeightInputState extends State<BodyWeightInput> {
             child: Text(
               errorText,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
+                    color: Theme.of(context).colorScheme.error,
+                  ),
             ),
           ),
       ],

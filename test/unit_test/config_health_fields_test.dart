@@ -12,15 +12,16 @@ ConfigDBO _dbo({
   bool? healthImportEnabled,
   double? healthWorkoutKcalMultiplier,
   DateTime? healthLastImportAt,
-}) => ConfigDBO(
-  false,
-  false,
-  false,
-  AppThemeDBO.system,
-  healthImportEnabled: healthImportEnabled,
-  healthWorkoutKcalMultiplier: healthWorkoutKcalMultiplier,
-  healthLastImportAt: healthLastImportAt,
-);
+}) =>
+    ConfigDBO(
+      false,
+      false,
+      false,
+      AppThemeDBO.system,
+      healthImportEnabled: healthImportEnabled,
+      healthWorkoutKcalMultiplier: healthWorkoutKcalMultiplier,
+      healthLastImportAt: healthLastImportAt,
+    );
 
 void main() {
   group('ConfigEntity health import defaults', () {
@@ -123,8 +124,8 @@ void main() {
     });
 
     ConfigDataSource sourceFor(Box<ConfigDBO> profileBox) => ConfigDataSource(
-      FakeHiveDBProvider(configBox: profileBox, appConfigBox: appBox),
-    );
+          FakeHiveDBProvider(configBox: profileBox, appConfigBox: appBox),
+        );
 
     test('a second profile does not inherit the first one\'s opt-in', () async {
       final profileA = sourceFor(profileABox);

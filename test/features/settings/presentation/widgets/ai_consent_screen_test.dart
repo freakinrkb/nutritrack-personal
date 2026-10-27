@@ -10,7 +10,8 @@ import 'package:opennutritracker/generated/l10n.dart';
 
 import '../../../../helpers/test_l10n.dart';
 
-Widget _app(AiProvider provider, {String endpoint = 'http://192.168.1.5:11434'}) =>
+Widget _app(AiProvider provider,
+        {String endpoint = 'http://192.168.1.5:11434'}) =>
     MaterialApp(
       localizationsDelegates: const [
         S.delegate,

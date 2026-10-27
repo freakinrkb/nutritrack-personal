@@ -38,7 +38,8 @@ void main() {
       expect(logical, DateTime(2024, 1, 15));
     });
 
-    test('offset 4: 04:00 exact is the start of today (not the end of '
+    test(
+        'offset 4: 04:00 exact is the start of today (not the end of '
         'yesterday)', () {
       // The boundary itself is inclusive of the new day, so a 04:00
       // entry counts toward today.
@@ -210,7 +211,8 @@ void main() {
       );
     });
 
-    test('isSameLogicalDayMinutes: 04:30 boundary groups 04:00 with previous '
+    test(
+        'isSameLogicalDayMinutes: 04:30 boundary groups 04:00 with previous '
         'evening', () {
       // The use case from the follow-up review: a hospitality worker
       // finishing at 04:00 wants that wind-down period filed with the
@@ -313,8 +315,7 @@ void main() {
       );
     });
 
-    test('an imported entry dated the 20th is a label, in either spelling',
-        () {
+    test('an imported entry dated the 20th is a label, in either spelling', () {
       // JsonMealImporter dates an entry `DateTime(y, m, d)` — *local*
       // midnight — from its optional `date` field. Keying "is this a
       // label?" off the UTC flag alone filed every date-only import a

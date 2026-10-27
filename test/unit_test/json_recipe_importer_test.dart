@@ -70,7 +70,8 @@ void main() {
       expect(result.recipes, isEmpty);
       expect(result.errors, hasLength(3));
       for (final message in result.errors) {
-        expect(message, contains('"totalWeight" must be a positive finite number'));
+        expect(message,
+            contains('"totalWeight" must be a positive finite number'));
       }
     });
 

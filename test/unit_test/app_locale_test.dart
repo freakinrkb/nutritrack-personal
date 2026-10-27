@@ -51,9 +51,9 @@ void main() {
       // so food names must be German too — not the first locale, and not
       // English.
       AppLocale.preferredLocales = () => const [
-        Locale('fr', 'FR'),
-        Locale('de', 'DE'),
-      ];
+            Locale('fr', 'FR'),
+            Locale('de', 'DE'),
+          ];
       expect(AppLocale.localeName, 'de');
       expect(
         SupportedLanguage.fromCode(AppLocale.localeName),

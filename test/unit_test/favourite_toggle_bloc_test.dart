@@ -6,18 +6,18 @@ import 'package:opennutritracker/features/add_meal/presentation/bloc/favourite_t
 import '../helpers/fake_favourites.dart';
 
 MealEntity _meal(String code, {bool detailed = false}) => MealEntity(
-  code: code,
-  name: 'Meal $code',
-  url: null,
-  mealQuantity: '100',
-  mealUnit: 'g',
-  servingQuantity: detailed ? 30 : null,
-  servingUnit: detailed ? 'g' : null,
-  servingSize: null,
-  nutriments: MealNutrimentsEntity.empty(),
-  source: MealSourceEntity.fdc,
-  detailed: detailed,
-);
+      code: code,
+      name: 'Meal $code',
+      url: null,
+      mealQuantity: '100',
+      mealUnit: 'g',
+      servingQuantity: detailed ? 30 : null,
+      servingUnit: detailed ? 'g' : null,
+      servingSize: null,
+      nutriments: MealNutrimentsEntity.empty(),
+      source: MealSourceEntity.fdc,
+      detailed: detailed,
+    );
 
 void main() {
   late FakeFavourites favourites;

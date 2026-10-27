@@ -77,51 +77,51 @@ final class _PickedFile extends PlatformFile {
 
 /// A `user_intake.json` row for a custom food, as the exporter writes it.
 Map<String, dynamic> _intakeJson(String id, {double amount = 100}) => {
-  'id': id,
-  'unit': 'g',
-  'amount': amount,
-  'type': 'breakfast',
-  'dateTime': '2026-10-01T08:00:00.000',
-  'meal': {
-    'code': null,
-    'name': 'Porridge $id',
-    'brands': null,
-    'thumbnailImageUrl': null,
-    'mainImageUrl': null,
-    'url': null,
-    'mealQuantity': '100',
-    'mealUnit': 'g',
-    'servingQuantity': null,
-    'servingUnit': null,
-    'servingSize': null,
-    'source': 'custom',
-    'nutriments': {
-      'energyKcal100': 120.0,
-      'carbohydrates100': 20.0,
-      'fat100': 2.0,
-      'proteins100': 4.0,
-      'sugars100': 1.0,
-      'saturatedFat100': 0.5,
-      'fiber100': 3.0,
-    },
-  },
-};
+      'id': id,
+      'unit': 'g',
+      'amount': amount,
+      'type': 'breakfast',
+      'dateTime': '2026-10-01T08:00:00.000',
+      'meal': {
+        'code': null,
+        'name': 'Porridge $id',
+        'brands': null,
+        'thumbnailImageUrl': null,
+        'mainImageUrl': null,
+        'url': null,
+        'mealQuantity': '100',
+        'mealUnit': 'g',
+        'servingQuantity': null,
+        'servingUnit': null,
+        'servingSize': null,
+        'source': 'custom',
+        'nutriments': {
+          'energyKcal100': 120.0,
+          'carbohydrates100': 20.0,
+          'fat100': 2.0,
+          'proteins100': 4.0,
+          'sugars100': 1.0,
+          'saturatedFat100': 0.5,
+          'fiber100': 3.0,
+        },
+      },
+    };
 
 /// A `user_activity.json` row, as the exporter writes it.
 Map<String, dynamic> _activityJson(String id, {double duration = 30}) => {
-  'id': id,
-  'duration': duration,
-  'burnedKcal': 250.0,
-  'date': '2026-10-01T18:00:00.000',
-  'physicalActivityDBO': {
-    'code': '12050',
-    'specificActivity': 'running',
-    'description': 'running, 6 mph',
-    'mets': 9.8,
-    'tags': <String>[],
-    'type': 'running',
-  },
-};
+      'id': id,
+      'duration': duration,
+      'burnedKcal': 250.0,
+      'date': '2026-10-01T18:00:00.000',
+      'physicalActivityDBO': {
+        'code': '12050',
+        'specificActivity': 'running',
+        'description': 'running, 6 mph',
+        'mets': 9.8,
+        'tags': <String>[],
+        'type': 'running',
+      },
+    };
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -215,31 +215,33 @@ void main() {
     List<Map<String, dynamic>> intakes = const [],
     List<Map<String, dynamic>> activities = const [],
     List<Map<String, dynamic>>? templates,
-  }) => writeZip({
-    ExportImportBloc.userActivityJsonFileName: jsonEncode(activities),
-    ExportImportBloc.userIntakeJsonFileName: jsonEncode(intakes),
-    ExportImportBloc.trackedDayJsonFileName: '[]',
-    if (templates != null)
-      ExportImportBloc.customActivityTemplateJsonFileName: jsonEncode(
-        templates,
-      ),
-  });
+  }) =>
+      writeZip({
+        ExportImportBloc.userActivityJsonFileName: jsonEncode(activities),
+        ExportImportBloc.userIntakeJsonFileName: jsonEncode(intakes),
+        ExportImportBloc.trackedDayJsonFileName: '[]',
+        if (templates != null)
+          ExportImportBloc.customActivityTemplateJsonFileName: jsonEncode(
+            templates,
+          ),
+      });
 
   Future<bool> importJson() => usecase.importData(
-    ExportImportBloc.userActivityJsonFileName,
-    ExportImportBloc.userIntakeJsonFileName,
-    ExportImportBloc.trackedDayJsonFileName,
-    ExportImportBloc.recipeJsonFileName,
-    ExportImportBloc.weightLogJsonFileName,
-    ExportImportBloc.customActivityTemplateJsonFileName,
-  );
+        ExportImportBloc.userActivityJsonFileName,
+        ExportImportBloc.userIntakeJsonFileName,
+        ExportImportBloc.trackedDayJsonFileName,
+        ExportImportBloc.recipeJsonFileName,
+        ExportImportBloc.weightLogJsonFileName,
+        ExportImportBloc.customActivityTemplateJsonFileName,
+      );
 
   List<String> intakeIds() =>
       intakeBox.values.map((i) => i.id).toList()..sort();
   List<String> activityIds() =>
       activityBox.values.map((a) => a.id).toList()..sort();
 
-  test('importing onto entries with the same ids replaces them instead of '
+  test(
+      'importing onto entries with the same ids replaces them instead of '
       'adding a second copy (#1357)', () async {
     await intakeBox.addAll([
       IntakeDBO.fromJson(_intakeJson('meal-a', amount: 50)),
@@ -278,7 +280,8 @@ void main() {
     },
   );
 
-  test('a device and a bundle already doubled by the old import collapse to '
+  test(
+      'a device and a bundle already doubled by the old import collapse to '
       'one copy per id', () async {
     // What an install hit by #1357 holds, and what it exports.
     await intakeBox.addAll([
@@ -304,7 +307,8 @@ void main() {
     expect(activityIds(), ['run-a']);
   });
 
-  test('Custom activity templates are matched by name, as when saved from '
+  test(
+      'Custom activity templates are matched by name, as when saved from '
       'the form', () async {
     await templateBox.add(CustomActivityTemplateDBO('Bike commute', 200));
     writeBundle(
@@ -323,7 +327,8 @@ void main() {
     expect(byName['Climbing gym']!.typicalKcal, 480);
   });
 
-  group('re-importing an export from a doubled install keeps the copy the '
+  group(
+      're-importing an export from a doubled install keeps the copy the '
       'user edited before this fix', () {
     // An install hit by #1357 holds two copies of each id, and the export
     // writes the box in order. Where the edit landed depended on the type:
@@ -352,7 +357,8 @@ void main() {
       expect(intakeBox.values.single.amount, 80);
     });
 
-    test('activities: the edited copy was appended, and the last row '
+    test(
+        'activities: the edited copy was appended, and the last row '
         'wins', () async {
       await activityBox.addAll([
         UserActivityDBO.fromJson(_activityJson('run-a', duration: 10)),
@@ -373,7 +379,8 @@ void main() {
       expect(activityBox.values.single.duration, 45);
     });
 
-    test('Custom activity templates: the re-saved copy was appended, and '
+    test(
+        'Custom activity templates: the re-saved copy was appended, and '
         'the last row wins', () async {
       await templateBox.addAll([
         CustomActivityTemplateDBO('Bike commute', 200),
@@ -460,7 +467,8 @@ void main() {
   });
 
   group('rows without an id', () {
-    test('JSON: blank-id rows are kept apart, from each other and from '
+    test(
+        'JSON: blank-id rows are kept apart, from each other and from '
         'stored rows', () async {
       await intakeBox.add(IntakeDBO.fromJson(_intakeJson('', amount: 10)));
       await activityBox.add(
@@ -523,7 +531,8 @@ void main() {
       expect(activityIds.toSet(), hasLength(activityIds.length));
     }
 
-    test('CSV: importing a file whose rows have no id twice keeps one copy '
+    test(
+        'CSV: importing a file whose rows have no id twice keeps one copy '
         'of each, each with its own id', () async {
       writeZip({
         'user_activity.csv': CsvDataExporter.userActivitiesToCsv([
@@ -548,7 +557,8 @@ void main() {
       expectDistinctIds();
     });
 
-    test('JSON: importing a bundle whose rows have no id twice keeps one '
+    test(
+        'JSON: importing a bundle whose rows have no id twice keeps one '
         'copy of each', () async {
       writeBundle(
         intakes: [_intakeJson('', amount: 20), _intakeJson('', amount: 30)],
@@ -569,7 +579,8 @@ void main() {
       expectDistinctIds();
     });
 
-    test('two identical rows without an id are both kept, on every '
+    test(
+        'two identical rows without an id are both kept, on every '
         'import', () async {
       writeBundle(
         intakes: [_intakeJson('', amount: 20), _intakeJson('', amount: 20)],
@@ -587,7 +598,8 @@ void main() {
       expectDistinctIds();
     });
 
-    test('a whitespace-only id is blank too, so the rows are kept apart '
+    test(
+        'a whitespace-only id is blank too, so the rows are kept apart '
         'and get ids of their own', () async {
       writeBundle(
         intakes: [_intakeJson(' ', amount: 20), _intakeJson('  ', amount: 30)],
@@ -633,7 +645,8 @@ void main() {
         },
       );
 
-    test('a blank-id row gets the same id from every build, and from the '
+    test(
+        'a blank-id row gets the same id from every build, and from the '
         'CSV and the JSON file alike', () async {
       writeBundle(
         intakes: [pinnedIntake()],
@@ -659,7 +672,8 @@ void main() {
       expect(activityIds(), [pinnedActivityId]);
     });
 
-    test('fields outside the identity, set, null or unknown, leave the '
+    test(
+        'fields outside the identity, set, null or unknown, leave the '
         'derived id alone', () async {
       final intake = pinnedIntake();
       final meal = intake['meal'] as Map<String, dynamic>;
@@ -681,7 +695,8 @@ void main() {
       expect(activityIds(), [pinnedActivityId]);
     });
 
-    test('empty and padded fields derive the same id from the JSON file '
+    test(
+        'empty and padded fields derive the same id from the JSON file '
         'as from the CSV, which reads them back trimmed and as null', () async {
       final intake = pinnedIntake();
       final meal = intake['meal'] as Map<String, dynamic>;
@@ -690,8 +705,7 @@ void main() {
       meal['brands'] = '';
       final activity = _activityJson('', duration: 15);
       (activity['physicalActivityDBO']
-              as Map<String, dynamic>)['specificActivity'] =
-          ' running ';
+          as Map<String, dynamic>)['specificActivity'] = ' running ';
       writeBundle(intakes: [intake], activities: [activity]);
       await importJson();
 
@@ -713,7 +727,8 @@ void main() {
       expect(activityIds(), [pinnedActivityId]);
     });
 
-    test('a signed zero derives the same id from the JSON file as from the '
+    test(
+        'a signed zero derives the same id from the JSON file as from the '
         'CSV, which writes it as 0', () async {
       final intake = _intakeJson('', amount: -0.0);
       final activity = _activityJson('', duration: -0.0)..['burnedKcal'] = -0.0;
@@ -740,16 +755,16 @@ void main() {
     // An export of an earlier id-less import carries the derived id; a
     // copy of that row with its id cleared must not be handed the same one.
     for (final copyFirst in [false, true]) {
-      test('a blank-id copy of a row that carries its derived id is kept, '
+      test(
+          'a blank-id copy of a row that carries its derived id is kept, '
           'on every import (copy ${copyFirst ? 'first' : 'last'})', () async {
         final intake = pinnedIntake();
         final activity = _activityJson('', duration: 15);
         final explicitIntake = {...intake, 'id': pinnedIntakeId};
         final explicitActivity = {...activity, 'id': pinnedActivityId};
         writeBundle(
-          intakes: copyFirst
-              ? [intake, explicitIntake]
-              : [explicitIntake, intake],
+          intakes:
+              copyFirst ? [intake, explicitIntake] : [explicitIntake, intake],
           activities: copyFirst
               ? [activity, explicitActivity]
               : [explicitActivity, activity],
@@ -769,26 +784,29 @@ void main() {
 
   group('a rejected archive leaves the device untouched', () {
     Matcher wrongFormat() => throwsA(
-      isA<ExportImportFailure>().having(
-        (f) => f.reason,
-        'reason',
-        ExportImportFailureReason.unreadableOrWrongFormat,
-      ),
-    );
+          isA<ExportImportFailure>().having(
+            (f) => f.reason,
+            'reason',
+            ExportImportFailureReason.unreadableOrWrongFormat,
+          ),
+        );
 
     /// Every stored row, with its Hive key, so a rewrite in place or a
     /// dropped duplicate shows up as well as a changed value.
     String snapshot() => jsonEncode({
-      'intakes': [
-        for (final e in intakeBox.toMap().entries) [e.key, e.value.toJson()],
-      ],
-      'activities': [
-        for (final e in activityBox.toMap().entries) [e.key, e.value.toJson()],
-      ],
-      'templates': [
-        for (final e in templateBox.toMap().entries) [e.key, e.value.toJson()],
-      ],
-    });
+          'intakes': [
+            for (final e in intakeBox.toMap().entries)
+              [e.key, e.value.toJson()],
+          ],
+          'activities': [
+            for (final e in activityBox.toMap().entries)
+              [e.key, e.value.toJson()],
+          ],
+          'templates': [
+            for (final e in templateBox.toMap().entries)
+              [e.key, e.value.toJson()],
+          ],
+        });
 
     setUp(() async {
       // Doubled rows, so an upsert that ran would also delete one.

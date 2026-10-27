@@ -21,7 +21,7 @@ class HealthConnectWorkoutReader {
   final MethodChannel _methodChannel;
 
   HealthConnectWorkoutReader({MethodChannel? channel})
-    : _methodChannel = channel ?? _channel;
+      : _methodChannel = channel ?? _channel;
 
   /// Sessions starting within `[from, to)`.
   ///

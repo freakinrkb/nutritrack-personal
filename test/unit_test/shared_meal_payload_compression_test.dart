@@ -222,15 +222,12 @@ void main() {
 
     test('totalCount sums OFF refs and custom items', () {
       final intakes = [
-        makeIntake(createMeal(
-            code: '4001', name: 'A', source: MealSourceEntity.off)),
-        makeIntake(createMeal(
-            code: '4002', name: 'B', source: MealSourceEntity.off)),
         makeIntake(
-            createMeal(
-                code: 'cust-1',
-                name: 'Custom',
-                source: MealSourceEntity.custom)),
+            createMeal(code: '4001', name: 'A', source: MealSourceEntity.off)),
+        makeIntake(
+            createMeal(code: '4002', name: 'B', source: MealSourceEntity.off)),
+        makeIntake(createMeal(
+            code: 'cust-1', name: 'Custom', source: MealSourceEntity.custom)),
       ];
       final payload = SharedMealPayload.fromIntakeList(intakes);
       expect(payload.totalCount, equals(3));
@@ -275,13 +272,12 @@ void main() {
       expect(payload.items.single.name, equals('Lost Product'));
     });
 
-    test('toMealEntities assigns a fresh unique code to each rebuilt item',
-        () {
+    test('toMealEntities assigns a fresh unique code to each rebuilt item', () {
       final intakes = [
-        makeIntake(createMeal(
-            code: 'c1', name: 'A', source: MealSourceEntity.custom)),
-        makeIntake(createMeal(
-            code: 'c2', name: 'B', source: MealSourceEntity.custom)),
+        makeIntake(
+            createMeal(code: 'c1', name: 'A', source: MealSourceEntity.custom)),
+        makeIntake(
+            createMeal(code: 'c2', name: 'B', source: MealSourceEntity.custom)),
       ];
       final payload = SharedMealPayload.fromIntakeList(intakes);
       final rebuilt = payload.toMealEntities();
@@ -328,8 +324,7 @@ void main() {
         dateTime: DateTime(2026, 4, 27),
         type: IntakeTypeEntity.breakfast,
       );
-      final encoded =
-          SharedMealPayload.fromIntakeList([intake]).toJsonString();
+      final encoded = SharedMealPayload.fromIntakeList([intake]).toJsonString();
       final decoded = SharedMealPayload.fromJsonString(encoded);
 
       expect(decoded.items.single.energyKcal100, equals(100));
@@ -361,8 +356,7 @@ void main() {
             ],
           ],
         ]);
-        final v1Encoded =
-            base64Url.encode(gzip.encode(utf8.encode(v1Json)));
+        final v1Encoded = base64Url.encode(gzip.encode(utf8.encode(v1Json)));
         final decoded = SharedMealPayload.fromJsonString(v1Encoded);
 
         expect(decoded.version, 1);

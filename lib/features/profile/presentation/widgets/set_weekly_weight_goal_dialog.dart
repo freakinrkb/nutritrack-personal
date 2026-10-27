@@ -51,8 +51,7 @@ class SetWeeklyWeightGoalDialog extends StatefulWidget {
       _SetWeeklyWeightGoalDialogState();
 }
 
-class _SetWeeklyWeightGoalDialogState
-    extends State<SetWeeklyWeightGoalDialog> {
+class _SetWeeklyWeightGoalDialogState extends State<SetWeeklyWeightGoalDialog> {
   // Slider range in kg/week: -1.0 (lose 1 kg/wk) to +1.0 (gain 1 kg/wk)
   static const double _minKg = -1.0;
   static const double _maxKg = 1.0;

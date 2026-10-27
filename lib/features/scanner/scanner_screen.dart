@@ -244,8 +244,10 @@ class _ScannerScreenState extends State<ScannerScreen>
               child: OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   shape: Dimens.shapeM,
-                  side: BorderSide(color: palette.border, width: Dimens.hairline),
-                  padding: const EdgeInsets.symmetric(vertical: Dimens.spacing16),
+                  side:
+                      BorderSide(color: palette.border, width: Dimens.hairline),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: Dimens.spacing16),
                 ),
                 icon: const Icon(Icons.keyboard_rounded),
                 label: Text(S.of(context).scannerManualEntryButton),
@@ -292,7 +294,8 @@ class _ScannerScreenState extends State<ScannerScreen>
             Semantics(
               identifier: 'scanner-manual-entry-submit',
               child: TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(controller.text.trim()),
+                onPressed: () =>
+                    Navigator.of(dialogContext).pop(controller.text.trim()),
                 child: Text(S.of(dialogContext).scannerManualEntrySubmit),
               ),
             ),

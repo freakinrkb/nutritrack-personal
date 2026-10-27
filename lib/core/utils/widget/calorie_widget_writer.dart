@@ -46,8 +46,8 @@ class HomeWidgetCalorieStore implements CalorieWidgetStore {
   HomeWidgetCalorieStore({
     @visibleForTesting bool? isIOS,
     @visibleForTesting Future<String> Function()? bundleId,
-  }) : _isIOS = isIOS ?? Platform.isIOS,
-       _bundleId = bundleId ?? _platformBundleId;
+  })  : _isIOS = isIOS ?? Platform.isIOS,
+        _bundleId = bundleId ?? _platformBundleId;
 
   static Future<String> _platformBundleId() async =>
       (await PackageInfo.fromPlatform()).packageName;
@@ -69,13 +69,14 @@ class HomeWidgetCalorieStore implements CalorieWidgetStore {
     CalorieWidgetSnapshot snapshot,
     CalorieWidgetLabels labels, {
     int? generation,
-  }) => _serially(() async {
-    if (generation != null && generation != _generation) return;
-    await _save({
-      CalorieWidgetLabels.storageKey: labels.encodeLanguage(),
-      CalorieWidgetSnapshot.storageKey: snapshot.encode(labels),
-    });
-  });
+  }) =>
+      _serially(() async {
+        if (generation != null && generation != _generation) return;
+        await _save({
+          CalorieWidgetLabels.storageKey: labels.encodeLanguage(),
+          CalorieWidgetSnapshot.storageKey: snapshot.encode(labels),
+        });
+      });
 
   /// A null value makes the plugin remove the key, which the extension
   /// reads as "no data yet" and answers with its placeholder.

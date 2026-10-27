@@ -116,26 +116,27 @@ void main() {
   Future<void> finishOnboarding(
     OnboardingBloc bloc, {
     required bool dailyReminderEnabled,
-  }) => bloc.saveOnboardingData(
-    UserEntity(
-      birthday: DateTime(1990, 6, 15),
-      heightCM: 165,
-      weightKG: 70,
-      gender: UserGenderEntity.female,
-      goal: UserWeightGoalEntity.loseWeight,
-      pal: UserPALEntity.sedentary,
-    ),
-    false,
-    false,
-    BodyWeightUnit.kg,
-    false,
-    appTheme: AppThemeEntity.system,
-    foodSourceToggles: const {},
-    dailyReminderEnabled: dailyReminderEnabled,
-    reminderLocale: const Locale('en'),
-    useMaterialYou: true,
-    accentColor: null,
-  );
+  }) =>
+      bloc.saveOnboardingData(
+        UserEntity(
+          birthday: DateTime(1990, 6, 15),
+          heightCM: 165,
+          weightKG: 70,
+          gender: UserGenderEntity.female,
+          goal: UserWeightGoalEntity.loseWeight,
+          pal: UserPALEntity.sedentary,
+        ),
+        false,
+        false,
+        BodyWeightUnit.kg,
+        false,
+        appTheme: AppThemeEntity.system,
+        foodSourceToggles: const {},
+        dailyReminderEnabled: dailyReminderEnabled,
+        reminderLocale: const Locale('en'),
+        useMaterialYou: true,
+        accentColor: null,
+      );
 
   group('the onboarding reminder goes through the scheduler (#1389)', () {
     test(

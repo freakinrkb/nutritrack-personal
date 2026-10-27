@@ -35,24 +35,27 @@ import 'package:opennutritracker/features/add_meal/domain/meal_items_api.dart';
 void main() {
   for (final contract in _contracts) {
     group(contract.name, () {
-      test('a failing send puts the payload in neither the error nor the log', () async {
+      test('a failing send puts the payload in neither the error nor the log',
+          () async {
         // The transport throws something that carries the submitted text, the
         // way a real socket error carries the request it failed on.
         final client = _FakeClient(
-          throwOnSend: _LeakyException('connection reset while sending $_secret'),
+          throwOnSend:
+              _LeakyException('connection reset while sending $_secret'),
         );
 
         final logged = await _logsDuring(() async {
           await expectLater(
             contract.build(client).requestItems(
-              content: const MealTextContent(_secret),
-              system: 'system',
-            ),
+                  content: const MealTextContent(_secret),
+                  system: 'system',
+                ),
             throwsA(isA<MealInterpreterException>()),
           );
         });
 
-        final raised = await _raisedBy(contract, client, const MealTextContent(_secret));
+        final raised =
+            await _raisedBy(contract, client, const MealTextContent(_secret));
         expect(
           raised.toString(),
           isNot(contains(_secret)),
@@ -76,7 +79,9 @@ void main() {
 
         final logged = await _logsDuring(() async {
           await expectLater(
-            contract.build(client).requestItems(content: photo, system: 'system'),
+            contract
+                .build(client)
+                .requestItems(content: photo, system: 'system'),
             throwsA(isA<MealInterpreterException>()),
           );
         });
@@ -104,9 +109,9 @@ void main() {
         final logged = await _logsDuring(() async {
           await expectLater(
             contract.build(client).requestItems(
-              content: const MealTextContent(_secret),
-              system: 'system',
-            ),
+                  content: const MealTextContent(_secret),
+                  system: 'system',
+                ),
             throwsA(
               isA<MealInterpreterException>().having(
                 (e) => e.toString(),
@@ -155,24 +160,25 @@ void main() {
         );
 
         final result = await contract.build(client).requestItems(
-          content: const MealTextContent('toast'),
-          system: 'system',
-        );
+              content: const MealTextContent('toast'),
+              system: 'system',
+            );
 
         expect(result.items, isEmpty);
         expect(result.errors, isNotEmpty);
       });
 
-      test('a reply with no tool call raises rather than reading as empty', () async {
+      test('a reply with no tool call raises rather than reading as empty',
+          () async {
         // "No food in this photo" is only trustworthy if a model that ignored
         // the tool call cannot be mistaken for one that answered nothing.
         final client = _FakeClient(body: contract.noToolCall);
 
         await expectLater(
           contract.build(client).requestItems(
-            content: const MealTextContent('toast'),
-            system: 'system',
-          ),
+                content: const MealTextContent('toast'),
+                system: 'system',
+              ),
           throwsA(isA<MealInterpreterException>()),
         );
       });
@@ -189,7 +195,7 @@ const _photoBytes = 'zzq-photo-payload-zzq';
 class _ClientContract {
   final String name;
   final MealItemsApi Function(http.Client client, {required Duration timeout})
-  _build;
+      _build;
 
   /// A 200 body carrying a forced tool call with these raw item maps, in this
   /// provider's own shape.
@@ -201,7 +207,7 @@ class _ClientContract {
   const _ClientContract({
     required this.name,
     required MealItemsApi Function(http.Client, {required Duration timeout})
-    build,
+        build,
     required this.toolReply,
     required this.noToolCall,
   }) : _build = build;
@@ -209,7 +215,8 @@ class _ClientContract {
   MealItemsApi build(
     http.Client client, {
     Duration timeout = const Duration(seconds: 20),
-  }) => _build(client, timeout: timeout);
+  }) =>
+      _build(client, timeout: timeout);
 }
 
 final _contracts = <_ClientContract>[
@@ -241,7 +248,8 @@ final _contracts = <_ClientContract>[
   ),
   _ClientContract(
     name: 'OpenAiCompatibleMealItemsApi (OpenRouter)',
-    build: (client, {required timeout}) => OpenAiCompatibleMealItemsApi.openRouter(
+    build: (client, {required timeout}) =>
+        OpenAiCompatibleMealItemsApi.openRouter(
       client,
       () => 'test-key',
       model: 'anthropic/claude-haiku-4.5',
@@ -392,7 +400,9 @@ Future<Object> _raisedBy(
   MealContent content,
 ) async {
   try {
-    await contract.build(client).requestItems(content: content, system: 'system');
+    await contract
+        .build(client)
+        .requestItems(content: content, system: 'system');
   } catch (e) {
     return e;
   }

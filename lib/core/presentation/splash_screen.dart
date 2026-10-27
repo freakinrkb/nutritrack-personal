@@ -49,8 +49,8 @@ class _SplashScreenState extends State<SplashScreen>
     });
 
     // Honour the OS "reduce motion" setting: skip the spin and move on.
-    final reduceMotion = WidgetsBinding.instance.platformDispatcher
-        .accessibilityFeatures.disableAnimations;
+    final reduceMotion = WidgetsBinding
+        .instance.platformDispatcher.accessibilityFeatures.disableAnimations;
     if (reduceMotion) {
       _startTimer = Timer(const Duration(milliseconds: 600), _goNext);
     } else {

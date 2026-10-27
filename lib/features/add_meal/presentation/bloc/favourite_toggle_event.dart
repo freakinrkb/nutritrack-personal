@@ -28,7 +28,7 @@ class ToggleFavouriteEvent extends FavouriteWriteEvent {
   final ProfileStamp startedOn;
 
   ToggleFavouriteEvent(this.meal, {ProfileStamp? startedOn})
-    : startedOn = startedOn ?? ProfileStamp.now();
+      : startedOn = startedOn ?? ProfileStamp.now();
 
   @override
   List<Object?> get props => [meal];

@@ -53,28 +53,28 @@ class _SingleProfileGetProfilesUsecase implements GetProfilesUsecase {
 /// The You tab as MainScreen hosts it: under a centre-docked Add button
 /// that rides half above a notched bottom bar.
 Widget _hostedLikeMainScreen() => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  home: Scaffold(
-    body: const ProfilePage(),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {},
-      child: const Icon(Icons.add, size: 30),
-    ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    bottomNavigationBar: const BottomAppBar(
-      height: 78,
-      padding: EdgeInsets.zero,
-      shape: CircularNotchedRectangle(),
-      notchMargin: 8,
-    ),
-  ),
-);
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      home: Scaffold(
+        body: const ProfilePage(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add, size: 30),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: const BottomAppBar(
+          height: 78,
+          padding: EdgeInsets.zero,
+          shape: CircularNotchedRectangle(),
+          notchMargin: 8,
+        ),
+      ),
+    );
 
 void main() {
   late _FakeProfileBloc profileBloc;
@@ -104,7 +104,8 @@ void main() {
     await GetIt.instance.reset();
   });
 
-  testWidgets('the last row of the You list scrolls clear of the Add button '
+  testWidgets(
+      'the last row of the You list scrolls clear of the Add button '
       '(#1368)', (tester) async {
     // A Pixel 6 in logical pixels, the device the overlap was seen on.
     tester.view.physicalSize = const Size(1080, 2400);
@@ -126,8 +127,7 @@ void main() {
     expect(
       fab.top - lastRow.bottom,
       greaterThanOrEqualTo(24),
-      reason:
-          'a tap on the bottom edge of the last row must not land on, or '
+      reason: 'a tap on the bottom edge of the last row must not land on, or '
           'next to, the Add button',
     );
   });

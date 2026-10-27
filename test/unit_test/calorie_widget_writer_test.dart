@@ -36,31 +36,31 @@ void main() {
     );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (call) async {
-          calls.add(call.method);
-          final args = call.arguments as Map<Object?, Object?>?;
-          groups.addAll(
-            [args?['appGroupId'], args?['groupId']].whereType<String>(),
-          );
-          switch (call.method) {
-            case 'saveWidgetData':
-              final id = args!['id'] as String;
-              final data = args['data'];
-              if (id == failOn) {
-                throw PlatformException(code: 'write-failed');
-              }
-              saves.add(MapEntry(id, data));
-              if (data == null) {
-                stored.remove(id);
-              } else {
-                stored[id] = data;
-              }
-              return true;
-            case 'getWidgetData':
-              return stored[args!['id']];
-            default:
-              return true;
+      calls.add(call.method);
+      final args = call.arguments as Map<Object?, Object?>?;
+      groups.addAll(
+        [args?['appGroupId'], args?['groupId']].whereType<String>(),
+      );
+      switch (call.method) {
+        case 'saveWidgetData':
+          final id = args!['id'] as String;
+          final data = args['data'];
+          if (id == failOn) {
+            throw PlatformException(code: 'write-failed');
           }
-        });
+          saves.add(MapEntry(id, data));
+          if (data == null) {
+            stored.remove(id);
+          } else {
+            stored[id] = data;
+          }
+          return true;
+        case 'getWidgetData':
+          return stored[args!['id']];
+        default:
+          return true;
+      }
+    });
   });
 
   tearDown(() {
@@ -79,7 +79,8 @@ void main() {
   const snapshotKey = CalorieWidgetSnapshot.storageKey;
   const labelsKey = CalorieWidgetLabels.storageKey;
 
-  test('a snapshot is one stored value, with the labels for its figures', () async {
+  test('a snapshot is one stored value, with the labels for its figures',
+      () async {
     final store = HomeWidgetCalorieStore(isIOS: false);
 
     await store.write(snapshot, german);

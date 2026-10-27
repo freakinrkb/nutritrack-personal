@@ -39,7 +39,8 @@ class _NoIntakesRepository implements IntakeRepository {
   Future<int> moveCustomMealInEveryProfile({
     required String fromMealKey,
     required MealDBO toMeal,
-  }) async => 0;
+  }) async =>
+      0;
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -61,26 +62,27 @@ MealEntity _meal({
   String name = 'Porridge',
   MealSourceEntity source = MealSourceEntity.off,
   double kcal = 100,
-}) => MealEntity(
-  code: code,
-  name: name,
-  url: null,
-  mealQuantity: '100',
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: null,
-  servingSize: null,
-  nutriments: MealNutrimentsEntity(
-    energyKcal100: kcal,
-    carbohydrates100: null,
-    fat100: null,
-    proteins100: null,
-    sugars100: null,
-    saturatedFat100: null,
-    fiber100: null,
-  ),
-  source: source,
-);
+}) =>
+    MealEntity(
+      code: code,
+      name: name,
+      url: null,
+      mealQuantity: '100',
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: null,
+      servingSize: null,
+      nutriments: MealNutrimentsEntity(
+        energyKcal100: kcal,
+        carbohydrates100: null,
+        fat100: null,
+        proteins100: null,
+        sugars100: null,
+        saturatedFat100: null,
+        fiber100: null,
+      ),
+      source: source,
+    );
 
 RecipeEntity _recipe({required String id, required String name}) =>
     RecipeEntity(
@@ -214,7 +216,8 @@ void main() {
         ('ASCII', longAscii),
         ('multibyte', longMultibyte),
       ]) {
-        test('stars a $label name, and it survives reopening the box', () async {
+        test('stars a $label name, and it survives reopening the box',
+            () async {
           final meal = _meal(
             code: null,
             name: name,
@@ -238,12 +241,19 @@ void main() {
         });
       }
 
-      test('two names that differ only at the end are two favourites', () async {
+      test('two names that differ only at the end are two favourites',
+          () async {
         await repository.addFavourite(
-          _meal(code: null, name: '${longAscii}x', source: MealSourceEntity.custom),
+          _meal(
+              code: null,
+              name: '${longAscii}x',
+              source: MealSourceEntity.custom),
         );
         await repository.addFavourite(
-          _meal(code: null, name: '${longAscii}y', source: MealSourceEntity.custom),
+          _meal(
+              code: null,
+              name: '${longAscii}y',
+              source: MealSourceEntity.custom),
         );
 
         expect(favouriteBox.length, 2);

@@ -108,8 +108,7 @@ const _legacyOffMealJson = '''
 }''';
 
 /// A `user_intake.json` entry logging 30 g of it.
-const _legacyOffIntakeJson =
-    '''
+const _legacyOffIntakeJson = '''
 {
   "id": "old-off",
   "unit": "g",
@@ -158,8 +157,7 @@ const _legacyCustomIntakeJson = '''
 /// A `user_recipes.json` entry from the same build: 100 g of the Open Food
 /// Facts product above as its only ingredient, so the aggregate the old
 /// build computed carries the same wrong magnitudes.
-const _legacyRecipeJson =
-    '''
+const _legacyRecipeJson = '''
 {
   "id": "recipe-1",
   "name": "Spread on its own",
@@ -238,8 +236,8 @@ void main() {
       weightLogBox: weightLogBox,
       customActivityTemplateBox: templateBox,
     );
-    write = (name, bytes) =>
-        File('${tempDir.path}/$name')..writeAsBytesSync(bytes);
+    write =
+        (name, bytes) => File('${tempDir.path}/$name')..writeAsBytesSync(bytes);
     usecase = ImportDataUsecase(
       UserActivityRepository(UserActivityDataSource(provider)),
       IntakeRepository(IntakeDataSource(provider)),
@@ -281,15 +279,16 @@ void main() {
   }
 
   Future<bool> importJson() => usecase.importData(
-    ExportImportBloc.userActivityJsonFileName,
-    ExportImportBloc.userIntakeJsonFileName,
-    ExportImportBloc.trackedDayJsonFileName,
-    ExportImportBloc.recipeJsonFileName,
-    ExportImportBloc.weightLogJsonFileName,
-    ExportImportBloc.customActivityTemplateJsonFileName,
-  );
+        ExportImportBloc.userActivityJsonFileName,
+        ExportImportBloc.userIntakeJsonFileName,
+        ExportImportBloc.trackedDayJsonFileName,
+        ExportImportBloc.recipeJsonFileName,
+        ExportImportBloc.weightLogJsonFileName,
+        ExportImportBloc.customActivityTemplateJsonFileName,
+      );
 
-  test('a JSON bundle from a build before #775 lands with its Open Food Facts '
+  test(
+      'a JSON bundle from a build before #775 lands with its Open Food Facts '
       'rows in app units and everything else as written', () async {
     write(
       'backup.zip',

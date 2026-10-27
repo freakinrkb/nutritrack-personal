@@ -99,7 +99,8 @@ class _NoIntakesRepository implements IntakeRepository {
   Future<int> moveCustomMealInEveryProfile({
     required String fromMealKey,
     required MealDBO toMeal,
-  }) async => 0;
+  }) async =>
+      0;
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -129,16 +130,16 @@ MealEntity _meal(String code, {double kcal = 150, String name = 'Oats'}) =>
     );
 
 RecipeEntity _recipe(String name) => RecipeEntity(
-  id: 'r1',
-  name: name,
-  description: null,
-  ingredients: const [],
-  totalWeightG: 300,
-  aggregatedNutrimentsPer100: MealNutrimentsEntity.empty(),
-  createdAt: DateTime(2026, 10, 1),
-  updatedAt: DateTime(2026, 10, 1),
-  servingsCount: null,
-);
+      id: 'r1',
+      name: name,
+      description: null,
+      ingredients: const [],
+      totalWeightG: 300,
+      aggregatedNutrimentsPer100: MealNutrimentsEntity.empty(),
+      createdAt: DateTime(2026, 10, 1),
+      updatedAt: DateTime(2026, 10, 1),
+      servingsCount: null,
+    );
 
 FavouriteMealDBO _favourite(MealEntity meal, DateTime addedAt) =>
     FavouriteMealDBO(meal: MealDBO.fromMealEntity(meal), addedAt: addedAt);
@@ -209,7 +210,8 @@ void main() {
     () async {
       // Profile A stars the meal at 150 kcal; profile B, active now, edits
       // the shared meal to 180 kcal and deletes it.
-      await favourites['a']!.put('custom:c1', _favourite(_meal('c1'), starredAt));
+      await favourites['a']!
+          .put('custom:c1', _favourite(_meal('c1'), starredAt));
       final library = CustomMealDataSource(provider);
       await library.saveCustomMeal(MealDBO.fromMealEntity(_meal('c1')));
       await library.saveCustomMeal(
@@ -320,21 +322,23 @@ void main() {
     'a hydrated search result replaces the thin snapshot in every profile',
     () async {
       MealEntity off({required bool detailed}) => MealEntity(
-        code: '0080457761112',
-        name: 'Crisps',
-        url: null,
-        mealQuantity: detailed ? '25' : null,
-        mealUnit: detailed ? 'g' : null,
-        servingQuantity: detailed ? 31.8 : null,
-        servingUnit: detailed ? 'g' : null,
-        servingSize: null,
-        nutriments: MealNutrimentsEntity.empty(),
-        source: MealSourceEntity.off,
-        detailed: detailed,
-      );
+            code: '0080457761112',
+            name: 'Crisps',
+            url: null,
+            mealQuantity: detailed ? '25' : null,
+            mealUnit: detailed ? 'g' : null,
+            servingQuantity: detailed ? 31.8 : null,
+            servingUnit: detailed ? 'g' : null,
+            servingSize: null,
+            nutriments: MealNutrimentsEntity.empty(),
+            source: MealSourceEntity.off,
+            detailed: detailed,
+          );
       final thin = off(detailed: false);
-      await favourites['a']!.put('off:0080457761112', _favourite(thin, starredAt));
-      await favourites['b']!.put('off:0080457761112', _favourite(thin, starredAt));
+      await favourites['a']!
+          .put('off:0080457761112', _favourite(thin, starredAt));
+      await favourites['b']!
+          .put('off:0080457761112', _favourite(thin, starredAt));
 
       // A thin record never overwrites anything.
       await withTrackedDayLock(() => repository.refreshDetailedSnapshot(thin));
@@ -405,7 +409,8 @@ void main() {
   );
 
   group('an edit that takes over another meal\'s barcode (#1403)', () {
-    test('the edited meal replaces its entry and its favourite follows; the '
+    test(
+        'the edited meal replaces its entry and its favourite follows; the '
         'dropped meal\'s favourite resolves to the edited one', () async {
       final library = CustomMealDataSource(provider);
       // P has no barcode; X already has the one the edit gives P.

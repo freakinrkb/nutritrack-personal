@@ -73,18 +73,19 @@ HealthDataPoint _calories({
   Duration duration = const Duration(minutes: 15),
   required num kcal,
   HealthDataUnit unit = HealthDataUnit.KILOCALORIE,
-}) => HealthDataPoint(
-  uuid: '$source-${start.toIso8601String()}',
-  value: NumericHealthValue(numericValue: kcal),
-  type: HealthDataType.TOTAL_CALORIES_BURNED,
-  unit: unit,
-  dateFrom: start,
-  dateTo: start.add(duration),
-  sourcePlatform: HealthPlatformType.googleHealthConnect,
-  sourceDeviceId: 'device',
-  sourceId: 'source',
-  sourceName: source,
-);
+}) =>
+    HealthDataPoint(
+      uuid: '$source-${start.toIso8601String()}',
+      value: NumericHealthValue(numericValue: kcal),
+      type: HealthDataType.TOTAL_CALORIES_BURNED,
+      unit: unit,
+      dateFrom: start,
+      dateTo: start.add(duration),
+      sourcePlatform: HealthPlatformType.googleHealthConnect,
+      sourceDeviceId: 'device',
+      sourceId: 'source',
+      sourceName: source,
+    );
 
 void main() {
   // The session window all tests attribute against.
@@ -94,15 +95,17 @@ void main() {
   double? energy({
     String sourceName = 'com.hevy.app',
     required List<HealthDataPoint> calorieRecords,
-  }) => HealthPackageService.androidWorkoutEnergyKcal(
-    start: start,
-    end: end,
-    sourceName: sourceName,
-    calorieRecords: calorieRecords,
-  );
+  }) =>
+      HealthPackageService.androidWorkoutEnergyKcal(
+        start: start,
+        end: end,
+        sourceName: sourceName,
+        calorieRecords: calorieRecords,
+      );
 
   group('HealthPackageService.androidWorkoutEnergyKcal', () {
-    test('sums only the session writer\'s records, not other sources\' '
+    test(
+        'sums only the session writer\'s records, not other sources\' '
         'overlapping ones', () {
       // The observed double-count: a gym session whose own app wrote its
       // calories, with a background 15-minute basal+activity stream running
@@ -152,7 +155,8 @@ void main() {
       expect(energy(calorieRecords: records), closeTo(197.6, 0.001));
     });
 
-    test('falls back to the largest single-source sum when the session '
+    test(
+        'falls back to the largest single-source sum when the session '
         'writer logged no calories, never the cross-source total', () {
       // Session tracked in one app, calories written by two others: the
       // biggest per-source sum is the best single estimate, and adding the
@@ -283,7 +287,8 @@ void main() {
       );
     });
 
-    test('the permission request covers exercise and calories, and '
+    test(
+        'the permission request covers exercise and calories, and '
         'nothing else', () async {
       await service.requestPermissions();
 
@@ -337,7 +342,8 @@ void main() {
       );
     });
 
-    test('sessions come from Health Connect directly, never from the '
+    test(
+        'sessions come from Health Connect directly, never from the '
         'plugin\'s workout read', () async {
       reader.sessions = [
         ExternalWorkout(

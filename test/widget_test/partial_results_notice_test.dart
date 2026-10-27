@@ -5,15 +5,15 @@ import 'package:opennutritracker/features/add_meal/presentation/widgets/partial_
 import 'package:opennutritracker/generated/l10n.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  home: Scaffold(body: child),
-);
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      home: Scaffold(body: child),
+    );
 
 void main() {
   group('PartialResultsNotice', () {

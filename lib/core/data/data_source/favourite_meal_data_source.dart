@@ -87,9 +87,8 @@ class FavouriteMealDataSource {
   }
 
   /// Every favourite, the most recently starred first.
-  List<FavouriteMealDBO> getAllFavourites() =>
-      _favouriteMealBox.values.toList()
-        ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
+  List<FavouriteMealDBO> getAllFavourites() => _favouriteMealBox.values.toList()
+    ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
 
   /// Fires after every write to the box, whichever screen made it, so a list
   /// or a star on screen can follow a toggle made on the detail page.

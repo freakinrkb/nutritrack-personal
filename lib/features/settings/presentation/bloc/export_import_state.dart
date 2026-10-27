@@ -28,10 +28,10 @@ class ExportImportError extends ExportImportState {
   final ExportImportFailureReason reason;
 
   const ExportImportError(this.reason)
-    : assert(
-        reason != ExportImportFailureReason.cancelled,
-        'A cancelled picker is not an error; emit ExportImportInitial',
-      );
+      : assert(
+          reason != ExportImportFailureReason.cancelled,
+          'A cancelled picker is not an error; emit ExportImportInitial',
+        );
 
   @override
   List<Object?> get props => [reason];

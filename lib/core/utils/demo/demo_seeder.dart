@@ -202,8 +202,7 @@ Future<void> seedDemoData(DemoSeedOptions options) async {
     // day lands on-track by construction. The boundary day is always
     // forced to miss (rather than left to the random roll) so a nonzero
     // streak comes out to exactly [guaranteedStreakDays], not "at least".
-    final isMissedDay =
-        options.missedDayProbability > 0 &&
+    final isMissedDay = options.missedDayProbability > 0 &&
         (daysAgo == options.guaranteedStreakDays ||
             (daysAgo > options.guaranteedStreakDays &&
                 demoRng.nextDouble() < options.missedDayProbability));
@@ -351,14 +350,14 @@ Future<void> exitDemoMode() async {
 /// normal 18.5-24.9 range regardless of [DemoSeedOptions] duration, since
 /// [_buildWeightLog] never lets the trend dip below this figure either.
 UserEntity _demoUser(DateTime startOfToday) => UserEntity(
-  birthday: DateTime(startOfToday.year - 29, 4, 12),
-  heightCM: 178,
-  weightKG: 87,
-  gender: UserGenderEntity.male,
-  goal: UserWeightGoalEntity.loseWeight,
-  pal: UserPALEntity.active,
-  weeklyWeightGoalKg: -0.4,
-);
+      birthday: DateTime(startOfToday.year - 29, 4, 12),
+      heightCM: 178,
+      weightKG: 87,
+      gender: UserGenderEntity.male,
+      goal: UserWeightGoalEntity.loseWeight,
+      pal: UserPALEntity.active,
+      weeklyWeightGoalKg: -0.4,
+    );
 
 /// The one hand-picked Unsplash portrait used for the demo profile's
 /// avatar (see unsplash_attribution.dart) — bundled at
@@ -382,7 +381,9 @@ Future<void> _setupActiveProfile() async {
   try {
     final bytes = (await rootBundle.load(
       _profileAvatarAsset,
-    )).buffer.asUint8List();
+    ))
+        .buffer
+        .asUint8List();
     final tempDir = await getTemporaryDirectory();
     final tempFile = File('${tempDir.path}/demo_profile_avatar_source.jpg');
     try {
@@ -437,8 +438,7 @@ List<WeightLogDBO> _buildWeightLog(
   var daysAgo = totalDays;
   while (daysAgo > 0) {
     final progress = totalDays == 0 ? 1.0 : 1 - daysAgo / totalDays;
-    final trendWeight =
-        options.startWeightKg +
+    final trendWeight = options.startWeightKg +
         (currentWeightKg - options.startWeightKg) * progress;
     final jitter = (demoRng.nextDouble() - 0.5) * 0.6; // +/- 0.3kg
     entries.add(
@@ -480,9 +480,8 @@ List<FastingSessionEntity> _buildFastingSessions(
         id: IdGenerator.getUniqueID(),
         startedAt: start,
         targetDurationMinutes: targetMinutes,
-        completedAt: brokeEarly
-            ? null
-            : start.add(Duration(minutes: targetMinutes + 5)),
+        completedAt:
+            brokeEarly ? null : start.add(Duration(minutes: targetMinutes + 5)),
         cancelledAt: brokeEarly
             ? start.add(Duration(hours: 3 + demoRng.nextInt(3)))
             : null,

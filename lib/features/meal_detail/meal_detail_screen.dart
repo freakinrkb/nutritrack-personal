@@ -14,6 +14,7 @@ import 'package:opennutritracker/core/utils/locator.dart';
 import 'package:opennutritracker/core/utils/demo/unsplash_attribution.dart';
 import 'package:opennutritracker/core/utils/navigation_options.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_entity.dart';
+import 'package:opennutritracker/features/add_meal/util/portion_unit.dart';
 import 'package:opennutritracker/features/add_meal/presentation/widgets/favourite_toggle_button.dart';
 import 'package:opennutritracker/features/edit_meal/presentation/edit_meal_screen.dart';
 import 'package:opennutritracker/features/meal_detail/presentation/bloc/meal_detail_bloc.dart';
@@ -138,9 +139,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
     // entry the user then tapped was no longer in the rebuilt list and the
     // button went blank (#1216).
     if (!_argumentsRead) {
-      final args =
-          ModalRoute.of(context)?.settings.arguments
-              as MealDetailScreenArguments;
+      final args = ModalRoute.of(context)?.settings.arguments
+          as MealDetailScreenArguments;
       meal = args.mealEntity;
       _day = args.day;
       intakeTypeEntity = args.intakeTypeEntity;
@@ -171,7 +171,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
     // stays the classifier — a record with no parseable serving still
     // falls through to weight/volume the same way it always did.
     final preferServing =
-        meal.scalableServingQuantity != null && !_defaultToRawFoodUnits;
+        (meal.portions.isNotEmpty || meal.scalableServingQuantity != null) &&
+            !_defaultToRawFoodUnits;
 
     _applyingInitialSelection = true;
     try {
@@ -260,8 +261,10 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
       listener: (context, state) => _onMealHydrated(state.hydratedMeal!),
       child: SafeArea(
         child: Scaffold(
-          backgroundColor:
-              (Theme.of(context).brightness == Brightness.dark ? AppPalette.dark : AppPalette.light).canvas,
+          backgroundColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppPalette.dark
+                  : AppPalette.light)
+              .canvas,
           body: BlocBuilder<MealDetailBloc, MealDetailState>(
             bloc: _mealDetailBloc,
             builder: (context, state) {
@@ -282,21 +285,21 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
               return const Center(child: CircularProgressIndicator());
             },
           ),
-        bottomSheet: BlocSelector<MealDetailBloc, MealDetailState, String>(
-          bloc: _mealDetailBloc,
-          selector: (state) => state.selectedUnit,
-          builder: (context, selectedUnit) {
-            return MealDetailBottomSheet(
-              product: meal,
-              day: _day,
-              intakeTypeEntity: intakeTypeEntity,
-              selectedUnit: selectedUnit,
-              usesImperialUnits: _usesImperialUnits,
-              mealDetailBloc: _mealDetailBloc,
-              quantityTextController: quantityTextController,
-              onQuantityOrUnitChanged: onQuantityOrUnitChanged,
-            );
-          },
+          bottomSheet: BlocSelector<MealDetailBloc, MealDetailState, String>(
+            bloc: _mealDetailBloc,
+            selector: (state) => state.selectedUnit,
+            builder: (context, selectedUnit) {
+              return MealDetailBottomSheet(
+                product: meal,
+                day: _day,
+                intakeTypeEntity: intakeTypeEntity,
+                selectedUnit: selectedUnit,
+                usesImperialUnits: _usesImperialUnits,
+                mealDetailBloc: _mealDetailBloc,
+                quantityTextController: quantityTextController,
+                onQuantityOrUnitChanged: onQuantityOrUnitChanged,
+              );
+            },
           ),
         ),
       ),
@@ -433,10 +436,9 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       MealValueUnitText(
                         value: double.parse(totalQuantity),
                         meal: meal,
-                        displayUnit:
-                            selectedUnit == UnitDropdownItem.serving.toString()
-                                ? meal.servingUnit
-                                : selectedUnit,
+                        displayUnit: isPortionUnit(selectedUnit)
+                            ? meal.servingUnit
+                            : selectedUnit,
                         usesImperialUnits: _usesImperialUnits,
                         textStyle: Theme.of(context).textTheme.bodyMedium,
                         prefix: ' / ',
@@ -546,4 +548,3 @@ class MealDetailScreenArguments {
     this.usesImperialUnits,
   );
 }
-

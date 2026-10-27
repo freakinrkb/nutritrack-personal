@@ -22,9 +22,9 @@ void main() {
   ).readAsStringSync();
 
   String? valueFor(String key) => RegExp(
-    '<key>$key</key>\\s*<string>(.*?)</string>',
-    dotAll: true,
-  ).firstMatch(infoPlist)?.group(1);
+        '<key>$key</key>\\s*<string>(.*?)</string>',
+        dotAll: true,
+      ).firstMatch(infoPlist)?.group(1);
 
   group('iOS camera purpose string', () {
     // Apple requires the string to describe the actual use, and reading a
@@ -71,9 +71,9 @@ void main() {
     // the file; if a key is ever added after it, match the outer array some
     // other way rather than making this lazy.
     String collectedTypes() => RegExp(
-      '<key>NSPrivacyCollectedDataTypes</key>\\s*<array>(.*)</array>',
-      dotAll: true,
-    ).firstMatch(manifest)!.group(1)!;
+          '<key>NSPrivacyCollectedDataTypes</key>\\s*<array>(.*)</array>',
+          dotAll: true,
+        ).firstMatch(manifest)!.group(1)!;
 
     // Lowercase "or" is Apple's own spelling of this constant. A well-meaning
     // correction to `PhotosOrVideos` would be silently ignored by Apple.
@@ -177,8 +177,8 @@ void main() {
     // description in particular sits at exactly its cap — a stray character
     // would be discovered in the Console rather than here.
     String field(String name) => File(
-      'fastlane/metadata/android/en-US/$name',
-    ).readAsStringSync().trimRight();
+          'fastlane/metadata/android/en-US/$name',
+        ).readAsStringSync().trimRight();
 
     test('title is within the 30-character cap', () {
       expect(field('title.txt').length, lessThanOrEqualTo(30));

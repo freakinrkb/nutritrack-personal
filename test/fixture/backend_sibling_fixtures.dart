@@ -120,11 +120,11 @@ class BackendSiblingFixtures {
     portions: [('1 egg', 17), ('1 cup', 245)],
   );
   static List<MealEntity> get egg => [
-    eggWholeRaw,
-    eggWholeBoiledOrPoached,
-    eggCreamed,
-    eggYolkOnlyRaw,
-  ];
+        eggWholeRaw,
+        eggWholeBoiledOrPoached,
+        eggCreamed,
+        eggYolkOnlyRaw,
+      ];
 
   // eggplant
 
@@ -151,10 +151,10 @@ class BackendSiblingFixtures {
     portions: [('1 whole', 500), ('1 cup', 80)],
   );
   static List<MealEntity> get eggplant => [
-    eggplantRawSrLegacy,
-    eggplantRawFoundation,
-    eggplantRawSurvey,
-  ];
+        eggplantRawSrLegacy,
+        eggplantRawFoundation,
+        eggplantRawSurvey,
+      ];
 
   // milk
 
@@ -327,9 +327,9 @@ class BackendSiblingFixtures {
     ],
   );
   static List<MealEntity> get orangeJuice => [
-    orangeJuiceBls,
-    orangeJuice100Nfs,
-  ];
+        orangeJuiceBls,
+        orangeJuice100Nfs,
+      ];
 
   // chicken breast
 
@@ -407,25 +407,25 @@ class BackendSiblingFixtures {
     source: 'fdc_sr_legacy',
   );
   static List<MealEntity> get chickenBreast => [
-    chickenBreastRollSrLegacy,
-    chickenBreastBaked,
-    chickenBreastNsCookingMethod,
-    chickenBreastRotisserie,
-    chickenBreastStewed,
-  ];
+        chickenBreastRollSrLegacy,
+        chickenBreastBaked,
+        chickenBreastNsCookingMethod,
+        chickenBreastRotisserie,
+        chickenBreastStewed,
+      ];
 
   /// Every row above, once each.
   static List<MealEntity> get all => [
-    ...apple,
-    ...egg,
-    ...eggplant,
-    ...milk,
-    ...banana,
-    ...bread,
-    ...rice,
-    breadRice,
-    chipsRice,
-    ...orangeJuice,
-    ...chickenBreast,
-  ];
+        ...apple,
+        ...egg,
+        ...eggplant,
+        ...milk,
+        ...banana,
+        ...bread,
+        ...rice,
+        breadRice,
+        chipsRice,
+        ...orangeJuice,
+        ...chickenBreast,
+      ];
 }

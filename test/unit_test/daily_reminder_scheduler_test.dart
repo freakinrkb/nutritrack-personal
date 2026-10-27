@@ -113,14 +113,14 @@ class _RecordingNotificationService extends NotificationService {
 }
 
 ConfigEntity _config({required bool enabled}) => ConfigEntity(
-  true,
-  true,
-  false,
-  AppThemeEntity.system,
-  notificationsEnabled: enabled,
-  notificationHour: 19,
-  notificationMinute: 45,
-);
+      true,
+      true,
+      false,
+      AppThemeEntity.system,
+      notificationsEnabled: enabled,
+      notificationHour: 19,
+      notificationMinute: 45,
+    );
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

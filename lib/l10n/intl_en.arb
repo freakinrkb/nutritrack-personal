@@ -363,7 +363,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "All diary entries in this profile that use this meal will also be removed.",
+  "customMealsDeleteConfirmContent": "Past diary entries logged from this custom meal will be kept.",
   "customMealsDeleteConfirmTitle": "Delete custom meal?",
   "customMealsEmptyLabel": "No custom meals saved yet.",
   "dailyKcalAdjustmentLabel": "Daily Kcal adjustment:",

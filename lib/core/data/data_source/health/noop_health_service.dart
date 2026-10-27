@@ -20,7 +20,8 @@ class NoopHealthService implements HealthService {
   Future<List<ExternalWorkout>> readWorkouts({
     required DateTime from,
     required DateTime to,
-  }) async => const <ExternalWorkout>[];
+  }) async =>
+      const <ExternalWorkout>[];
 
   @override
   Future<double?> readLatestBodyFatPercent() async => null;

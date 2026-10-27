@@ -225,7 +225,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Všetky záznamy v denníku, ktoré používajú toto jedlo, budú tiež odstránené.",
+  "customMealsDeleteConfirmContent": "Predchádzajúce záznamy v denníku z tohto vlastného jedla zostanú zachované.",
   "customMealsDeleteConfirmTitle": "Zmazať vlastné jedlo?",
   "customMealsEmptyLabel": "Zatiaľ nie sú uložené žiadne vlastné jedlá.",
   "dailyKcalAdjustmentLabel": "Denná úprava kcal:",

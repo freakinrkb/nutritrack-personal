@@ -11,36 +11,40 @@ import 'package:opennutritracker/features/meal_detail/util/meal_quantity_convert
 MealEntity _meal({
   double? servingQuantity,
   List<MealPortionEntity> portions = const [],
-}) => MealEntity(
-  code: '1',
-  name: 'Bread',
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: servingQuantity,
-  servingUnit: 'g',
-  servingSize: null,
-  source: MealSourceEntity.fdc,
-  nutriments: MealNutrimentsEntity.empty(),
-  portions: portions,
-);
+}) =>
+    MealEntity(
+      code: '1',
+      name: 'Bread',
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: servingQuantity,
+      servingUnit: 'g',
+      servingSize: null,
+      source: MealSourceEntity.fdc,
+      nutriments: MealNutrimentsEntity.empty(),
+      portions: portions,
+    );
 
-const _cup = MealPortionEntity(label: '1 cup', gramWeight: 244, localized: false);
-const _slice = MealPortionEntity(label: '1 slice', gramWeight: 38, localized: false);
-const _ounce = MealPortionEntity(label: '1 oz', gramWeight: 28, localized: false);
+const _cup =
+    MealPortionEntity(label: '1 cup', gramWeight: 244, localized: false);
+const _slice =
+    MealPortionEntity(label: '1 slice', gramWeight: 38, localized: false);
+const _ounce =
+    MealPortionEntity(label: '1 oz', gramWeight: 28, localized: false);
 
 BulkAddRow _row(MealEntity meal, String unit, {String query = 'bread'}) =>
     BulkAddRow(
-  resolved: ResolvedMealItem(
-    parsed: ParsedMealItem(query: query),
-    candidates: [meal],
-    selectedIndex: 0,
-    confidence: 0.9,
-  ),
-  selectedIndex: 0,
-  amountText: '2',
-  unit: unit,
-);
+      resolved: ResolvedMealItem(
+        parsed: ParsedMealItem(query: query),
+        candidates: [meal],
+        selectedIndex: 0,
+        confidence: 0.9,
+      ),
+      selectedIndex: 0,
+      amountText: '2',
+      unit: unit,
+    );
 
 void main() {
   group('the unit dropdown offers every portion (#864)', () {

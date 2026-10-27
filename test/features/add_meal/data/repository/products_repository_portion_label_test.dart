@@ -13,19 +13,20 @@ SpFoodDTO _food(
   String? servingSize,
   double carbs = 40,
   double sugars = 5,
-}) => SpFoodDTO(
-  foodId: id,
-  source: 'fdc_survey',
-  sourceCode: '$id',
-  name: name,
-  servingGramWeight: 38,
-  servingSize: servingSize,
-  energyKcal100: 250,
-  carbohydrates100: carbs,
-  sugars100: sugars,
-  fat100: 4,
-  proteins100: 8,
-);
+}) =>
+    SpFoodDTO(
+      foodId: id,
+      source: 'fdc_survey',
+      sourceCode: '$id',
+      name: name,
+      servingGramWeight: 38,
+      servingSize: servingSize,
+      energyKcal100: 250,
+      carbohydrates100: carbs,
+      sugars100: sugars,
+      fat100: 4,
+      proteins100: 8,
+    );
 
 class _FakeSp extends SpFoodDataSource {
   _FakeSp(this.foods, this.labels);
@@ -38,7 +39,8 @@ class _FakeSp extends SpFoodDataSource {
   Future<List<SpFoodDTO>> fetchSearchWordResults(
     String searchString, {
     bool forResolution = false,
-  }) async => foods;
+  }) async =>
+      foods;
 
   @override
   Future<Map<int, String>> fetchPortionLabels(List<int> foodIds) async {
@@ -52,14 +54,19 @@ class _FakeSp extends SpFoodDataSource {
   @override
   Future<Map<int, List<MealPortionEntity>>?> fetchPortions(
     List<int> foodIds,
-  ) async => const {};
+  ) async =>
+      const {};
 }
 
 class _FakeOff extends OFFDataSource {
   @override
-  Future<OFFWordResponseDTO> fetchSearchWordResults(String searchString) async =>
+  Future<OFFWordResponseDTO> fetchSearchWordResults(
+          String searchString) async =>
       OFFWordResponseDTO(
-        count: 0, page: 1, page_count: 1, page_size: 0,
+        count: 0,
+        page: 1,
+        page_count: 1,
+        page_size: 0,
         products: const <OFFProductDTO>[],
       );
 }
@@ -71,8 +78,8 @@ void main() {
         [_food(1, 'Bread', servingSize: '1 slice (38 g)')],
         {1: '1 Scheibe (38 g)'},
       );
-      final meals =
-          await ProductsRepository(_FakeOff(), sp).getSupabaseFoodsByString('bread');
+      final meals = await ProductsRepository(_FakeOff(), sp)
+          .getSupabaseFoodsByString('bread');
 
       expect(meals, hasLength(1));
       expect(meals.single.servingSize, '1 Scheibe (38 g)');
@@ -90,8 +97,8 @@ void main() {
         ],
         {1: '1 Scheibe (38 g)'},
       );
-      final meals =
-          await ProductsRepository(_FakeOff(), sp).getSupabaseFoodsByString('x');
+      final meals = await ProductsRepository(_FakeOff(), sp)
+          .getSupabaseFoodsByString('x');
 
       final byName = {for (final m in meals) m.name: m};
       expect(byName['Bread']!.servingSizeIsLocalized, isTrue);
@@ -112,21 +119,21 @@ void main() {
         _food(7, 'Bread', servingSize: '1 slice'),
         _food(8, 'Impossible', servingSize: '1 slice', carbs: 5, sugars: 40),
       ], {});
-      final meals =
-          await ProductsRepository(_FakeOff(), sp).getSupabaseFoodsByString('b');
+      final meals = await ProductsRepository(_FakeOff(), sp)
+          .getSupabaseFoodsByString('b');
 
       expect(meals.map((m) => m.name), ['Bread'],
           reason: 'the implausible food should have been dropped');
-      expect(sp.askedFor, [7],
-          reason: 'a dropped food must not be looked up');
+      expect(sp.askedFor, [7], reason: 'a dropped food must not be looked up');
     });
 
     test('an empty label map changes nothing', () async {
       // What every English build gets, and every locale nobody has reviewed:
       // the lookup returns nothing and the results are exactly as before.
-      final sp = _FakeSp([_food(1, 'Bread', servingSize: '1 slice (38 g)')], {});
-      final meals =
-          await ProductsRepository(_FakeOff(), sp).getSupabaseFoodsByString('b');
+      final sp =
+          _FakeSp([_food(1, 'Bread', servingSize: '1 slice (38 g)')], {});
+      final meals = await ProductsRepository(_FakeOff(), sp)
+          .getSupabaseFoodsByString('b');
       expect(meals.single.servingSize, '1 slice (38 g)');
       expect(meals.single.servingSizeIsLocalized, isFalse);
     });

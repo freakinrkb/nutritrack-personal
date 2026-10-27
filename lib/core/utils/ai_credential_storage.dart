@@ -161,10 +161,10 @@ class AiEndpointProbe {
   String encode() => '${_code(text)}${_code(photo)}${checked ? 'c' : '-'}';
 
   static String _code(AiCapability capability) => switch (capability) {
-    AiCapability.passed => 'p',
-    AiCapability.failed => 'f',
-    AiCapability.unknown => '-',
-  };
+        AiCapability.passed => 'p',
+        AiCapability.failed => 'f',
+        AiCapability.unknown => '-',
+      };
 
   /// Anything unrecognised reads as [unknown] rather than raising. A keystore
   /// value the app cannot parse is not worth failing a settings screen over,
@@ -203,10 +203,10 @@ class AiEndpointProbe {
   }
 
   static AiCapability _capability(String code) => switch (code) {
-    'p' => AiCapability.passed,
-    'f' => AiCapability.failed,
-    _ => AiCapability.unknown,
-  };
+        'p' => AiCapability.passed,
+        'f' => AiCapability.failed,
+        _ => AiCapability.unknown,
+      };
 }
 
 /// What a row needs to describe the feature without opening it: who would
@@ -303,7 +303,7 @@ class AiCredentialStorage {
   final _probeConfigurationLock = Lock();
 
   AiCredentialStorage([FlutterSecureStorage? storage])
-    : _storage = storage ?? SecureAppStorageProvider.secureAppStorage;
+      : _storage = storage ?? SecureAppStorageProvider.secureAppStorage;
 
   /// Which provider the AI features currently use, or **null when the stored
   /// name is one this build does not know** — see [AiProvider.fromTag].
@@ -368,15 +368,13 @@ class AiCredentialStorage {
   /// Naming a [provider] skips the resolution and answers about that one
   /// instead. The pause flag is not per provider, so it still applies.
   Future<
-    ({
-      AiProvider? provider,
-      String? apiKey,
-      String? endpoint,
-      String? modelId,
-      bool enabled,
-    })
-  >
-  _readState({AiProvider? provider}) async {
+      ({
+        AiProvider? provider,
+        String? apiKey,
+        String? endpoint,
+        String? modelId,
+        bool enabled,
+      })> _readState({AiProvider? provider}) async {
     provider ??= await activeProvider();
     if (provider == null) {
       return (
@@ -418,8 +416,7 @@ class AiCredentialStorage {
       // not reachable through that dialog, but "not reachable through the UI"
       // is a weaker promise than the one #836 makes, and this is the layer
       // that owns the state the promise is about.
-      final enabled =
-          _isUsable(
+      final enabled = _isUsable(
             target,
             apiKey: apiKey,
             endpoint: endpoint,
@@ -528,7 +525,7 @@ class AiCredentialStorage {
     return chat.replace(
       path: path.endsWith(_chatCompletionsSuffix)
           ? '${path.substring(0, path.length - _chatCompletionsSuffix.length)}'
-                '$_modelsSuffix'
+              '$_modelsSuffix'
           : '$path$_modelsSuffix',
     );
   }
@@ -600,18 +597,21 @@ class AiCredentialStorage {
     required String? apiKey,
     required String? endpoint,
     required String? modelId,
-  }) => switch (provider) {
-    AiProvider.anthropic ||
-    AiProvider.openrouter ||
-    AiProvider.openai => apiKey != null,
-    // **And the model**, which is where #738's "the model is part of what
-    // configured means here" is finally enforced rather than asserted. The
-    // three hosted providers fall back to a curated default; this one has no
-    // list, so a missing id leaves the request builder with nothing to name
-    // and it throws — silently, one layer below anything the user can see.
-    AiProvider.ownServer =>
-      endpoint != null && resolveEndpoint(endpoint) != null && modelId != null,
-  };
+  }) =>
+      switch (provider) {
+        AiProvider.anthropic ||
+        AiProvider.openrouter ||
+        AiProvider.openai =>
+          apiKey != null,
+        // **And the model**, which is where #738's "the model is part of what
+        // configured means here" is finally enforced rather than asserted. The
+        // three hosted providers fall back to a curated default; this one has no
+        // list, so a missing id leaves the request builder with nothing to name
+        // and it throws — silently, one layer below anything the user can see.
+        AiProvider.ownServer => endpoint != null &&
+            resolveEndpoint(endpoint) != null &&
+            modelId != null,
+      };
 
   /// Where [AiProvider.ownServer] points, or null when nothing is stored.
   Future<String?> readEndpoint({AiProvider? provider}) async {
@@ -771,8 +771,7 @@ class AiCredentialStorage {
     final provider = state.provider;
     return AiAssistSummary(
       provider: provider,
-      configured:
-          provider != null &&
+      configured: provider != null &&
           _isUsable(
             provider,
             apiKey: state.apiKey,
@@ -815,8 +814,7 @@ class AiCredentialStorage {
       String? endpoint,
       String? modelId,
       bool enabled,
-    })
-    state,
+    }) state,
   ) {
     if (!state.enabled) return null;
     final provider = state.provider;
@@ -932,14 +930,16 @@ class AiCredentialStorage {
     required AiProvider provider,
     required String? endpoint,
     required String? modelId,
-  }) => _probeConfigurationLock.synchronized(() async {
-    final currentEndpoint = await readEndpoint(provider: provider);
-    final currentModel = await readModel(provider: provider);
-    if (currentEndpoint != endpoint || currentModel != modelId) return false;
+  }) =>
+      _probeConfigurationLock.synchronized(() async {
+        final currentEndpoint = await readEndpoint(provider: provider);
+        final currentModel = await readModel(provider: provider);
+        if (currentEndpoint != endpoint || currentModel != modelId)
+          return false;
 
-    await _writeProbe(probe, provider);
-    return true;
-  });
+        await _writeProbe(probe, provider);
+        return true;
+      });
 
   Future<void> _writeProbe(AiEndpointProbe probe, AiProvider target) async {
     final stored = AiEndpointProbe.decode(
@@ -1063,17 +1063,17 @@ class AiCredentialStorage {
   /// not diverge here: the address of a machine on someone's own network is
   /// as much theirs as the credential that opens it.
   Future<void> clearAll() => _probeConfigurationLock.synchronized(() async {
-    for (final provider in AiProvider.values) {
-      await _storage.delete(key: _slotTag(provider));
-      await _storage.delete(key: _endpointSlotTag(provider));
-      await _storage.delete(key: _modelSlotTag(provider));
-      await _storage.delete(key: _probeSlotTag(provider));
-    }
-    await _storage.delete(key: _legacyApiKeyTag);
-    await _storage.delete(key: _providerTag);
-    await _storage.delete(key: _enabledTag);
-    await _storage.delete(key: _termsAcceptedTag);
-  });
+        for (final provider in AiProvider.values) {
+          await _storage.delete(key: _slotTag(provider));
+          await _storage.delete(key: _endpointSlotTag(provider));
+          await _storage.delete(key: _modelSlotTag(provider));
+          await _storage.delete(key: _probeSlotTag(provider));
+        }
+        await _storage.delete(key: _legacyApiKeyTag);
+        await _storage.delete(key: _providerTag);
+        await _storage.delete(key: _enabledTag);
+        await _storage.delete(key: _termsAcceptedTag);
+      });
 
   /// The legacy tag is the Anthropic slot under an older name, so it is
   /// retired only when Anthropic's own slot is written or cleared. Deleting
@@ -1097,11 +1097,11 @@ class AiCredentialStorage {
   ///
   /// Takes no lock, so it is safe from inside a critical section.
   Future<bool> _isProviderUsable(AiProvider provider) async => _isUsable(
-    provider,
-    apiKey: await readApiKey(provider: provider),
-    endpoint: await readEndpoint(provider: provider),
-    modelId: await readModel(provider: provider),
-  );
+        provider,
+        apiKey: await readApiKey(provider: provider),
+        endpoint: await readEndpoint(provider: provider),
+        modelId: await readModel(provider: provider),
+      );
 
   /// Whether any provider has something usable behind it.
   ///

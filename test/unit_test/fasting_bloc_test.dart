@@ -130,8 +130,7 @@ void main() {
       expect(
         fastingRepo.lastUpdated!.completedAt,
         isNull,
-        reason:
-            'A user-cancelled session must not be recorded as completed; '
+        reason: 'A user-cancelled session must not be recorded as completed; '
             'the two outcomes are tracked separately so neither path reads '
             'as failure.',
       );

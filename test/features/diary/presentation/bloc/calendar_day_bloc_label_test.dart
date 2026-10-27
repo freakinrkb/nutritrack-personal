@@ -71,7 +71,8 @@ final _meal = MealEntity(
   source: MealSourceEntity.custom,
 );
 
-TrackedDayDBO _row(DateTime day, {required double goal, required double kcal}) =>
+TrackedDayDBO _row(DateTime day,
+        {required double goal, required double kcal}) =>
     TrackedDayDBO(
       day: day,
       calorieGoal: goal,
@@ -153,7 +154,8 @@ void main() {
     final getConfig = GetConfigUsecase(configRepository);
     bloc = CalendarDayBloc(
       GetUserActivityUsecase(activityRepository),
-      GetIntakeUsecase(intakeRepository, RecipeRepository(RecipeDataSource(db))),
+      GetIntakeUsecase(
+          intakeRepository, RecipeRepository(RecipeDataSource(db))),
       DeleteIntakeUsecase(intakeRepository),
       DeleteUserActivityUsecase(activityRepository, configRepository),
       GetTrackedDayUsecase(trackedDayRepository),

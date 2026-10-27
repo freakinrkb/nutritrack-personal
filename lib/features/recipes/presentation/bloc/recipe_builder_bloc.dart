@@ -11,8 +11,7 @@ import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments
 part 'recipe_builder_event.dart';
 part 'recipe_builder_state.dart';
 
-class RecipeBuilderBloc
-    extends Bloc<RecipeBuilderEvent, RecipeBuilderState> {
+class RecipeBuilderBloc extends Bloc<RecipeBuilderEvent, RecipeBuilderState> {
   final ComputeRecipeNutritionUseCase _computeUseCase;
   final SaveRecipeUseCase _saveUseCase;
 
@@ -38,7 +37,6 @@ class RecipeBuilderBloc
     on<ResetTotalWeightEvent>(_onResetTotalWeight);
     on<SaveRecipeEvent>(_onSave);
   }
-
 
   void _onInitialize(
     InitializeBuilderEvent event,

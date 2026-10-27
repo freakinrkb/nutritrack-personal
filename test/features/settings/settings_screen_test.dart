@@ -88,7 +88,8 @@ class _EmptyStorage implements FlutterSecureStorage {
     WebOptions? webOptions,
     AppleOptions? mOptions,
     WindowsOptions? wOptions,
-  }) async => null;
+  }) async =>
+      null;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -116,19 +117,19 @@ void _register() {
 /// Pushes the settings route the way the app does, so the screen reads its
 /// arguments off a real `ModalRoute` rather than a constructor.
 Widget _app({Object? arguments}) => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  initialRoute: NavigationOptions.settingsRoute,
-  onGenerateRoute: (settings) => MaterialPageRoute<void>(
-    settings: RouteSettings(name: settings.name, arguments: arguments),
-    builder: (_) => const SettingsScreen(),
-  ),
-);
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      initialRoute: NavigationOptions.settingsRoute,
+      onGenerateRoute: (settings) => MaterialPageRoute<void>(
+        settings: RouteSettings(name: settings.name, arguments: arguments),
+        builder: (_) => const SettingsScreen(),
+      ),
+    );
 
 void main() {
   // A handset, because the point of #852 is where the AI row sits on one.
@@ -139,15 +140,15 @@ void main() {
     /// The You tab hosts the screen inside its own scrollable, so anything
     /// scrollable here is a viewport nested in a viewport.
     Widget embeddedIn(Widget child) => MaterialApp(
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: S.supportedLocales,
-      home: Scaffold(body: SingleChildScrollView(child: child)),
-    );
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.supportedLocales,
+          home: Scaffold(body: SingleChildScrollView(child: child)),
+        );
 
     testWidgets('embedded, it creates no viewport of its own', (tester) async {
       // The fix, stated as the thing that can be checked without a device.
@@ -270,7 +271,8 @@ void main() {
     expect(find.byType(AiAssistDialog), findsNothing);
   });
 
-  testWidgets('the language list scrolls when it is taller than the dialog '
+  testWidgets(
+      'the language list scrolls when it is taller than the dialog '
       '(#1331)', (tester) async {
     // Twelve rows do not fit on a short phone. The list used to be a bare
     // Column: it overflowed past the action buttons, the last language was
@@ -323,7 +325,8 @@ void main() {
     );
   });
 
-  testWidgets('toggling Show Meal Macros reloads the Diary, whose meal '
+  testWidgets(
+      'toggling Show Meal Macros reloads the Diary, whose meal '
       'headers read the flag from DiaryBloc (#1359)', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();

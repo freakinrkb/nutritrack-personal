@@ -245,37 +245,37 @@ class BulkAddRow extends Equatable {
       meal?.servingQuantity == null;
 
   List<String> get allowedUnits => [
-    // One entry per portion the food actually has — cup, slice, ounce —
-    // rather than the single one `food_summary` picked. The values are
-    // `serving`, `serving#1`, ...; `storedUnit` strips the suffix before
-    // anything is written, so the published unit vocabulary is unchanged.
-    // #864.
-    if (meal?.portions.isNotEmpty ?? false)
-      for (var i = 0; i < meal!.portions.length; i++) portionUnit(i)
-    // Only when the serving can actually be scaled. `hasServingValues` is
-    // also true for a record carrying nothing but `servingSize` text, and
-    // `convertQuantityToBaseUnit` leaves those unscaled — so offering
-    // `serving` there is a no-op dressed as a fix. Worse, it is the option
-    // a user reaches for after reading `amountNeedsCheck`: picking it
-    // relabels the row, clears the warning and logs the same wrong number.
-    else if (meal?.servingQuantity != null)
-      UnitDropdownItem.serving.toString(),
-    if (meal?.isSolid ?? false) ...[
-      UnitDropdownItem.g.toString(),
-      UnitDropdownItem.oz.toString(),
-    ],
-    if (meal?.isLiquid ?? false) ...[
-      UnitDropdownItem.ml.toString(),
-      UnitDropdownItem.flOz.toString(),
-    ],
-    if (!(meal?.isSolid ?? false) && !(meal?.isLiquid ?? false)) ...[
-      UnitDropdownItem.g.toString(),
-      UnitDropdownItem.oz.toString(),
-      UnitDropdownItem.ml.toString(),
-      UnitDropdownItem.flOz.toString(),
-    ],
-    UnitDropdownItem.gml.toString(),
-  ];
+        // One entry per portion the food actually has — cup, slice, ounce —
+        // rather than the single one `food_summary` picked. The values are
+        // `serving`, `serving#1`, ...; `storedUnit` strips the suffix before
+        // anything is written, so the published unit vocabulary is unchanged.
+        // #864.
+        if (meal?.portions.isNotEmpty ?? false)
+          for (var i = 0; i < meal!.portions.length; i++) portionUnit(i)
+        // Only when the serving can actually be scaled. `hasServingValues` is
+        // also true for a record carrying nothing but `servingSize` text, and
+        // `convertQuantityToBaseUnit` leaves those unscaled — so offering
+        // `serving` there is a no-op dressed as a fix. Worse, it is the option
+        // a user reaches for after reading `amountNeedsCheck`: picking it
+        // relabels the row, clears the warning and logs the same wrong number.
+        else if (meal?.servingQuantity != null)
+          UnitDropdownItem.serving.toString(),
+        if (meal?.isSolid ?? false) ...[
+          UnitDropdownItem.g.toString(),
+          UnitDropdownItem.oz.toString(),
+        ],
+        if (meal?.isLiquid ?? false) ...[
+          UnitDropdownItem.ml.toString(),
+          UnitDropdownItem.flOz.toString(),
+        ],
+        if (!(meal?.isSolid ?? false) && !(meal?.isLiquid ?? false)) ...[
+          UnitDropdownItem.g.toString(),
+          UnitDropdownItem.oz.toString(),
+          UnitDropdownItem.ml.toString(),
+          UnitDropdownItem.flOz.toString(),
+        ],
+        UnitDropdownItem.gml.toString(),
+      ];
 
   String get effectiveUnit =>
       allowedUnits.contains(unit) ? unit : UnitDropdownItem.gml.toString();
@@ -360,28 +360,29 @@ class BulkAddRow extends Equatable {
     bool? skipped,
     bool? unitChosenByUser,
     bool? amountEditedByUser,
-  }) => BulkAddRow(
-    resolved: resolved,
-    selectedIndex: selectedIndex ?? this.selectedIndex,
-    amountText: amountText ?? this.amountText,
-    unit: unit ?? this.unit,
-    skipped: skipped ?? this.skipped,
-    unitChosenByUser: unitChosenByUser ?? this.unitChosenByUser,
-    amountEditedByUser: amountEditedByUser ?? this.amountEditedByUser,
-    fromPhoto: fromPhoto,
-  );
+  }) =>
+      BulkAddRow(
+        resolved: resolved,
+        selectedIndex: selectedIndex ?? this.selectedIndex,
+        amountText: amountText ?? this.amountText,
+        unit: unit ?? this.unit,
+        skipped: skipped ?? this.skipped,
+        unitChosenByUser: unitChosenByUser ?? this.unitChosenByUser,
+        amountEditedByUser: amountEditedByUser ?? this.amountEditedByUser,
+        fromPhoto: fromPhoto,
+      );
 
   @override
   List<Object?> get props => [
-    resolved.parsed.query,
-    selectedIndex,
-    amountText,
-    unit,
-    skipped,
-    unitChosenByUser,
-    amountEditedByUser,
-    fromPhoto,
-  ];
+        resolved.parsed.query,
+        selectedIndex,
+        amountText,
+        unit,
+        skipped,
+        unitChosenByUser,
+        amountEditedByUser,
+        fromPhoto,
+      ];
 }
 
 class BulkAddBloc extends Bloc<BulkAddEvent, BulkAddState> {
@@ -618,8 +619,7 @@ class BulkAddBloc extends Bloc<BulkAddEvent, BulkAddState> {
       // slice there; where both exist they usually agree, and the model saw
       // the food. The key is English in every locale and goes against the
       // English label; the user's words go against the localized one.
-      final named =
-          matchPortionToKey(parsed.portion, meal.portions) ??
+      final named = matchPortionToKey(parsed.portion, meal.portions) ??
           matchPortionToQuery(parsed.query, meal.portions);
       if (named != null) return portionUnit(named);
     }

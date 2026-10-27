@@ -187,8 +187,7 @@ void main() {
       );
     });
 
-    test('with no offset configured, "today" is the wall-clock day',
-        () async {
+    test('with no offset configured, "today" is the wall-clock day', () async {
       await addLunchAt('19th-evening', DateTime(2026, 7, 19, 20, 0));
       await addLunchAt('20th-small-hours', DateTime(2026, 7, 20, 1, 0));
 
@@ -275,10 +274,10 @@ void main() {
       PhysicalActivityTypeDBO.sport,
     );
     await box.addAll([
-      UserActivityDBO('19th-evening', 30, 100,
-          DateTime(2026, 7, 19, 20, 0), walking),
-      UserActivityDBO('20th-midday', 30, 100,
-          DateTime(2026, 7, 20, 12, 0), walking),
+      UserActivityDBO(
+          '19th-evening', 30, 100, DateTime(2026, 7, 19, 20, 0), walking),
+      UserActivityDBO(
+          '20th-midday', 30, 100, DateTime(2026, 7, 20, 12, 0), walking),
     ]);
 
     final result = await dataSource.getAllUserActivitiesByDate(

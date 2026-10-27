@@ -76,7 +76,8 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
             children: [
               if (isAndroid)
                 AppCard(
-                  padding: const EdgeInsets.symmetric(vertical: Dimens.spacing4),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: Dimens.spacing4),
                   child: Semantics(
                     identifier: 'accent-option-material-you',
                     child: ListTile(
@@ -86,9 +87,10 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
                       ),
                       title: Text(
                         S.of(context).settingsMaterialYouTitle,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
                       ),
                       subtitle: Text(
                         S.of(context).settingsMaterialYouSubtitle,
@@ -127,8 +129,7 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: accentPresetColors.length,
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
                     childAspectRatio: 1,
                     mainAxisSpacing: Dimens.spacing12,
@@ -174,7 +175,8 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
                 child: Semantics(
                   identifier: 'accent-custom-colour',
                   child: ListTile(
-                    leading: _SwatchTile.iconChip(Icons.colorize_rounded, accent),
+                    leading:
+                        _SwatchTile.iconChip(Icons.colorize_rounded, accent),
                     title: Text(
                       S.of(context).settingsAccentCustomColour,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -203,9 +205,8 @@ class _AccentColourScreenState extends State<AccentColourScreen> {
     final picked = await showDialog<Color?>(
       context: context,
       builder: (_) => _CustomColourDialog(
-        initialColor: initialArgb != null
-            ? Color(initialArgb)
-            : accentPresetColors.first,
+        initialColor:
+            initialArgb != null ? Color(initialArgb) : accentPresetColors.first,
       ),
     );
     if (picked != null) {
@@ -266,8 +267,7 @@ class _CustomColourDialogState extends State<_CustomColourDialog> {
     return rgb.toRadixString(16).padLeft(6, '0').toUpperCase();
   }
 
-  Color get _currentColor =>
-      HSLColor.fromAHSL(1, _hue, 0.7, 0.5).toColor();
+  Color get _currentColor => HSLColor.fromAHSL(1, _hue, 0.7, 0.5).toColor();
 
   void _onHueChanged(double value) {
     setState(() {

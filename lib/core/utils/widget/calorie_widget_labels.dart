@@ -83,16 +83,16 @@ class CalorieWidgetLabels {
   }
 
   Map<String, String> languageJson() => {
-    'title': title,
-    'unit': unit,
-    'openApp': openApp,
-    'description': description,
-  };
+        'title': title,
+        'unit': unit,
+        'openApp': openApp,
+        'description': description,
+      };
 
   Map<String, String> figureJson() => {
-    'goal': goal,
-    'accessibility': accessibility,
-  };
+        'goal': goal,
+        'accessibility': accessibility,
+      };
 
   String encodeLanguage() => jsonEncode(languageJson());
 }

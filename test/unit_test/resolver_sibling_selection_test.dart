@@ -69,22 +69,23 @@ List<MealEntity> resolve(
   String query, {
   List<MealEntity> off = const [],
   List<MealEntity> backend = const [],
-}) => rankForResolution(mergeAndRankMeals(off, backend, query), query);
+}) =>
+    rankForResolution(mergeAndRankMeals(off, backend, query), query);
 
 List<String> names(List<MealEntity> meals) => [for (final m in meals) m.name!];
 
 MealEntity offProduct(String name, {required String barcode}) => MealEntity(
-  code: barcode,
-  name: name,
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: MealNutrimentsEntity.empty(),
-  source: MealSourceEntity.off,
-);
+      code: barcode,
+      name: name,
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: MealNutrimentsEntity.empty(),
+      source: MealSourceEntity.off,
+    );
 
 void main() {
   group('backend siblings are not duplicates', () {
@@ -107,19 +108,19 @@ void main() {
       // pins the collapse on its own: backend records are left alone
       // whatever they are called.
       MealEntity byShortTitle(MealEntity record) => MealEntity(
-        code: record.code,
-        name: 'Egg',
-        url: null,
-        mealQuantity: null,
-        mealUnit: 'g',
-        servingQuantity: null,
-        servingUnit: 'g',
-        servingSize: null,
-        nutriments: record.nutriments,
-        source: record.source,
-        backendSource: record.backendSource,
-        portions: record.portions,
-      );
+            code: record.code,
+            name: 'Egg',
+            url: null,
+            mealQuantity: null,
+            mealUnit: 'g',
+            servingQuantity: null,
+            servingUnit: 'g',
+            servingSize: null,
+            nutriments: record.nutriments,
+            source: record.source,
+            backendSource: record.backendSource,
+            portions: record.portions,
+          );
 
       final candidates = resolve(
         'egg',
@@ -176,20 +177,21 @@ void main() {
       MealEntity record,
       String name, {
       MealSourceEntity? source,
-    }) => MealEntity(
-      code: record.code,
-      name: name,
-      url: null,
-      mealQuantity: null,
-      mealUnit: 'g',
-      servingQuantity: null,
-      servingUnit: 'g',
-      servingSize: null,
-      nutriments: record.nutriments,
-      source: source ?? record.source,
-      backendSource: record.backendSource,
-      portions: record.portions,
-    );
+    }) =>
+        MealEntity(
+          code: record.code,
+          name: name,
+          url: null,
+          mealQuantity: null,
+          mealUnit: 'g',
+          servingQuantity: null,
+          servingUnit: 'g',
+          servingSize: null,
+          nutriments: record.nutriments,
+          source: source ?? record.source,
+          backendSource: record.backendSource,
+          portions: record.portions,
+        );
 
     test('eggs scores Egg, whole, raw as it scores Egg', () {
       final record = BackendSiblingFixtures.eggWholeRaw;
@@ -715,7 +717,7 @@ void main() {
     // hundred with no cut at all — the same record, or the cut lost what
     // the resolver would have picked.
     ({MealEntity fromPage, MealEntity fromPool, List<SpFoodDTO> survivors})
-    pick(String query, List<SpFoodDTO> pool, Map<int, int> portions) {
+        pick(String query, List<SpFoodDTO> pool, Map<int, int> portions) {
       final survivors = rankAndTruncateFoodsByName(
         pool,
         query,
@@ -1117,14 +1119,15 @@ void main() {
       String query,
       List<Map<String, dynamic>> pool,
       Map<int, int> portions,
-    ) => BackendPoolFixtures.freshAll([
-      for (final row in rankAndTruncateTranslationRows(
-        pool,
-        query,
-        forResolution: true,
-      ))
-        translated(row),
-    ], portions);
+    ) =>
+        BackendPoolFixtures.freshAll([
+          for (final row in rankAndTruncateTranslationRows(
+            pool,
+            query,
+            forResolution: true,
+          ))
+            translated(row),
+        ], portions);
 
     /// The pool as the backend sends it today and as it will with
     /// `has_portion` on every row (the migration), through the translation
@@ -1133,17 +1136,18 @@ void main() {
       String query,
       List<Map<String, dynamic>> pool,
       Map<int, int> portions,
-    ) => [
-      ('without the flag', page(query, pool, portions)),
-      (
-        'with the flag',
-        page(
-          query,
-          BackendPoolFixtures.flaggedTranslations(pool, portions),
-          portions,
-        ),
-      ),
-    ];
+    ) =>
+        [
+          ('without the flag', page(query, pool, portions)),
+          (
+            'with the flag',
+            page(
+              query,
+              BackendPoolFixtures.flaggedTranslations(pool, portions),
+              portions,
+            ),
+          ),
+        ];
 
     test('Milch resolves to Milch, NFS', () {
       for (final (label, candidates) in pages(
@@ -1197,10 +1201,10 @@ void main() {
       // claim at the cut stays exact about what it does not read.
       const query = 'Milch';
       Map<String, dynamic> row(int id, String description, String source) => {
-        SPConst.translationFoodId: id,
-        SPConst.translationDescription: description,
-        SPConst.translationSource: source,
-      };
+            SPConst.translationFoodId: id,
+            SPConst.translationDescription: description,
+            SPConst.translationSource: source,
+          };
       final rows = [
         for (var i = 0; i < 20; i++)
           row(
@@ -1347,7 +1351,8 @@ void main() {
       expect(scoreMealForResolution(fromPage, query), closeTo(0.96, 1e-3));
     });
 
-    test('without the flag: twenty portionless rows ahead of the record '
+    test(
+        'without the flag: twenty portionless rows ahead of the record '
         'the resolver would pick', () {
       // Twenty-five portionless SR Legacy-style rows and one survey record
       // with nine portions, all titled "Chicken breast", from a backend
@@ -1436,12 +1441,12 @@ void main() {
       // need the count on the row, not the flag.
       const query = 'chicken breast';
       SpFoodDTO row(int id, String name) => SpFoodDTO.fromJson({
-        SPConst.foodId: id,
-        SPConst.foodSource: 'fdc_survey',
-        SPConst.foodSourceCode: '$id',
-        SPConst.foodName: name,
-        SPConst.foodHasPortion: true,
-      });
+            SPConst.foodId: id,
+            SPConst.foodSource: 'fdc_survey',
+            SPConst.foodSourceCode: '$id',
+            SPConst.foodName: name,
+            SPConst.foodHasPortion: true,
+          });
       final rows = [
         for (var i = 0; i < 21; i++)
           row(i, 'Chicken breast, roll ${i.toString().padLeft(2, '0')}'),
@@ -1473,7 +1478,8 @@ void main() {
       expect(scoreMealForResolution(fromPage, query), 1.0);
     });
 
-    test('where it bit: muffins without the flag, an exact plural title '
+    test(
+        'where it bit: muffins without the flag, an exact plural title '
         'over the soft singular', () {
       // The real pool, 79 rows, forty with a portion, as the backend sends
       // it before the migration — no `has_portion` on any row. `muffins` is

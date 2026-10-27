@@ -225,7 +225,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Wszystkie wpisy w dzienniku używające tego posiłku zostaną również usunięte.",
+  "customMealsDeleteConfirmContent": "Wcześniejsze wpisy w dzienniku dotyczące tego własnego posiłku zostaną zachowane.",
   "customMealsDeleteConfirmTitle": "Usunąć własny posiłek?",
   "customMealsEmptyLabel": "Brak zapisanych własnych posiłków.",
   "dailyKcalAdjustmentLabel": "Dzienna korekta Kcal:",

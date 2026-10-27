@@ -47,23 +47,23 @@ void main() {
   /// page's own. Up to three spaces is what CommonMark allows before a fence
   /// stops being a fence, and the closing run has to be allowed the same.
   String withoutFences(String markdown) => markdown.replaceAll(
-    RegExp(
-      r'^ {0,3}(```|~~~)[^\n]*\n.*?^ {0,3}\1[^\n]*$',
-      multiLine: true,
-      dotAll: true,
-    ),
-    '',
-  );
+        RegExp(
+          r'^ {0,3}(```|~~~)[^\n]*\n.*?^ {0,3}\1[^\n]*$',
+          multiLine: true,
+          dotAll: true,
+        ),
+        '',
+      );
 
   /// The headings a link can land on. Repeated headings get a `-1` suffix on
   /// GitHub and this does not model that; no page it reads has one.
   Set<String> anchorsIn(String markdown) => {
-    for (final match in RegExp(
-      r'^#{1,6}\s+(.+)$',
-      multiLine: true,
-    ).allMatches(withoutFences(markdown)))
-      slug(match.group(1)!),
-  };
+        for (final match in RegExp(
+          r'^#{1,6}\s+(.+)$',
+          multiLine: true,
+        ).allMatches(withoutFences(markdown)))
+          slug(match.group(1)!),
+      };
 
   /// Every link target, in each form that renders as a link. Reading only
   /// `](../path)` misses three that reach a reader just the same: a title

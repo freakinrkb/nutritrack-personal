@@ -225,7 +225,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Alle Tagebucheinträge, die diese Mahlzeit verwenden, werden ebenfalls entfernt.",
+  "customMealsDeleteConfirmContent": "Bisherige Tagebucheinträge dieser eigenen Mahlzeit bleiben erhalten.",
   "customMealsDeleteConfirmTitle": "Eigene Mahlzeit löschen?",
   "customMealsEmptyLabel": "Noch keine eigenen Mahlzeiten gespeichert.",
   "dailyKcalAdjustmentLabel": "Tägliche kcal-Anpassung:",

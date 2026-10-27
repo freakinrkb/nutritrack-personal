@@ -129,14 +129,15 @@ PhysicalActivityDBO _$PhysicalActivityDBOFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$PhysicalActivityDBOToJson(
   PhysicalActivityDBO instance,
-) => <String, dynamic>{
-  'code': instance.code,
-  'specificActivity': instance.specificActivity,
-  'description': instance.description,
-  'mets': instance.mets,
-  'tags': instance.tags,
-  'type': _$PhysicalActivityTypeDBOEnumMap[instance.type]!,
-};
+) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'specificActivity': instance.specificActivity,
+      'description': instance.description,
+      'mets': instance.mets,
+      'tags': instance.tags,
+      'type': _$PhysicalActivityTypeDBOEnumMap[instance.type]!,
+    };
 
 const _$PhysicalActivityTypeDBOEnumMap = {
   PhysicalActivityTypeDBO.bicycling: 'bicycling',

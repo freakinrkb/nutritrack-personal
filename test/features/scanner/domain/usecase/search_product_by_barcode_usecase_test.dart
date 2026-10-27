@@ -83,7 +83,8 @@ void main() {
     });
 
     test('ignores custom meals whose code is null', () async {
-      customMealDataSource.meals.add(_customMealDbo(code: null, name: 'NoCode'));
+      customMealDataSource.meals
+          .add(_customMealDbo(code: null, name: 'NoCode'));
       repo.barcodeResult = MealEntity(
         code: '1234',
         name: 'OFF Result',
@@ -297,7 +298,6 @@ class _FakeCustomMealDataSource implements CustomMealDataSource {
       throw UnimplementedError('Unexpected call: ${invocation.memberName}');
 }
 
-
 class _FakeRemoteSearchCacheDataSource implements RemoteSearchCacheDataSource {
   final List<MealDBO> entries = [];
   final List<MealDBO> writes = [];
@@ -388,4 +388,3 @@ MealNutrimentsEntity _emptyNutriments() => const MealNutrimentsEntity(
       saturatedFat100: null,
       fiber100: null,
     );
-

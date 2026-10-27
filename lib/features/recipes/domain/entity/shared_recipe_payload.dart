@@ -223,8 +223,9 @@ class SharedRecipePayload {
       sugars100: n.sugars100,
       saturatedFat100: n.saturatedFat100,
       fiber100: n.fiber100,
-      ingredients:
-          recipe.ingredients.map(SharedRecipeIngredient.fromIngredient).toList(),
+      ingredients: recipe.ingredients
+          .map(SharedRecipeIngredient.fromIngredient)
+          .toList(),
       // Nothing is rounded yet, so this can be exact: a total nobody typed
       // was stored as this same sum by ComputeRecipeNutritionUseCase.
       totalWeightOverrideFlag: recipe.totalWeightG !=

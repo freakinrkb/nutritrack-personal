@@ -87,6 +87,7 @@ class TrendsBloc extends Bloc<TrendsEvent, TrendsState> {
           void consider(DateTime d) {
             if (earliest == null || d.isBefore(earliest!)) earliest = d;
           }
+
           for (final d in days) {
             consider(DateTime(d.day.year, d.day.month, d.day.day));
           }

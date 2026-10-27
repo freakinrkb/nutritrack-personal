@@ -82,12 +82,12 @@ class _FakeGetConfigUsecase implements GetConfigUsecase {
 
   @override
   Future<ConfigEntity> getConfig() async => ConfigEntity(
-    true,
-    true,
-    false,
-    AppThemeEntity.system,
-    usesImperialFoodUnits: imperial,
-  );
+        true,
+        true,
+        false,
+        AppThemeEntity.system,
+        usesImperialFoodUnits: imperial,
+      );
 
   @override
   dynamic noSuchMethod(Invocation invocation) =>
@@ -129,30 +129,31 @@ class _FakeRemoteSearchCacheDataSource implements RemoteSearchCacheDataSource {
 }
 
 MealEntity _meal(String name, MealSourceEntity source) => MealEntity(
-  code: name,
-  name: name,
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: MealNutrimentsEntity.empty(),
-  source: source,
-);
+      code: name,
+      name: name,
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: MealNutrimentsEntity.empty(),
+      source: source,
+    );
 
 SearchProductsUseCase _useCase(
   _FakeProductsRepository repository,
   GetConfigUsecase config, {
   _FakeCustomMealDataSource? customMeals,
-}) => SearchProductsUseCase(
-  repository,
-  _FakeGetIntakeUsecase(),
-  customMeals ?? _FakeCustomMealDataSource(),
-  _FakeRemoteSearchCacheDataSource(),
-  _FakeRecipeDataSource(),
-  config,
-);
+}) =>
+    SearchProductsUseCase(
+      repository,
+      _FakeGetIntakeUsecase(),
+      customMeals ?? _FakeCustomMealDataSource(),
+      _FakeRemoteSearchCacheDataSource(),
+      _FakeRecipeDataSource(),
+      config,
+    );
 
 final getIt = GetIt.instance;
 
@@ -184,29 +185,28 @@ Future<void> _register() async {
 }
 
 Widget _app() => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  onGenerateRoute: (settings) => MaterialPageRoute<void>(
-    settings: RouteSettings(
-      name: settings.name,
-      arguments: AddMealScreenArguments(
-        AddMealType.lunchType,
-        DateTime(2026, 10, 1),
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      onGenerateRoute: (settings) => MaterialPageRoute<void>(
+        settings: RouteSettings(
+          name: settings.name,
+          arguments: AddMealScreenArguments(
+            AddMealType.lunchType,
+            DateTime(2026, 10, 1),
+          ),
+        ),
+        builder: (_) => const AddMealScreen(),
       ),
-    ),
-    builder: (_) => const AddMealScreen(),
-  ),
-);
+    );
 
 /// A result card: the name is the first span of a rich title, after which
 /// the card appends the brand.
-Finder _card(String name) =>
-    find.textContaining(name, findRichText: true);
+Finder _card(String name) => find.textContaining(name, findRichText: true);
 
 /// Opens the screen and submits [query], which searches All.
 Future<void> _search(WidgetTester tester, String query) async {
@@ -330,8 +330,8 @@ void main() {
       await _search(tester, 'apple');
 
       expect(_card('Apple pie'), findsOneWidget);
-      expect(find.text(l10nEn.partialResultsAllSourcesDownNotice),
-          findsOneWidget);
+      expect(
+          find.text(l10nEn.partialResultsAllSourcesDownNotice), findsOneWidget);
       expect(find.text(l10nEn.partialResultsNotice), findsNothing,
           reason: 'neither source answered, so none is "the one" missing');
       expect(find.text(l10nEn.errorFetchingProductData), findsNothing);

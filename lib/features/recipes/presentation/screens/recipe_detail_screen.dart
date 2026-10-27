@@ -45,8 +45,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
     super.didChangeDependencies();
     if (!_initialized) {
       _initialized = true;
-      final args = ModalRoute.of(context)?.settings.arguments
-          as RecipeDetailArguments;
+      final args =
+          ModalRoute.of(context)?.settings.arguments as RecipeDetailArguments;
       _bloc.add(LoadRecipeEvent(args.recipeId));
     }
   }
@@ -83,7 +83,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             tooltip: S.of(context).shareRecipeLabel,
             icon: const Icon(Icons.share_outlined),
             onPressed: () {
-              final code = SharedRecipePayload.fromRecipe(recipe).toJsonString();
+              final code =
+                  SharedRecipePayload.fromRecipe(recipe).toJsonString();
               showDialog(
                 context: context,
                 builder: (_) => ShareQrDialog(
@@ -276,7 +277,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             ),
             title: Text(
               label,
-              style: Theme.of(ctx).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(ctx)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
             onTap: () => Navigator.of(ctx).pop(type),
           );

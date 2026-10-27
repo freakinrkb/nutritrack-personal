@@ -46,8 +46,7 @@ class CustomMealsTab extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is CustomMealsLoadingState ||
-            state is CustomMealsInitial) {
+        if (state is CustomMealsLoadingState || state is CustomMealsInitial) {
           return const Center(child: CircularProgressIndicator());
         }
         if (state is CustomMealsLoadedState) {
@@ -60,7 +59,10 @@ class CustomMealsTab extends StatelessWidget {
                 child: Text(
                   S.of(context).customMealsEmptyLabel,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: palette.textMuted),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: palette.textMuted),
                 ),
               ),
             );
@@ -75,7 +77,8 @@ class CustomMealsTab extends StatelessWidget {
               final meal = state.meals[index];
               final canMerge = state.meals.length >= 2;
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing16, vertical: Dimens.spacing4),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: Dimens.spacing16, vertical: Dimens.spacing4),
                 child: AppCard(
                   padding: EdgeInsets.zero,
                   child: InkWell(
@@ -95,7 +98,8 @@ class CustomMealsTab extends StatelessWidget {
                                   meal.name ?? '',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                                  style: textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w700),
                                 ),
                                 if (meal.brands != null) ...[
                                   const SizedBox(height: Dimens.spacing4),
@@ -103,7 +107,8 @@ class CustomMealsTab extends StatelessWidget {
                                     meal.brands!,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: textTheme.bodyMedium?.copyWith(color: palette.textMuted),
+                                    style: textTheme.bodyMedium
+                                        ?.copyWith(color: palette.textMuted),
                                   ),
                                 ],
                               ],
@@ -113,8 +118,10 @@ class CustomMealsTab extends StatelessWidget {
                             Semantics(
                               identifier: 'custom-foods-merge-open',
                               child: PopupMenuButton<String>(
-                                icon: Icon(Icons.more_vert_rounded, color: palette.textMuted),
-                                tooltip: S.of(context).customMealsRowMoreTooltip,
+                                icon: Icon(Icons.more_vert_rounded,
+                                    color: palette.textMuted),
+                                tooltip:
+                                    S.of(context).customMealsRowMoreTooltip,
                                 onSelected: (value) {
                                   if (value == 'merge') {
                                     _startMerge(context, meal, state.meals);
@@ -131,7 +138,8 @@ class CustomMealsTab extends StatelessWidget {
                               ),
                             ),
                           IconButton(
-                            icon: Icon(Icons.delete_outline_rounded, color: palette.textMuted),
+                            icon: Icon(Icons.delete_outline_rounded,
+                                color: palette.textMuted),
                             onPressed: () => _confirmDelete(context, meal),
                           ),
                         ],
@@ -197,9 +205,8 @@ class CustomMealsTab extends StatelessWidget {
     List<MealEntity> allMeals,
   ) async {
     final bloc = context.read<CustomMealsBloc>();
-    final candidates = allMeals
-        .where((m) => _keyFor(m) != _keyFor(tappedFrom))
-        .toList();
+    final candidates =
+        allMeals.where((m) => _keyFor(m) != _keyFor(tappedFrom)).toList();
     if (candidates.isEmpty) return;
 
     final partner = await showModalBottomSheet<MealEntity>(
@@ -212,11 +219,14 @@ class CustomMealsTab extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                      Dimens.spacing16, Dimens.spacing24, Dimens.spacing16, Dimens.spacing8),
+                  padding: const EdgeInsets.fromLTRB(Dimens.spacing16,
+                      Dimens.spacing24, Dimens.spacing16, Dimens.spacing8),
                   child: Text(
                     S.of(context).customMealsMergePickerTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
                 Flexible(
@@ -229,7 +239,10 @@ class CustomMealsTab extends StatelessWidget {
                         leading: _MealLeadingThumbnail(meal: m),
                         title: Text(
                           m.name ?? '',
-                          style: Theme.of(ctx2).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                          style: Theme.of(ctx2)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                         subtitle: m.brands != null ? Text(m.brands!) : null,
                         onTap: () => Navigator.of(ctx).pop(m),
@@ -249,7 +262,8 @@ class CustomMealsTab extends StatelessWidget {
     if (winner == null || !context.mounted) return;
     final loser = _keyFor(winner) == _keyFor(tappedFrom) ? partner : tappedFrom;
 
-    final confirmed = await _confirmMerge(context, loser: loser, winner: winner);
+    final confirmed =
+        await _confirmMerge(context, loser: loser, winner: winner);
     if (confirmed != true) return;
 
     bloc.add(
@@ -386,7 +400,8 @@ class _MealLeadingThumbnail extends StatelessWidget {
         if (!file.existsSync()) return fallback;
         return ClipRRect(
           borderRadius: Dimens.borderRadiusS,
-          child: Image.file(file, width: _size, height: _size, fit: BoxFit.cover),
+          child:
+              Image.file(file, width: _size, height: _size, fit: BoxFit.cover),
         );
       },
     );

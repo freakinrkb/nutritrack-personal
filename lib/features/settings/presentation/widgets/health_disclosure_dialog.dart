@@ -56,9 +56,9 @@ class HealthDisclosureDialog extends StatelessWidget {
   /// as an afterthought once it follows the line about turning the feature
   /// off.
   String _body(S s) => [
-    s.healthSyncDisclosureBody(healthPlatformName),
-    if (healthStoreReadsBodyFat)
-      s.healthSyncDisclosureBodyFatAddendum(healthPlatformName),
-    s.healthSyncDisclosureFooter(healthPlatformName),
-  ].join('\n\n');
+        s.healthSyncDisclosureBody(healthPlatformName),
+        if (healthStoreReadsBodyFat)
+          s.healthSyncDisclosureBodyFatAddendum(healthPlatformName),
+        s.healthSyncDisclosureFooter(healthPlatformName),
+      ].join('\n\n');
 }

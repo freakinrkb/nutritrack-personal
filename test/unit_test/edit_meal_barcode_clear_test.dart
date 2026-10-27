@@ -36,9 +36,9 @@ void main() {
           reason: 'the field shows nothing for an internal id');
     });
 
-    test('a blanked field keeps the internal id of a meal with no barcode',
-        () {
-      final meal = _meal(code: 'b9f7c1e2-uuid', source: MealSourceEntity.custom);
+    test('a blanked field keeps the internal id of a meal with no barcode', () {
+      final meal =
+          _meal(code: 'b9f7c1e2-uuid', source: MealSourceEntity.custom);
 
       expect(codeAfterEdit(meal, ''), equals('b9f7c1e2-uuid'));
     });

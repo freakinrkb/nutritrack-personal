@@ -17,8 +17,9 @@ class NoResultsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showActions =
-        onScanBarcode != null || onCreateCustomFood != null || onSearchAll != null;
+    final showActions = onScanBarcode != null ||
+        onCreateCustomFood != null ||
+        onSearchAll != null;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,

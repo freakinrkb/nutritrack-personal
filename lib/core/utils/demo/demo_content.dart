@@ -90,7 +90,9 @@ Future<String?> _importMealPhoto(String photoId, String ownerCode) async {
   try {
     final bytes = (await rootBundle.load(
       '$_mealPhotoAssetDir/$photoId.jpg',
-    )).buffer.asUint8List();
+    ))
+        .buffer
+        .asUint8List();
     final tempDir = await getTemporaryDirectory();
     final tempFile = File('${tempDir.path}/demo_meal_$photoId.jpg');
     try {
@@ -438,7 +440,8 @@ Future<DemoFoods> buildDemoFoods() async {
   );
 }
 
-double _roundToNearest5g(double grams) => grams <= 0 ? 0.0 : max(10.0, (grams / 5).round() * 5.0);
+double _roundToNearest5g(double grams) =>
+    grams <= 0 ? 0.0 : max(10.0, (grams / 5).round() * 5.0);
 
 /// Grams of [meal] needed to supply [targetGrams] of the macro read off by
 /// [macroPer100] (e.g. `(n) => n.proteins100`). Zero when the food doesn't
@@ -457,7 +460,8 @@ double _macroGrams(
   MealEntity meal,
   double amount,
   double? Function(MealNutrimentsEntity) macroPer100,
-) => (macroPer100(meal.nutriments) ?? 0) * amount / 100;
+) =>
+    (macroPer100(meal.nutriments) ?? 0) * amount / 100;
 
 /// Builds the day's intake by solving for each food's portion in turn —
 /// veg and fruit are fixed-size sides; the carb target is split across a
@@ -488,12 +492,16 @@ List<IntakeEntity> buildDailyIntakes(
 
   final veggieAmount = 80.0 + demoRng.nextInt(60); // 80-139g
   final fruitAmount = 100.0 + demoRng.nextInt(60); // 100-159g
-  final veggieCarb = _macroGrams(foods.broccoli, veggieAmount, (n) => n.carbohydrates100);
+  final veggieCarb =
+      _macroGrams(foods.broccoli, veggieAmount, (n) => n.carbohydrates100);
   final veggieFat = _macroGrams(foods.broccoli, veggieAmount, (n) => n.fat100);
-  final veggieProtein = _macroGrams(foods.broccoli, veggieAmount, (n) => n.proteins100);
-  final fruitCarb = _macroGrams(fruitMeal, fruitAmount, (n) => n.carbohydrates100);
+  final veggieProtein =
+      _macroGrams(foods.broccoli, veggieAmount, (n) => n.proteins100);
+  final fruitCarb =
+      _macroGrams(fruitMeal, fruitAmount, (n) => n.carbohydrates100);
   final fruitFat = _macroGrams(fruitMeal, fruitAmount, (n) => n.fat100);
-  final fruitProtein = _macroGrams(fruitMeal, fruitAmount, (n) => n.proteins100);
+  final fruitProtein =
+      _macroGrams(fruitMeal, fruitAmount, (n) => n.proteins100);
 
   // Carb target split ~30-60% breakfast / rest dinner starch.
   final carbShareA = 0.3 + demoRng.nextDouble() * 0.3;
@@ -508,12 +516,11 @@ List<IntakeEntity> buildDailyIntakes(
       (n) => n.carbohydrates100,
     ),
   );
-  final carbFat =
-      _macroGrams(carbMealA, carbAmountA, (n) => n.fat100) +
+  final carbFat = _macroGrams(carbMealA, carbAmountA, (n) => n.fat100) +
       _macroGrams(carbMealB, carbAmountB, (n) => n.fat100);
   final carbProtein =
       _macroGrams(carbMealA, carbAmountA, (n) => n.proteins100) +
-      _macroGrams(carbMealB, carbAmountB, (n) => n.proteins100);
+          _macroGrams(carbMealB, carbAmountB, (n) => n.proteins100);
 
   // Fat target split ~50-75% dinner oil / rest a handful of almonds.
   final oilShare = 0.5 + demoRng.nextDouble() * 0.25;
@@ -528,7 +535,8 @@ List<IntakeEntity> buildDailyIntakes(
       (n) => n.fat100,
     ),
   );
-  final almondProtein = _macroGrams(foods.almonds, almondAmount, (n) => n.proteins100);
+  final almondProtein =
+      _macroGrams(foods.almonds, almondAmount, (n) => n.proteins100);
 
   final remainingProtein = targetMacros.protein -
       veggieProtein -
@@ -675,8 +683,7 @@ Future<void> seedRecipes(DateTime now, DemoFoods foods) async {
     RecipeEntity(
       id: IdGenerator.getUniqueID(),
       name: 'Salmon & Greens Bowl',
-      description:
-          'Pan-seared salmon with rice and steamed broccoli — an easy '
+      description: 'Pan-seared salmon with rice and steamed broccoli — an easy '
           'omega-3-rich dinner for two.',
       ingredients: [
         ingredient(foods.salmon, 180),
@@ -709,7 +716,8 @@ Future<void> seedRecipes(DateTime now, DemoFoods foods) async {
     RecipeEntity(
       id: IdGenerator.getUniqueID(),
       name: 'Greek Yogurt Parfait',
-      description: 'Greek yogurt layered with banana and a scattering of almonds.',
+      description:
+          'Greek yogurt layered with banana and a scattering of almonds.',
       ingredients: [
         ingredient(foods.greekYogurt, 200),
         ingredient(foods.banana, 80),

@@ -162,8 +162,7 @@ List<MealEntity> rankForResolution(List<MealEntity> meals, String query) {
   final own = <MealEntity>[];
   final rest = <MealEntity>[];
   for (final meal in meals) {
-    final isOwn =
-        meal.source == MealSourceEntity.custom ||
+    final isOwn = meal.source == MealSourceEntity.custom ||
         meal.source == MealSourceEntity.recipe;
     (isOwn ? own : rest).add(meal);
   }
@@ -278,8 +277,8 @@ List<MealEntity> _sorted(List<MealEntity> meals, String query) {
     // the description is where they differ, and the shorter one is the
     // less qualified: "Milk, NFS" before "Milk, whole".
     final byLength = (a.meal.name ?? '').length.compareTo(
-      (b.meal.name ?? '').length,
-    );
+          (b.meal.name ?? '').length,
+        );
     if (byLength != 0) return byLength;
     return b.meal.portions.length.compareTo(a.meal.portions.length);
   });

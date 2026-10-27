@@ -36,12 +36,12 @@ class FastingSessionEntity extends Equatable {
       );
 
   FastingSessionDBO toDBO() => FastingSessionDBO(
-    id: id,
-    startedAt: startedAt,
-    targetDurationMinutes: targetDurationMinutes,
-    completedAt: completedAt,
-    cancelledAt: cancelledAt,
-  );
+        id: id,
+        startedAt: startedAt,
+        targetDurationMinutes: targetDurationMinutes,
+        completedAt: completedAt,
+        cancelledAt: cancelledAt,
+      );
 
   FastingSessionEntity copyWith({
     DateTime? completedAt,
@@ -58,10 +58,10 @@ class FastingSessionEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    startedAt,
-    targetDurationMinutes,
-    completedAt,
-    cancelledAt,
-  ];
+        id,
+        startedAt,
+        targetDurationMinutes,
+        completedAt,
+        cancelledAt,
+      ];
 }

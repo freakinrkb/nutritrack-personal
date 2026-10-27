@@ -211,8 +211,7 @@ void main() {
         'image/webp',
       )!;
 
-      final declared =
-          stripped[4] |
+      final declared = stripped[4] |
           (stripped[5] << 8) |
           (stripped[6] << 16) |
           (stripped[7] << 24);

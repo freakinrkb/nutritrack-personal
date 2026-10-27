@@ -332,11 +332,11 @@ void main() {
     /// answered and the portion lookup did not: the row, no portions, and
     /// the mark that says why.
     List<MealEntity> withoutPortions(List<MealEntity> fresh) => [
-      for (final meal in fresh)
-        MealEntity.fromMealDBO(
-          MealDBO.fromMealEntity(meal),
-        ).withPortionsUnavailable(),
-    ];
+          for (final meal in fresh)
+            MealEntity.fromMealDBO(
+              MealDBO.fromMealEntity(meal),
+            ).withPortionsUnavailable(),
+        ];
 
     test(
       'egg resolves as it does with portions, first search and next',

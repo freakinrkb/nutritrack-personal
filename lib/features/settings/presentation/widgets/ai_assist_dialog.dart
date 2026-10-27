@@ -71,15 +71,16 @@ class AiAssistDialog extends StatefulWidget {
     AiCredentialStorage storage, {
     AiModelListApi? modelList,
     AiEndpointProbeRunner? probeRunner,
-  }) => showDialog<bool>(
-    context: context,
-    barrierDismissible: false,
-    builder: (_) => AiAssistDialog(
-      storage: storage,
-      modelList: modelList,
-      probeRunner: probeRunner,
-    ),
-  ).then((changed) => changed ?? false);
+  }) =>
+      showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AiAssistDialog(
+          storage: storage,
+          modelList: modelList,
+          probeRunner: probeRunner,
+        ),
+      ).then((changed) => changed ?? false);
 
   /// The accessibility identifier for a model row.
   ///
@@ -105,8 +106,7 @@ class AiAssistDialog extends StatefulWidget {
   /// Not the same fold as [modelIdentifier]: that one replaces runs of
   /// non-alphanumerics in an already-lowercase id, and applied here it eats
   /// the capital rather than splitting on it — `own-erver`.
-  static String providerIdentifier(AiProvider provider) =>
-      'ai-assist-provider-'
+  static String providerIdentifier(AiProvider provider) => 'ai-assist-provider-'
       '${provider.name.replaceAllMapped(RegExp('[A-Z]'), (m) => '-${m[0]!.toLowerCase()}')}';
 
   @override
@@ -546,9 +546,8 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
     // against the new one.
     if (asking != _lastEndpoint) {
       final model = _modelController.text.trim();
-      _unconfirmedModel = model.isEmpty
-          ? null
-          : (endpoint: asking!, model: model);
+      _unconfirmedModel =
+          model.isEmpty ? null : (endpoint: asking!, model: model);
     }
 
     final generation = ++_modelsGeneration;
@@ -633,10 +632,10 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
   /// followed it. It also keeps the picker and the free text as one value
   /// rather than two that can disagree.
   void _pickModel(String id) => setState(() {
-    _modelController.text = id;
-    _modelError = null;
-    _unconfirmedModel = null;
-  });
+        _modelController.text = id;
+        _modelError = null;
+        _unconfirmedModel = null;
+      });
 
   /// Leaves, and takes the provider choice back out with it.
   ///
@@ -715,8 +714,8 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
         final endpointError = resolved == null
             ? s.aiAssistEndpointInvalidLabel
             : _refusedBeforeItLeaves(resolved)
-            ? s.aiAssistEndpointPublicPlaintextLabel
-            : null;
+                ? s.aiAssistEndpointPublicPlaintextLabel
+                : null;
         final modelError = model.isEmpty ? s.aiAssistModelRequiredLabel : null;
         if (endpointError != null || modelError != null) {
           setState(() {
@@ -879,16 +878,16 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
 
   String _providerName(BuildContext context, AiProvider provider) =>
       switch (provider) {
-    // Brand names, deliberately not localized.
-    AiProvider.anthropic => 'Anthropic',
-    AiProvider.openrouter => 'OpenRouter',
-    AiProvider.openai => 'OpenAI',
-    // The only one that is not a brand, so the only one that is localized.
-    // **Never "local"**: that word is simultaneously what the ecosystem calls
-    // Ollama and what a user reads as *on my phone* — the claim reserved for
-    // on-device inference, which this app does not do. #736.
-    AiProvider.ownServer => S.of(context).aiAssistProviderOwnServerLabel,
-  };
+        // Brand names, deliberately not localized.
+        AiProvider.anthropic => 'Anthropic',
+        AiProvider.openrouter => 'OpenRouter',
+        AiProvider.openai => 'OpenAI',
+        // The only one that is not a brand, so the only one that is localized.
+        // **Never "local"**: that word is simultaneously what the ecosystem calls
+        // Ollama and what a user reads as *on my phone* — the claim reserved for
+        // on-device inference, which this app does not do. #736.
+        AiProvider.ownServer => S.of(context).aiAssistProviderOwnServerLabel,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -1208,10 +1207,10 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
   /// cheaper — it matches `claude-sonnet-5` on input and is dearer on output.
   /// #726.
   String _noteLabel(S s, AiModelNote note) => switch (note) {
-    AiModelNote.cheaper => s.aiAssistModelCheaperLabel,
-    AiModelNote.moreItems => s.aiAssistModelMoreItemsLabel,
-    AiModelNote.cheapest => s.aiAssistModelCheapestLabel,
-  };
+        AiModelNote.cheaper => s.aiAssistModelCheaperLabel,
+        AiModelNote.moreItems => s.aiAssistModelMoreItemsLabel,
+        AiModelNote.cheapest => s.aiAssistModelCheapestLabel,
+      };
 
   /// What to say about the last ask, or null when there is nothing to say —
   /// nothing asked yet, or a list came back with something in it.
@@ -1251,80 +1250,80 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
   /// by, where a mistyped key produced a plausible screen of parser rows on a
   /// Pixel 6 and no indication whatsoever outside `adb logcat`.
   Widget _buildProbeSection(S s, ThemeData theme) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      _label(theme, s.aiAssistProbeSectionLabel),
-      if (_probing)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          // Words rather than a spinner. A progress indicator promises
-          // something worth waiting for, and this is measured at about 66
-          // seconds against a cold Ollama — 29s text, 37s photo — so the
-          // honest affordance says how long it takes and that leaving is
-          // fine.
-          //
-          // The figure is the **worst** case, derived from the probe timeout
-          // rather than from that 66-second measurement. #851: a server that
-          // accepts a connection and never answers takes both timeouts in
-          // full, measured at 4m00s on a Pixel 6 under a promise of "one to
-          // two minutes" — and an endpoint that might not be reachable is
-          // exactly the reason someone runs a check in the first place, so
-          // the slow path is the likely one here rather than the exotic one.
-          child: Text(
-            s.aiAssistProbeRunningLabel(aiProbeWorstCaseMinutes()),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _label(theme, s.aiAssistProbeSectionLabel),
+          if (_probing)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              // Words rather than a spinner. A progress indicator promises
+              // something worth waiting for, and this is measured at about 66
+              // seconds against a cold Ollama — 29s text, 37s photo — so the
+              // honest affordance says how long it takes and that leaving is
+              // fine.
+              //
+              // The figure is the **worst** case, derived from the probe timeout
+              // rather than from that 66-second measurement. #851: a server that
+              // accepts a connection and never answers takes both timeouts in
+              // full, measured at 4m00s on a Pixel 6 under a promise of "one to
+              // two minutes" — and an endpoint that might not be reachable is
+              // exactly the reason someone runs a check in the first place, so
+              // the slow path is the likely one here rather than the exotic one.
+              child: Text(
+                s.aiAssistProbeRunningLabel(aiProbeWorstCaseMinutes()),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
             ),
+          _probeRow(
+            theme,
+            s.aiAssistProbeTextLabel,
+            _rowStateFor(_probe.text),
+            // A failed text check is **reported and disables nothing.** The
+            // deterministic parser still produces the rows, one sample line is
+            // thin evidence about a real meal, and taking the feature away over
+            // it would remove something that costs nothing. #735.
+            switch (_rowStateFor(_probe.text)) {
+              _ProbeRowState.passed => s.aiAssistProbePassedLabel,
+              _ProbeRowState.failed => s.aiAssistProbeTextFailedLabel,
+              _ProbeRowState.noAnswer => s.aiAssistProbeNoAnswerLabel,
+              _ProbeRowState.neverChecked => s.aiAssistProbeUnknownLabel,
+            },
           ),
-        ),
-      _probeRow(
-        theme,
-        s.aiAssistProbeTextLabel,
-        _rowStateFor(_probe.text),
-        // A failed text check is **reported and disables nothing.** The
-        // deterministic parser still produces the rows, one sample line is
-        // thin evidence about a real meal, and taking the feature away over
-        // it would remove something that costs nothing. #735.
-        switch (_rowStateFor(_probe.text)) {
-          _ProbeRowState.passed => s.aiAssistProbePassedLabel,
-          _ProbeRowState.failed => s.aiAssistProbeTextFailedLabel,
-          _ProbeRowState.noAnswer => s.aiAssistProbeNoAnswerLabel,
-          _ProbeRowState.neverChecked => s.aiAssistProbeUnknownLabel,
-        },
-      ),
-      _probeRow(
-        theme,
-        s.aiAssistProbePhotoLabel,
-        _rowStateFor(_probe.photo),
-        // The asymmetric half: a failed photo check hides the camera, because
-        // there is nothing underneath it the way the parser is underneath the
-        // text path, and offering a dead end is worse than not offering it.
-        switch (_rowStateFor(_probe.photo)) {
-          _ProbeRowState.passed => s.aiAssistProbePassedLabel,
-          _ProbeRowState.failed => s.aiAssistProbePhotoFailedLabel,
-          _ProbeRowState.noAnswer => s.aiAssistProbeNoAnswerLabel,
-          _ProbeRowState.neverChecked => s.aiAssistProbeUnknownLabel,
-        },
-      ),
-      // Offered while the feature is on, and not while it is paused: paused
-      // means nothing is sent, and a check is a request like any other. The
-      // switch is directly above, so the way to get the button back is on
-      // screen.
-      if (widget.probeRunner != null && _enabled)
-        Semantics(
-          identifier: 'ai-assist-probe-run',
-          child: TextButton.icon(
-            // Disabled only while one is running. Re-running from here
-            // updates what is shown **without a re-save**, which is what
-            // makes an unreachable server a state the user can act on rather
-            // than a verdict they are stuck with.
-            onPressed: _probing ? null : _runProbe,
-            icon: const Icon(Icons.refresh_rounded),
-            label: Text(s.aiAssistProbeCheckLabel),
+          _probeRow(
+            theme,
+            s.aiAssistProbePhotoLabel,
+            _rowStateFor(_probe.photo),
+            // The asymmetric half: a failed photo check hides the camera, because
+            // there is nothing underneath it the way the parser is underneath the
+            // text path, and offering a dead end is worse than not offering it.
+            switch (_rowStateFor(_probe.photo)) {
+              _ProbeRowState.passed => s.aiAssistProbePassedLabel,
+              _ProbeRowState.failed => s.aiAssistProbePhotoFailedLabel,
+              _ProbeRowState.noAnswer => s.aiAssistProbeNoAnswerLabel,
+              _ProbeRowState.neverChecked => s.aiAssistProbeUnknownLabel,
+            },
           ),
-        ),
-    ],
-  );
+          // Offered while the feature is on, and not while it is paused: paused
+          // means nothing is sent, and a check is a request like any other. The
+          // switch is directly above, so the way to get the button back is on
+          // screen.
+          if (widget.probeRunner != null && _enabled)
+            Semantics(
+              identifier: 'ai-assist-probe-run',
+              child: TextButton.icon(
+                // Disabled only while one is running. Re-running from here
+                // updates what is shown **without a re-save**, which is what
+                // makes an unreachable server a state the user can act on rather
+                // than a verdict they are stuck with.
+                onPressed: _probing ? null : _runProbe,
+                icon: const Icon(Icons.refresh_rounded),
+                label: Text(s.aiAssistProbeCheckLabel),
+              ),
+            ),
+        ],
+      );
 
   /// How one capability reads, given what is stored *and* whether a check has
   /// run.
@@ -1341,12 +1340,12 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
   /// [AiCapability.unknown], because the app stopping waiting says nothing
   /// about what the endpoint can do. Only the number of renderings changes.
   _ProbeRowState _rowStateFor(AiCapability capability) => switch (capability) {
-    AiCapability.passed => _ProbeRowState.passed,
-    AiCapability.failed => _ProbeRowState.failed,
-    AiCapability.unknown => _probe.checked
-        ? _ProbeRowState.noAnswer
-        : _ProbeRowState.neverChecked,
-  };
+        AiCapability.passed => _ProbeRowState.passed,
+        AiCapability.failed => _ProbeRowState.failed,
+        AiCapability.unknown => _probe.checked
+            ? _ProbeRowState.noAnswer
+            : _ProbeRowState.neverChecked,
+      };
 
   /// One capability, its verdict, and what that verdict means for the user.
   ///
@@ -1359,72 +1358,74 @@ class _AiAssistDialogState extends State<AiAssistDialog> {
     String name,
     _ProbeRowState state,
     String status,
-  ) => Padding(
-    padding: const EdgeInsets.only(bottom: 8),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          // **Never `failed`'s icon for the two inconclusive states.** "We
-          // have not asked" and "we asked and it cannot" are different
-          // states, and the first is not an error: nothing went wrong, there
-          // is nothing to dismiss, and the answer is the button below rather
-          // than a fix. The same holds for a check that came back with
-          // nothing — it is a wasted four minutes, not a broken model, and
-          // dressing it as an error would blame the server for the network.
-          switch (state) {
-            _ProbeRowState.passed => Icons.check_circle_outline_rounded,
-            _ProbeRowState.failed => Icons.error_outline_rounded,
-            _ProbeRowState.noAnswer => Icons.sync_problem_rounded,
-            _ProbeRowState.neverChecked => Icons.help_outline_rounded,
-          },
-          size: 18,
-          // A different shape *and* a different weight for the two
-          // inconclusive rows, so "we asked and got nothing" is not one
-          // glyph's difference away from "nobody has asked" at a glance.
-          color: switch (state) {
-            _ProbeRowState.passed => theme.colorScheme.primary,
-            _ProbeRowState.failed => theme.colorScheme.error,
-            _ProbeRowState.noAnswer => theme.colorScheme.onSurface,
-            _ProbeRowState.neverChecked => theme.colorScheme.onSurfaceVariant,
-          },
-        ),
-        const SizedBox(width: 8),
-        // Flex-constrained per AGENTS.md. The status sentences are the
-        // longest strings this dialog renders after the disclosure, and this
-        // row sits beside a fixed-width icon.
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: theme.textTheme.bodyMedium,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              // **Never `failed`'s icon for the two inconclusive states.** "We
+              // have not asked" and "we asked and it cannot" are different
+              // states, and the first is not an error: nothing went wrong, there
+              // is nothing to dismiss, and the answer is the button below rather
+              // than a fix. The same holds for a check that came back with
+              // nothing — it is a wasted four minutes, not a broken model, and
+              // dressing it as an error would blame the server for the network.
+              switch (state) {
+                _ProbeRowState.passed => Icons.check_circle_outline_rounded,
+                _ProbeRowState.failed => Icons.error_outline_rounded,
+                _ProbeRowState.noAnswer => Icons.sync_problem_rounded,
+                _ProbeRowState.neverChecked => Icons.help_outline_rounded,
+              },
+              size: 18,
+              // A different shape *and* a different weight for the two
+              // inconclusive rows, so "we asked and got nothing" is not one
+              // glyph's difference away from "nobody has asked" at a glance.
+              color: switch (state) {
+                _ProbeRowState.passed => theme.colorScheme.primary,
+                _ProbeRowState.failed => theme.colorScheme.error,
+                _ProbeRowState.noAnswer => theme.colorScheme.onSurface,
+                _ProbeRowState.neverChecked =>
+                  theme.colorScheme.onSurfaceVariant,
+              },
+            ),
+            const SizedBox(width: 8),
+            // Flex-constrained per AGENTS.md. The status sentences are the
+            // longest strings this dialog renders after the disclosure, and this
+            // row sits beside a fixed-width icon.
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: theme.textTheme.bodyMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    status,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                status,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   Widget _label(ThemeData theme, String text) => Padding(
-    padding: const EdgeInsets.only(bottom: 4),
-    child: Text(
-      text,
-      style: theme.textTheme.labelLarge?.copyWith(
-        color: theme.colorScheme.primary,
-      ),
-    ),
-  );
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Text(
+          text,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
+      );
 
   /// The model list, or a single stated model where there is no choice.
   ///

@@ -84,41 +84,42 @@ class _FakeSearch implements SearchProductsUseCase {
 }
 
 IntakeEntity _intake(String name) => IntakeEntity(
-  id: name,
-  unit: 'g',
-  amount: 100,
-  type: IntakeTypeEntity.lunch,
-  meal: MealEntity(
-    code: name,
-    name: name,
-    url: null,
-    mealQuantity: null,
-    mealUnit: 'g',
-    servingQuantity: null,
-    servingUnit: 'g',
-    servingSize: null,
-    nutriments: MealNutrimentsEntity.empty(),
-    source: MealSourceEntity.custom,
-  ),
-  dateTime: DateTime(2026, 10, 1),
-);
+      id: name,
+      unit: 'g',
+      amount: 100,
+      type: IntakeTypeEntity.lunch,
+      meal: MealEntity(
+        code: name,
+        name: name,
+        url: null,
+        mealQuantity: null,
+        mealUnit: 'g',
+        servingQuantity: null,
+        servingUnit: 'g',
+        servingSize: null,
+        nutriments: MealNutrimentsEntity.empty(),
+        source: MealSourceEntity.custom,
+      ),
+      dateTime: DateTime(2026, 10, 1),
+    );
 
 MealEntity _meal(String name, MealSourceEntity source) => MealEntity(
-  code: name,
-  name: name,
-  url: null,
-  mealQuantity: null,
-  mealUnit: 'g',
-  servingQuantity: null,
-  servingUnit: 'g',
-  servingSize: null,
-  nutriments: MealNutrimentsEntity.empty(),
-  source: source,
-);
+      code: name,
+      name: name,
+      url: null,
+      mealQuantity: null,
+      mealUnit: 'g',
+      servingQuantity: null,
+      servingUnit: 'g',
+      servingSize: null,
+      nutriments: MealNutrimentsEntity.empty(),
+      source: source,
+    );
 
 Finder _withIdentifier(String identifier) => find.byWidgetPredicate(
-  (widget) => widget is Semantics && widget.properties.identifier == identifier,
-);
+      (widget) =>
+          widget is Semantics && widget.properties.identifier == identifier,
+    );
 
 final getIt = GetIt.instance;
 
@@ -149,24 +150,24 @@ Future<void> _register(List<IntakeEntity> recent) async {
 }
 
 Widget _app() => MaterialApp(
-  localizationsDelegates: const [
-    S.delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-  ],
-  supportedLocales: S.supportedLocales,
-  onGenerateRoute: (settings) => MaterialPageRoute<void>(
-    settings: RouteSettings(
-      name: settings.name,
-      arguments: AddMealScreenArguments(
-        AddMealType.lunchType,
-        DateTime(2026, 10, 1),
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.supportedLocales,
+      onGenerateRoute: (settings) => MaterialPageRoute<void>(
+        settings: RouteSettings(
+          name: settings.name,
+          arguments: AddMealScreenArguments(
+            AddMealType.lunchType,
+            DateTime(2026, 10, 1),
+          ),
+        ),
+        builder: (_) => const AddMealScreen(),
       ),
-    ),
-    builder: (_) => const AddMealScreen(),
-  ),
-);
+    );
 
 Finder _searchAll() => find.text(l10nEn.noResultsSearchAll);
 

@@ -157,8 +157,7 @@ void main() {
     expect(intakeRepository.moves.single.$2.name, equals('Banana, ripe'));
   });
 
-  testWidgets('blanking the barcode field removes the barcode',
-      (tester) async {
+  testWidgets('blanking the barcode field removes the barcode', (tester) async {
     await pumpEditor(tester, customMeal(code: '4006381333931', name: 'Oats'));
 
     await tester.enterText(

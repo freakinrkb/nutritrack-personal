@@ -26,6 +26,8 @@ class HomeLoadedState extends HomeState {
   final double totalCarbsGoal;
   final double totalFatsGoal;
   final double totalProteinsGoal;
+  final double totalFiberIntake;
+  final double totalFiberGoal;
   final List<UserActivityEntity> userActivityList;
   final List<IntakeEntity> breakfastIntakeList;
   final List<IntakeEntity> lunchIntakeList;
@@ -73,6 +75,8 @@ class HomeLoadedState extends HomeState {
     required this.totalCarbsGoal,
     required this.totalFatsGoal,
     required this.totalProteinsGoal,
+    required this.totalFiberIntake,
+    required this.totalFiberGoal,
     required this.userActivityList,
     required this.breakfastIntakeList,
     required this.lunchIntakeList,
@@ -100,17 +104,19 @@ class HomeLoadedState extends HomeState {
 
   @override
   List<Object?> get props => [
-    breakfastIntakeList,
-    lunchIntakeList,
-    dinnerIntakeList,
-    snackIntakeList,
-    usesImperialUnits,
-    bodyWeightUnit,
-    userWeightKg,
-    totalKcalDaily,
-    waterMlToday,
-    waterGoalMl,
-    waterIntakes,
-    showActivityTracking,
-  ];
+        breakfastIntakeList,
+        lunchIntakeList,
+        dinnerIntakeList,
+        snackIntakeList,
+        usesImperialUnits,
+        bodyWeightUnit,
+        userWeightKg,
+        totalKcalDaily,
+        totalFiberIntake,
+        totalFiberGoal,
+        waterMlToday,
+        waterGoalMl,
+        waterIntakes,
+        showActivityTracking,
+      ];
 }

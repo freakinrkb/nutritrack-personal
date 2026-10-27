@@ -87,7 +87,8 @@ class IntakeCard extends StatelessWidget {
                     children: [
                       AutoSizeText(
                         intake.meal.name ?? "?",
-                        style: textTheme.titleSmall?.copyWith(color: palette.textStrong),
+                        style: textTheme.titleSmall
+                            ?.copyWith(color: palette.textStrong),
                         maxLines: 1,
                         minFontSize: 11,
                         overflow: TextOverflow.ellipsis,
@@ -97,7 +98,8 @@ class IntakeCard extends StatelessWidget {
                         value: intake.amount,
                         meal: intake.meal,
                         usesImperialUnits: usesImperialUnits,
-                        textStyle: textTheme.bodySmall?.copyWith(color: palette.textMuted),
+                        textStyle: textTheme.bodySmall
+                            ?.copyWith(color: palette.textMuted),
                       ),
                     ],
                   ),
@@ -190,7 +192,8 @@ class _Thumbnail extends StatelessWidget {
 
   Widget _fallback() => Container(
         color: palette.surfaceMuted,
-        child: Icon(Icons.restaurant_rounded, color: palette.textMuted, size: 24),
+        child:
+            Icon(Icons.restaurant_rounded, color: palette.textMuted, size: 24),
       );
 }
 

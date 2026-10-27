@@ -69,7 +69,9 @@ class _OnboardingIntroPageBodyState extends State<OnboardingIntroPageBody> {
                       children: [
                         TextSpan(
                           text: ' ${S.of(context).privacyPolicyLabel}',
-                          style: Theme.of(context).textTheme.bodySmall
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
                                 decoration: TextDecoration.underline,
@@ -149,8 +151,8 @@ class _OnboardingIntroPageBodyState extends State<OnboardingIntroPageBody> {
                 Text(
                   S.of(context).onboardingTryDemoDisclaimer,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8.0),

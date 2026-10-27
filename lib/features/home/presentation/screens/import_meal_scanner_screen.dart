@@ -11,7 +11,6 @@ import 'package:opennutritracker/features/home/presentation/widgets/shared_meal_
 import 'package:opennutritracker/features/home/presentation/widgets/shared_meal_importer.dart';
 import 'package:opennutritracker/generated/l10n.dart';
 
-
 class ImportMealScannerArguments {
   final IntakeTypeEntity intakeTypeEntity;
   final AddMealType addMealType;

@@ -313,33 +313,27 @@ void main() {
     test('the hosted three keep the 20s that was deliberate for them', () {
       // A slow answer from a hosted API means something is wrong, and a
       // two-minute wait for one would be a regression dressed as a fix.
-      final anthropic =
-          mealItemsApiFor(
-                CapturingClient(),
-                const AiSelection(
-                  provider: AiProvider.anthropic,
-                  apiKey: 'sk-ant',
-                ),
-              )
-              as AnthropicMealItemsApi;
-      final openrouter =
-          mealItemsApiFor(
-                CapturingClient(),
-                const AiSelection(
-                  provider: AiProvider.openrouter,
-                  apiKey: 'sk-or',
-                ),
-              )
-              as OpenAiCompatibleMealItemsApi;
-      final openai =
-          mealItemsApiFor(
-                CapturingClient(),
-                const AiSelection(
-                  provider: AiProvider.openai,
-                  apiKey: 'sk-oa',
-                ),
-              )
-              as OpenAiMealItemsApi;
+      final anthropic = mealItemsApiFor(
+        CapturingClient(),
+        const AiSelection(
+          provider: AiProvider.anthropic,
+          apiKey: 'sk-ant',
+        ),
+      ) as AnthropicMealItemsApi;
+      final openrouter = mealItemsApiFor(
+        CapturingClient(),
+        const AiSelection(
+          provider: AiProvider.openrouter,
+          apiKey: 'sk-or',
+        ),
+      ) as OpenAiCompatibleMealItemsApi;
+      final openai = mealItemsApiFor(
+        CapturingClient(),
+        const AiSelection(
+          provider: AiProvider.openai,
+          apiKey: 'sk-oa',
+        ),
+      ) as OpenAiMealItemsApi;
 
       // The literal, not each class's own `defaultTimeout` — comparing a
       // client against the constant it was built from is a tautology, and
@@ -358,15 +352,13 @@ void main() {
       // problem. On the hosted three both stay as they were.
       expect(ownServerApi().timeoutFailure, MealInterpreterFailure.timeout);
 
-      final openrouter =
-          mealItemsApiFor(
-                CapturingClient(),
-                const AiSelection(
-                  provider: AiProvider.openrouter,
-                  apiKey: 'sk-or',
-                ),
-              )
-              as OpenAiCompatibleMealItemsApi;
+      final openrouter = mealItemsApiFor(
+        CapturingClient(),
+        const AiSelection(
+          provider: AiProvider.openrouter,
+          apiKey: 'sk-or',
+        ),
+      ) as OpenAiCompatibleMealItemsApi;
       expect(openrouter.timeoutFailure, MealInterpreterFailure.transient);
     });
   });

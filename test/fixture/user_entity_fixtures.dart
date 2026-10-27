@@ -25,17 +25,17 @@ class UserEntityFixtures {
   /// 54 years, 160 cm, 75 kg, female, lose weight, active
   static final UserEntity middleAgedActiveFemaleWantingToLoseWeight =
       UserEntity(
-        birthday: DateTime(
-          _yesterday.year - 54,
-          _yesterday.month,
-          _yesterday.day,
-        ),
-        heightCM: 160.0,
-        weightKG: 75.0,
-        gender: UserGenderEntity.female,
-        goal: UserWeightGoalEntity.loseWeight,
-        pal: UserPALEntity.active,
-      );
+    birthday: DateTime(
+      _yesterday.year - 54,
+      _yesterday.month,
+      _yesterday.day,
+    ),
+    heightCM: 160.0,
+    weightKG: 75.0,
+    gender: UserGenderEntity.female,
+    goal: UserWeightGoalEntity.loseWeight,
+    pal: UserPALEntity.active,
+  );
 
   /// Mocked user entity
   /// 76 years, 164 cm, 55 kg, male, gain weight, low active
@@ -52,15 +52,15 @@ class UserEntityFixtures {
   /// 19 years, 190 cm, 105 kg, female, lose weight, very active
   static final UserEntity youngVeryActiveOverweightFemaleWantingToLoseWeight =
       UserEntity(
-        birthday: DateTime(
-          _yesterday.year - 19,
-          _yesterday.month,
-          _yesterday.day,
-        ),
-        heightCM: 190.0,
-        weightKG: 105.0,
-        gender: UserGenderEntity.female,
-        goal: UserWeightGoalEntity.loseWeight,
-        pal: UserPALEntity.veryActive,
-      );
+    birthday: DateTime(
+      _yesterday.year - 19,
+      _yesterday.month,
+      _yesterday.day,
+    ),
+    heightCM: 190.0,
+    weightKG: 105.0,
+    gender: UserGenderEntity.female,
+    goal: UserWeightGoalEntity.loseWeight,
+    pal: UserPALEntity.veryActive,
+  );
 }

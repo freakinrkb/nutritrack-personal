@@ -139,7 +139,8 @@ class _ImportActivityScannerScreenState
           maxLines: 5,
           decoration: InputDecoration(
             hintText: S.of(ctx).pasteCodeHint,
-            border: const OutlineInputBorder(borderRadius: Dimens.borderRadiusS),
+            border:
+                const OutlineInputBorder(borderRadius: Dimens.borderRadiusS),
           ),
           autofocus: true,
         ),
@@ -178,8 +179,7 @@ class _ImportActivityScannerScreenState
           Navigator.of(context).pop();
           didPop = true;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(S.of(context).importActivitySuccessLabel)),
+            SnackBar(content: Text(S.of(context).importActivitySuccessLabel)),
           );
         }
       }

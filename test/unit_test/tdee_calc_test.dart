@@ -193,7 +193,8 @@ void main() {
       expect(averaged, closeTo((maleTdee + femaleTdee) / 2, 0.001));
     });
 
-    test('lowActive averaged uses both PA constants — '
+    test(
+        'lowActive averaged uses both PA constants — '
         'numerical pin (would fail with shared female PA = 1.14)', () {
       // Hand-computed expected for 80 kg / 180 cm / age 25 / lowActive (PAL 1.5):
       //   male half  = 864 - 9.72*25 + 1.12*(14.2*80 + 503*1.80)
@@ -248,7 +249,8 @@ void main() {
     // For a generic sedentary female with a lose-weight goal, the budget
     // must land far below that — otherwise we have regressed back to
     // pulling the dummy.
-    test('female / sedentary / lose-weight produces a budget well below the '
+    test(
+        'female / sedentary / lose-weight produces a budget well below the '
         'old male / active / maintain dummy', () {
       final user = UserEntity(
         birthday: DateTime(yesterday.year - 35, yesterday.month, yesterday.day),

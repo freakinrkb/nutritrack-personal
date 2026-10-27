@@ -35,9 +35,8 @@ String imperialServingLabel(S s, String label) {
     final amount = double.tryParse(match.group(1)!.replaceAll(',', '.'));
     if (amount == null) return match.group(0)!;
     final isVolume = match.group(2)!.toLowerCase() == 'ml';
-    final converted = isVolume
-        ? UnitCalc.mlToFlOz(amount)
-        : UnitCalc.gToOz(amount);
+    final converted =
+        isVolume ? UnitCalc.mlToFlOz(amount) : UnitCalc.gToOz(amount);
     return '${_formatAmount(converted)} ${isVolume ? s.flOzUnit : s.ozUnit}';
   });
 }

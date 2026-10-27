@@ -44,13 +44,14 @@ String _activityKey(
   UserActivityDBO activity,
   int offsetMinutes,
   int? importOffsetMinutes,
-) => DayBoundaryCalc.dayKeyOf(
-  activity.date,
-  importOffsetMinutes != null && activity.externalId != null
-      ? importOffsetMinutes
-      : offsetMinutes,
-  clockReading: activity.externalId != null,
-);
+) =>
+    DayBoundaryCalc.dayKeyOf(
+      activity.date,
+      importOffsetMinutes != null && activity.externalId != null
+          ? importOffsetMinutes
+          : offsetMinutes,
+      clockReading: activity.externalId != null,
+    );
 
 /// Groups every intake and activity under the key of the row for the day
 /// the Diary lists it under at [offsetMinutes] — the
@@ -186,8 +187,7 @@ Future<int> reconcileTrackedDays(
   final rows = db.trackedDayBox;
   final listed = _listedDays(db, offsetMinutes);
   final previousImports = previousImportOffsetMinutes ?? previousOffsetMinutes;
-  final listedBefore =
-      previousOffsetMinutes == null ||
+  final listedBefore = previousOffsetMinutes == null ||
           (previousOffsetMinutes == offsetMinutes &&
               previousImports == offsetMinutes)
       ? null
@@ -252,8 +252,7 @@ Future<int> reconcileTrackedDays(
         ..carbsGoal =
             (row.carbsGoal ?? 0) + MacroCalc.getTotalCarbsGoal(burnedMoved)
         ..fatGoal = (row.fatGoal ?? 0) + MacroCalc.getTotalFatsGoal(burnedMoved)
-        ..proteinGoal =
-            (row.proteinGoal ?? 0) +
+        ..proteinGoal = (row.proteinGoal ?? 0) +
             MacroCalc.getTotalProteinsGoal(burnedMoved);
       changed = true;
     }
@@ -485,40 +484,42 @@ Future<int> restoreTrackedDays(
   required Set<String> importedDayKeys,
   required Iterable<UserActivityDBO> importedActivities,
   required int? keyedByOffsetMinutes,
-}) => withTrackedDayLock(() async {
-  final offset = _offsetMinutesNow(configDataSource);
-  final deviceCredit = _burnedByDay(db.userActivityBox.values, offset);
-  await write();
-  final keyedBy = keyedByOffsetMinutes ?? 0;
-  final importKeyedBy = keyedByOffsetMinutes == null ? offset : null;
-  // Keyed like the upsert: a repeated id is stored once, as its last
-  // occurrence, and a blank id gets its own id from the import.
-  final stored = <Object, UserActivityDBO>{
-    for (final (index, activity) in importedActivities.indexed)
-      isBlankId(activity.id) ? index : activity.id: activity,
-  };
-  final archiveCredit = _burnedByDay(
-    stored.values,
-    keyedBy,
-    importOffsetMinutes: importKeyedBy,
-  );
-  final rowsWritten = reconcileTrackedDays(
-    db,
-    offsetMinutes: offset,
-    previousOffsetMinutes: keyedBy,
-    previousImportOffsetMinutes: importKeyedBy,
-    previousKeys: importedDayKeys,
-    creditedBurned: {
-      for (final MapEntry(:key, :value) in deviceCredit.entries)
-        if (!importedDayKeys.contains(key)) key: value,
-      for (final key in importedDayKeys) key: archiveCredit[key] ?? 0,
-    },
-  );
-  final recorded = configDataSource.setConfigTrackedDaysOffsetMinutes(offset);
-  final changed = await rowsWritten;
-  await recorded;
-  return changed;
-});
+}) =>
+    withTrackedDayLock(() async {
+      final offset = _offsetMinutesNow(configDataSource);
+      final deviceCredit = _burnedByDay(db.userActivityBox.values, offset);
+      await write();
+      final keyedBy = keyedByOffsetMinutes ?? 0;
+      final importKeyedBy = keyedByOffsetMinutes == null ? offset : null;
+      // Keyed like the upsert: a repeated id is stored once, as its last
+      // occurrence, and a blank id gets its own id from the import.
+      final stored = <Object, UserActivityDBO>{
+        for (final (index, activity) in importedActivities.indexed)
+          isBlankId(activity.id) ? index : activity.id: activity,
+      };
+      final archiveCredit = _burnedByDay(
+        stored.values,
+        keyedBy,
+        importOffsetMinutes: importKeyedBy,
+      );
+      final rowsWritten = reconcileTrackedDays(
+        db,
+        offsetMinutes: offset,
+        previousOffsetMinutes: keyedBy,
+        previousImportOffsetMinutes: importKeyedBy,
+        previousKeys: importedDayKeys,
+        creditedBurned: {
+          for (final MapEntry(:key, :value) in deviceCredit.entries)
+            if (!importedDayKeys.contains(key)) key: value,
+          for (final key in importedDayKeys) key: archiveCredit[key] ?? 0,
+        },
+      );
+      final recorded =
+          configDataSource.setConfigTrackedDaysOffsetMinutes(offset);
+      final changed = await rowsWritten;
+      await recorded;
+      return changed;
+    });
 
 /// Moves the day boundary to [hours]:[minutes] and the active profile's
 /// tracked-day rows with it (#1317).
@@ -536,18 +537,20 @@ Future<void> moveDayBoundary(
   ConfigDataSource configDataSource,
   int hours,
   int minutes,
-) => withTrackedDayLock(() {
-  final before = _offsetMinutesNow(configDataSource);
-  final configWritten = configDataSource.setConfigDayStartOffset(
-    hours,
-    minutes,
-  );
-  final after = _offsetMinutesNow(configDataSource);
-  final rowsWritten = reconcileTrackedDays(
-    db,
-    offsetMinutes: after,
-    previousOffsetMinutes: before,
-  );
-  final recorded = configDataSource.setConfigTrackedDaysOffsetMinutes(after);
-  return Future.wait([configWritten, rowsWritten, recorded]);
-});
+) =>
+    withTrackedDayLock(() {
+      final before = _offsetMinutesNow(configDataSource);
+      final configWritten = configDataSource.setConfigDayStartOffset(
+        hours,
+        minutes,
+      );
+      final after = _offsetMinutesNow(configDataSource);
+      final rowsWritten = reconcileTrackedDays(
+        db,
+        offsetMinutes: after,
+        previousOffsetMinutes: before,
+      );
+      final recorded =
+          configDataSource.setConfigTrackedDaysOffsetMinutes(after);
+      return Future.wait([configWritten, rowsWritten, recorded]);
+    });

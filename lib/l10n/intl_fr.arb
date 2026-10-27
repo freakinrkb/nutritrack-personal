@@ -246,7 +246,7 @@
       }
     }
   },
-  "customMealsDeleteConfirmContent": "Toutes les entrées du journal utilisant ce repas seront également supprimées.",
+  "customMealsDeleteConfirmContent": "Les anciennes entrées du journal de ce repas personnalisé seront conservées.",
   "customMealsDeleteConfirmTitle": "Supprimer le repas personnalisé ?",
   "customMealsEmptyLabel": "Aucun repas personnalisé enregistré.",
   "dailyKcalAdjustmentLabel": "Ajustement quotidien (kcal) :",
