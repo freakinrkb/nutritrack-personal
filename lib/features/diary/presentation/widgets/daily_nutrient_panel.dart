@@ -13,6 +13,7 @@ import 'package:opennutritracker/core/presentation/widgets/app_card.dart';
 import 'package:opennutritracker/core/styles/app_palette.dart';
 import 'package:opennutritracker/core/styles/dimens.dart';
 import 'package:opennutritracker/core/utils/calc/dri_reference.dart';
+import 'package:opennutritracker/core/utils/calc/fiber_goal_calc.dart';
 import 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 import 'package:opennutritracker/core/utils/locator.dart';
 import 'package:opennutritracker/features/add_meal/domain/entity/meal_nutriments_entity.dart';
@@ -264,11 +265,10 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
     // the unit tests and the build method share a single source of truth.
     final td = widget.trackedDay;
     // Helper: prefer the per-day tracked override, then the profile's
-    // durable goal, then the IOM age-banded DRI when a user record is
+    // durable goal, then 14 g per 1,000 kcal of the day's calorie goal
+    // (IOM AI), then the IOM age-banded DRI when a user record is
     // available, then the gender-agnostic default the panel has always used
-    // as a last resort. This keeps the existing
-    // resolver helpers as the single source of truth for tests, but layers
-    // the age-aware IOM lookup (#245) on top for users we know enough about.
+    // as a last resort.
     double resolveWithDri(
       double? Function() trackedOverride,
       String nutrientKey,
@@ -279,7 +279,9 @@ class _DailyNutrientPanelState extends State<DailyNutrientPanel> {
     }
 
     final fiberRefG = resolveWithDri(
-      () => td?.fibreGoal ?? durableGoals[NutrientPanelKeys.fiber],
+      () => td?.fibreGoal ??
+          durableGoals[NutrientPanelKeys.fiber] ??
+          FiberGoalCalc.fromKcal(td?.calorieGoal),
       NutrientPanelKeys.fiber,
       DailyNutrientPanel.defaultFibreRefG,
     );

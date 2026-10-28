@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:opennutritracker/core/domain/entity/user_entity.dart';
 import 'package:opennutritracker/core/domain/entity/user_gender_entity.dart';
+import 'package:opennutritracker/core/utils/calc/fiber_goal_calc.dart';
 import 'package:opennutritracker/core/utils/custom_text_input_formatter.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/calendar_day_bloc.dart';
 import 'package:opennutritracker/features/diary/presentation/bloc/diary_bloc.dart';
 import 'package:opennutritracker/features/diary/presentation/widgets/daily_nutrient_panel.dart';
 import 'package:opennutritracker/features/home/presentation/bloc/home_bloc.dart';
+import 'package:opennutritracker/core/domain/entity/tracked_day_entity.dart';
 import 'package:opennutritracker/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:opennutritracker/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:opennutritracker/generated/l10n.dart';
@@ -134,13 +136,23 @@ class _NutrientGoalsScreenState extends State<NutrientGoalsScreen> {
     super.dispose();
   }
 
-  /// The fibre reference the Diary panel uses when no goal is set: the
-  /// IOM value for the user's age and gender, 30 g without a profile.
-  double _fibreDefaultForUser() => DailyNutrientPanel.defaultReferenceFor(
-        NutrientPanelKeys.fiber,
-        _user,
-        DailyNutrientPanel.defaultFibreRefG,
-      );
+  /// The fibre reference the Diary panel uses when no goal is set: 14 g per
+  /// 1,000 kcal of the day's calorie goal (IOM AI) when available, otherwise
+  /// the IOM value for the user's age and gender, 30 g without a profile.
+  double _fibreDefaultForUser() {
+    try {
+      final kcal = _todayTrackedDay?.calorieGoal;
+      final kcalBased = FiberGoalCalc.fromKcal(kcal);
+      if (kcalBased != null) {
+        return kcalBased;
+      }
+    } catch (_) {}
+    return DailyNutrientPanel.defaultReferenceFor(
+      NutrientPanelKeys.fiber,
+      _user,
+      DailyNutrientPanel.defaultFibreRefG,
+    );
+  }
 
   /// Iron RDA splits female 18 / male 8 (mg). 14 mg is the
   /// gender-neutral midpoint we pick for non-binary / unknown,
@@ -181,11 +193,13 @@ class _NutrientGoalsScreenState extends State<NutrientGoalsScreen> {
       ? value.round().toString()
       : value.toStringAsFixed(1);
 
+  TrackedDayEntity? _todayTrackedDay;
   Future<void> _load() async {
     final user = await widget.profileBloc.getUser();
     final today = await widget.settingsBloc.getTodayTrackedDay(
       await widget.settingsBloc.getCurrentLogicalDay(),
     );
+    _todayTrackedDay = today;
     final durable = await widget.settingsBloc.getNutrientGoals();
     if (!mounted) return;
     setState(() {

@@ -27,6 +27,7 @@ import 'package:opennutritracker/core/domain/usecase/update_user_activity_usecas
 import 'package:opennutritracker/core/utils/calc/calorie_goal_calc.dart';
 import 'package:opennutritracker/core/utils/calc/day_boundary_calc.dart';
 import 'package:opennutritracker/core/utils/calc/dri_reference.dart';
+import 'package:opennutritracker/core/utils/calc/fiber_goal_calc.dart';
 import 'package:opennutritracker/core/utils/calc/nutrient_panel_keys.dart';
 import 'package:opennutritracker/core/utils/widget/calorie_widget_labels.dart';
 import 'package:opennutritracker/core/utils/widget/calorie_widget_snapshot.dart';
@@ -195,11 +196,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         totalKcalGoal,
       );
       // Fiber follows the same precedence as the Diary panel: today's tracked
-      // override, then the profile's durable target, then this user's IOM
-      // reference, then the panel's gender-neutral fallback.
+      // override, then the profile's durable target, then 14 g per 1,000 kcal
+      // of the day's calorie goal (IOM AI), then the user's IOM reference,
+      // then the panel's gender-neutral fallback.
       final trackedDay = await _getTrackedDayUsecase.getTrackedDay(loadDay);
       final totalFiberGoal = trackedDay?.fibreGoal ??
           configData.nutrientGoal(NutrientPanelKeys.fiber) ??
+          FiberGoalCalc.fromKcal(totalKcalGoal) ??
           getReferenceFor(
             nutrient: NutrientPanelKeys.fiber,
             user: user,

@@ -349,6 +349,13 @@ class _MacroSplitDialogState extends State<MacroSplitDialog> {
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: 8),
+                Text(
+                  s.settingsMacroSplitFiberNote,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 8),
                   _MacroRow(
                     label: s.carbsLabel,
                     value: _carbsPct,
